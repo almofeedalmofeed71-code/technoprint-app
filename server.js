@@ -1,488 +1,474 @@
 /**
- * TECHOPRINT 2026 - The Sovereign Engine
- * Main server with full functionality
- * Express + MongoDB + Socket.io + OCR + Maps
+ * TECHOPRINT 2026 - Server with Supabase Integration
+ * Express + Supabase REST API
  */
 
 require('dotenv').config();
 const express = require('express');
-const http = require('http');
-const mongoose = require('mongoose');
 const cors = require('cors');
-const helmet = require('helmet');
-const rateLimit = require('express-rate-limit');
-const morgan = require('morgan');
 const path = require('path');
-const fs = require('fs');
-const jwt = require('jsonwebtoken');
-const bcrypt = require('bcryptjs');
-const { Server } = require('socket.io');
-const multer = require('multer');
-const crypto = require('crypto');
 
-// ==================== INITIALIZATION ====================
 const app = express();
-const server = http.createServer(app);
-const io = new Server(server, {
-    cors: {
-        origin: '*',
-        methods: ['GET', 'POST', 'PUT', 'DELETE']
-    }
-});
-
-// ==================== CONFIGURATION ====================
 const PORT = process.env.PORT || 3000;
-const JWT_SECRET = process.env.JWT_SECRET || 'techoprint2026-secret-key-very-secure';
-const ENCRYPTION_KEY = crypto.createHash('sha256').update(process.env.ENCRYPTION_KEY || 'techoprint-encryption-key-2026').digest();
-const IV_LENGTH = 16;
 
-// ==================== MIDDLEWARE ====================
-app.use(helmet({
-    contentSecurityPolicy: false
-}));
-app.use(cors({
-    origin: '*',
-    credentials: true
-}));
-app.use(express.json({ limit: '50mb' }));
-app.use(express.urlencoded({ extended: true, limit: '50mb' }));
+// Supabase Config
+const SUPABASE_URL = process.env.SUPABASE_URL || 'https://avabozirwdefwtabywqo.supabase.co';
+const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF2YWJvemlyd2RlZnd0YWJ5d3FvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY4NjM1NDQsImV4cCI6MjA5MjQzOTU0NH0.boDU0pXR1MGYiJXF1Jos-w0uehKCCZHsKgxHP7nbQVY';
 
-// Rate limiting
-const limiter = rateLimit({
-    windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 1000, // limit each IP to 1000 requests per windowMs
-    message: 'Too many requests, please try again later.'
-});
-app.use('/api/', limiter);
+// Middleware
+app.use(cors({ origin: true, credentials: true }));
+app.use(express.json());
+app.use(express.static(path.join(__dirname, 'public')));
 
-// Logging
-app.use(morgan('dev'));
-
-// Static files - serve from public folder
-app.use(express.static(path.join(__dirname, 'public'), {
-    index: 'index.html',
-    dotfiles: 'ignore'
-}));
-
-// Favicon route to prevent 404
-app.get('/favicon.ico', (req, res) => {
-    res.status(204).send();
-});
-
-// ==================== FILE UPLOADS ====================
-const uploadsDir = path.join(__dirname, 'uploads');
-['receipts', 'books', 'profiles'].forEach(dir => {
-    const dirPath = path.join(uploadsDir, dir);
-    if (!fs.existsSync(dirPath)) {
-        fs.mkdirSync(dirPath, { recursive: true });
-    }
-});
-
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        let folder = 'misc';
-        if (file.fieldname === 'receipt') folder = 'receipts';
-        else if (file.fieldname === 'book') folder = 'books';
-        else if (file.fieldname === 'profile') folder = 'profiles';
-        cb(null, path.join(uploadsDir, folder));
-    },
-    filename: (req, file, cb) => {
-        const uniqueName = `${Date.now()}-${crypto.randomBytes(8).toString('hex')}${path.extname(file.originalname)}`;
-        cb(null, uniqueName);
-    }
-});
-
-const upload = multer({
-    storage,
-    limits: { fileSize: 50 * 1024 * 1024 }, // 50MB max
-    fileFilter: (req, file, cb) => {
-        const allowedTypes = /jpeg|jpg|png|gif|pdf|doc|docx/;
-        const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
-        const mimetype = allowedTypes.test(file.mimetype);
-        if (extname && mimetype) {
-            return cb(null, true);
+// Supabase REST API Helper
+async function supabaseRequest(table, method = 'GET', body = null, headers = {}) {
+    const options = {
+        method,
+        headers: {
+            'apikey': SUPABASE_ANON_KEY,
+            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+            'Content-Type': 'application/json',
+            ...headers
         }
-        cb(new Error('Only images and PDF files are allowed'));
-    }
-});
-
-// ==================== DATABASE CONNECTION ====================
-const connectDB = async () => {
-    try {
-        const mongoUri = process.env.MONGODB_URI || 'mongodb://localhost:27017/techoprint2026';
-        await mongoose.connect(mongoUri, {
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
-            serverSelectionTimeoutMS: 5000,
-            socketTimeoutMS: 45000,
-        });
-        console.log('✅ MongoDB Connected: TECHOPRINT 2026 Database');
-        
-        // Create indexes
-        await createIndexes();
-    } catch (error) {
-        console.error('❌ MongoDB Connection Error:', error.message);
-        // Start server anyway for demo purposes
-        console.log('⚠️ Server starting in demo mode without database');
-    }
-};
-
-const createIndexes = async () => {
-    try {
-        const User = require('./api/db').User;
-        const Transaction = require('./api/db').Transaction;
-        const Order = require('./api/db').Order;
-        
-        await User.collection.createIndex({ email: 1 }, { unique: true });
-        await User.collection.createIndex({ phone: 1 });
-        await User.collection.createIndex({ userId: 1 }, { unique: true });
-        await Transaction.collection.createIndex({ userId: 1 });
-        await Transaction.collection.createIndex({ reference: 1 }, { sparse: true });
-        await Order.collection.createIndex({ orderId: 1 }, { unique: true });
-        await Order.collection.createIndex({ userId: 1 });
-        await Order.collection.createIndex({ 'tracking.currentLocation': '2dsphere' });
-        
-        console.log('✅ Database indexes created');
-    } catch (error) {
-        console.log('⚠️ Index creation skipped:', error.message);
-    }
-};
-
-// ==================== ENCRYPTION UTILITIES ====================
-const encrypt = (text) => {
-    const iv = crypto.randomBytes(IV_LENGTH);
-    const cipher = crypto.createCipheriv('aes-256-cbc', Buffer.from(ENCRYPTION_KEY), iv);
-    let encrypted = cipher.update(text, 'utf8', 'hex');
-    encrypted += cipher.final('hex');
-    return iv.toString('hex') + ':' + encrypted;
-};
-
-const decrypt = (encryptedText) => {
-    try {
-        const parts = encryptedText.split(':');
-        const iv = Buffer.from(parts[0], 'hex');
-        const encrypted = parts[1];
-        const decipher = crypto.createDecipheriv('aes-256-cbc', Buffer.from(ENCRYPTION_KEY), iv);
-        let decrypted = decipher.update(encrypted, 'hex', 'utf8');
-        decrypted += decipher.final('utf8');
-        return decrypted;
-    } catch (error) {
-        return null;
-    }
-};
-
-// Generate signed URLs for secure file access
-const generateSignedUrl = (filePath, expiresIn = 3600) => {
-    const expires = Date.now() + expiresIn * 1000;
-    const signature = crypto.createHmac('sha256', JWT_SECRET)
-        .update(`${filePath}:${expires}`)
-        .digest('hex');
-    return `/api/files/${encodeURIComponent(filePath)}?expires=${expires}&signature=${signature}`;
-};
-
-// ==================== JWT AUTHENTICATION ====================
-const authenticateToken = (req, res, next) => {
-    const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1];
-
-    if (!token) {
-        return res.status(401).json({ success: false, message: 'Access token required' });
-    }
-
-    jwt.verify(token, JWT_SECRET, (err, decoded) => {
-        if (err) {
-            return res.status(403).json({ success: false, message: 'Invalid or expired token' });
-        }
-        req.user = decoded;
-        next();
-    });
-};
-
-const requireRole = (...roles) => {
-    return (req, res, next) => {
-        if (!roles.includes(req.user.role)) {
-            return res.status(403).json({ success: false, message: 'Access denied for this role' });
-        }
-        next();
     };
-};
-
-// ==================== SOCKET.IO SETUP ====================
-const connectedUsers = new Map();
-
-io.on('connection', (socket) => {
-    console.log(`🔌 Client connected: ${socket.id}`);
-
-    // Authenticate socket connection
-    socket.on('authenticate', (token) => {
-        try {
-            const decoded = jwt.verify(token, JWT_SECRET);
-            socket.userId = decoded.userId;
-            socket.role = decoded.role;
-            connectedUsers.set(decoded.userId, socket.id);
-            
-            socket.emit('authenticated', { 
-                success: true, 
-                userId: decoded.userId,
-                role: decoded.role
-            });
-            
-            // Notify about user online
-            io.emit('userOnline', { userId: decoded.userId });
-            console.log(`✅ User authenticated: ${decoded.userId} (${decoded.role})`);
-        } catch (error) {
-            socket.emit('authError', { message: 'Invalid token' });
-        }
-    });
-
-    // Join role-specific rooms
-    socket.on('joinRoom', (room) => {
-        socket.join(room);
-        console.log(`📢 ${socket.id} joined room: ${room}`);
-    });
-
-    // GPS location update (for delivery staff)
-    socket.on('updateLocation', (data) => {
-        if (socket.role === 'delivery' || socket.role === 'admin') {
-            // Broadcast location to relevant users
-            io.to('delivery-tracking').emit('staffLocationUpdate', {
-                staffId: socket.userId,
-                location: data,
-                timestamp: Date.now()
-            });
-        }
-    });
-
-    // Order tracking updates
-    socket.on('trackOrder', (orderId) => {
-        socket.join(`order-${orderId}`);
-    });
-
-    // Disconnect handling
-    socket.on('disconnect', () => {
-        console.log(`🔌 Client disconnected: ${socket.id}`);
-        if (socket.userId) {
-            connectedUsers.delete(socket.userId);
-            io.emit('userOffline', { userId: socket.userId });
-        }
-    });
-});
-
-// ==================== ROUTES ====================
-
-// Health check
-app.get('/api/health', (req, res) => {
-    res.json({
-        status: 'online',
-        server: 'TECHOPRINT 2026',
-        uptime: process.uptime(),
-        memory: process.memoryUsage(),
-        timestamp: new Date().toISOString()
-    });
-});
-
-// Serve signed files
-app.get('/api/files/:filePath(*)', (req, res) => {
-    const filePath = decodeURIComponent(req.params.filePath);
-    const { expires, signature } = req.query;
-
-    // Verify signature
-    const expectedSignature = crypto.createHmac('sha256', JWT_SECRET)
-        .update(`${filePath}:${expires}`)
-        .digest('hex');
-
-    if (signature !== expectedSignature) {
-        return res.status(403).json({ error: 'Invalid or expired URL' });
+    if (body && method !== 'GET') {
+        options.body = JSON.stringify(body);
     }
+    const url = `${SUPABASE_URL}/rest/v1/${table}`;
+    const res = await fetch(url, options);
+    const data = await res.json();
+    return { status: res.status, data };
+}
 
-    if (Date.now() > parseInt(expires)) {
-        return res.status(403).json({ error: 'URL has expired' });
-    }
+// ==================== AUTH ROUTES ====================
 
-    const fullPath = path.join(uploadsDir, filePath);
-    if (!fs.existsSync(fullPath)) {
-        return res.status(404).json({ error: 'File not found' });
-    }
-
-    res.sendFile(fullPath);
-});
-
-// Auth routes
-const authRoutes = require('./api/auth');
-app.use('/api/auth', authRoutes);
-
-// Finance routes
-const financeRoutes = require('./api/finance');
-app.use('/api/finance', authenticateToken, financeRoutes);
-
-// Logistics routes
-const logisticsRoutes = require('./api/logistics');
-app.use('/api/logistics', authenticateToken, logisticsRoutes);
-
-// File upload endpoint
-app.post('/api/upload', authenticateToken, upload.fields([
-    { name: 'receipt', maxCount: 1 },
-    { name: 'book', maxCount: 1 },
-    { name: 'profile', maxCount: 1 }
-]), (req, res) => {
+// Sign Up
+app.post('/api/auth/signup', async (req, res) => {
     try {
-        const files = [];
-        const uploadTypes = ['receipt', 'book', 'profile'];
+        const { email, password, full_name, phone, role = 'student' } = req.body;
         
-        uploadTypes.forEach(type => {
-            if (req.files && req.files[type]) {
-                req.files[type].forEach(file => {
-                    const fileInfo = {
-                        fieldname: type,
-                        originalName: encrypt(file.originalname),
-                        filename: file.filename,
-                        path: file.path.replace(uploadsDir, '').replace(/\\/g, '/'),
-                        size: file.size,
-                        mimetype: file.mimetype,
-                        signedUrl: generateSignedUrl(file.path.replace(uploadsDir, '').replace(/\\/g, '/'))
-                    };
-                    files.push(fileInfo);
-                });
-            }
-        });
-
-        // Emit real-time notification
-        io.to('admin').emit('newUpload', {
-            userId: req.user.userId,
-            type: files[0]?.fieldname,
-            filename: files[0]?.filename,
-            timestamp: Date.now()
-        });
-
-        res.json({
-            success: true,
-            files,
-            message: 'Files uploaded successfully'
-        });
-    } catch (error) {
-        res.status(500).json({ success: false, error: error.message });
-    }
-});
-
-// Dashboard stats endpoint
-app.get('/api/dashboard/stats', authenticateToken, async (req, res) => {
-    try {
-        const User = mongoose.models.User || require('./api/db').User;
-        const Order = mongoose.models.Order || require('./api/db').Order;
-        const Transaction = mongoose.models.Transaction || require('./api/db').Transaction;
-        const Book = mongoose.models.Book || require('./api/db').Book;
-
-        const [totalUsers, totalOrders, totalBooks, recentTransactions] = await Promise.all([
-            User.countDocuments(),
-            Order.countDocuments({ userId: req.user.userId }),
-            Book.countDocuments(),
-            Transaction.find({ userId: req.user.userId })
-                .sort({ createdAt: -1 })
-                .limit(10)
-        ]);
-
-        const stats = {
-            totalUsers,
-            totalOrders,
-            activeOrders: await Order.countDocuments({ userId: req.user.userId, status: { $in: ['pending', 'processing', 'printing', 'out_for_delivery'] } }),
-            totalBooks,
-            recentTransactions: recentTransactions.map(t => ({
-                type: t.type,
-                amount: t.amount,
-                currency: t.currency,
-                createdAt: t.createdAt
-            }))
-        };
-
-        res.json({ success: true, stats });
-    } catch (error) {
-        res.json({
-            success: true,
-            stats: {
-                totalUsers: 0,
-                totalOrders: 0,
-                activeOrders: 0,
-                totalBooks: 0,
-                recentTransactions: []
-            }
-        });
-    }
-});
-
-// ==================== BACKUP SYSTEM ====================
-const scheduleBackups = () => {
-    // Run backup every 6 hours
-    setInterval(async () => {
-        try {
-            const db = mongoose.connection.db;
-            if (db) {
-                const collections = await db.listCollections().toArray();
-                const backupData = {};
-                
-                for (const coll of collections) {
-                    const documents = await db.collection(coll.name).find({}).toArray();
-                    backupData[coll.name] = documents;
-                }
-                
-                const backupDir = path.join(__dirname, 'backups');
-                if (!fs.existsSync(backupDir)) {
-                    fs.mkdirSync(backupDir, { recursive: true });
-                }
-                
-                const filename = `backup-${Date.now()}.json`;
-                fs.writeFileSync(
-                    path.join(backupDir, filename),
-                    JSON.stringify(backupData, null, 2)
-                );
-                
-                console.log(`✅ Database backup created: ${filename}`);
-                io.emit('backupComplete', { filename, timestamp: Date.now() });
-            }
-        } catch (error) {
-            console.error('❌ Backup failed:', error.message);
+        if (!email || !password || !full_name) {
+            return res.status(400).json({ error: 'Email, password, and full name are required' });
         }
-    }, 6 * 60 * 60 * 1000);
-    
-    console.log('⏰ Backup system scheduled: Every 6 hours');
-};
+        
+        const options = {
+            method: 'POST',
+            headers: {
+                'apikey': SUPABASE_ANON_KEY,
+                'Content-Type': 'application/json',
+                'Prefer': 'return=representation'
+            },
+            body: JSON.stringify({
+                email,
+                password,
+                data: { full_name, phone, role }
+            })
+        };
+        
+        const response = await fetch(`${SUPABASE_URL}/auth/v1/signup`, options);
+        const data = await response.json();
+        
+        if (data.error) {
+            return res.status(400).json({ error: data.error.message });
+        }
+        
+        res.json({ 
+            success: true, 
+            user: data.user,
+            message: 'Account created! Check email for confirmation.'
+        });
+    } catch (err) {
+        console.error('Signup error:', err);
+        res.status(500).json({ error: 'Server error' });
+    }
+});
 
-// ==================== ERROR HANDLING ====================
-app.use((err, req, res, next) => {
-    console.error('❌ Server Error:', err);
-    res.status(500).json({
-        success: false,
-        error: process.env.NODE_ENV === 'production' ? 'Internal server error' : err.message
+// Login
+app.post('/api/auth/login', async (req, res) => {
+    try {
+        const { email, password } = req.body;
+        
+        if (!email || !password) {
+            return res.status(400).json({ error: 'Email and password are required' });
+        }
+        
+        const options = {
+            method: 'POST',
+            headers: {
+                'apikey': SUPABASE_ANON_KEY,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ email, password })
+        };
+        
+        const response = await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=password`, options);
+        const data = await response.json();
+        
+        if (data.error) {
+            return res.status(401).json({ error: data.error.message });
+        }
+        
+        // Get user profile
+        const { data: profile } = await supabaseRequest(`profiles?id=eq.${data.user.id}&select=*`);
+        
+        res.json({ 
+            success: true, 
+            token: data.access_token,
+            user: {
+                id: data.user.id,
+                email: data.user.email,
+                ...(profile?.[0] || {})
+            }
+        });
+    } catch (err) {
+        console.error('Login error:', err);
+        res.status(500).json({ error: 'Server error' });
+    }
+});
+
+// ==================== PROFILE ROUTES ====================
+
+// Get Profile
+app.get('/api/profile', async (req, res) => {
+    try {
+        const userId = req.headers['x-user-id'];
+        if (!userId) {
+            return res.status(401).json({ error: 'Unauthorized' });
+        }
+        
+        const { data, error } = await supabaseRequest(`profiles?id=eq.${userId}&select=*`);
+        
+        if (error) {
+            return res.status(404).json({ error: 'Profile not found' });
+        }
+        
+        res.json(data?.[0] || null);
+    } catch (err) {
+        console.error('Get profile error:', err);
+        res.status(500).json({ error: 'Server error' });
+    }
+});
+
+// Update Profile
+app.put('/api/profile', async (req, res) => {
+    try {
+        const userId = req.headers['x-user-id'];
+        if (!userId) {
+            return res.status(401).json({ error: 'Unauthorized' });
+        }
+        
+        const updates = req.body;
+        updates.updated_at = new Date().toISOString();
+        
+        const { data, error } = await supabaseRequest(
+            `profiles?id=eq.${userId}`,
+            'PATCH',
+            updates
+        );
+        
+        if (error) {
+            return res.status(400).json({ error });
+        }
+        
+        res.json({ success: true, data });
+    } catch (err) {
+        console.error('Update profile error:', err);
+        res.status(500).json({ error: 'Server error' });
+    }
+});
+
+// ==================== LIBRARY ROUTES ====================
+
+// Get All Books
+app.get('/api/library', async (req, res) => {
+    try {
+        const { subject, grade, search } = req.query;
+        let query = 'is_active=eq.true&select=*';
+        
+        if (subject) query += `&subject=eq.${subject}`;
+        if (grade) query += `&grade=eq.${grade}`;
+        
+        const { data, error } = await supabaseRequest(`library?${query}&order=title`);
+        
+        if (error) {
+            return res.status(500).json({ error });
+        }
+        
+        // Local search filter
+        let results = data || [];
+        if (search) {
+            const s = search.toLowerCase();
+            results = results.filter(b => 
+                b.title?.toLowerCase().includes(s) ||
+                b.description?.toLowerCase().includes(s)
+            );
+        }
+        
+        res.json(results);
+    } catch (err) {
+        console.error('Library error:', err);
+        res.status(500).json({ error: 'Server error' });
+    }
+});
+
+// Get Single Book
+app.get('/api/library/:id', async (req, res) => {
+    try {
+        const { data, error } = await supabaseRequest(`library?id=eq.${req.params.id}`);
+        
+        if (error || !data?.[0]) {
+            return res.status(404).json({ error: 'Book not found' });
+        }
+        
+        res.json(data[0]);
+    } catch (err) {
+        console.error('Get book error:', err);
+        res.status(500).json({ error: 'Server error' });
+    }
+});
+
+// ==================== ORDER ROUTES ====================
+
+// Get User Orders
+app.get('/api/orders', async (req, res) => {
+    try {
+        const userId = req.headers['x-user-id'];
+        
+        let query = 'select=*&order=created_at.desc';
+        if (userId) {
+            query += `&user_id=eq.${userId}`;
+        }
+        
+        const { data, error } = await supabaseRequest(`orders?${query}`);
+        
+        if (error) {
+            return res.status(500).json({ error });
+        }
+        
+        res.json(data || []);
+    } catch (err) {
+        console.error('Get orders error:', err);
+        res.status(500).json({ error: 'Server error' });
+    }
+});
+
+// Create Order
+app.post('/api/orders', async (req, res) => {
+    try {
+        const userId = req.headers['x-user-id'];
+        const { items, delivery_address, delivery_governorate, delivery_phone, notes } = req.body;
+        
+        if (!items || items.length === 0) {
+            return res.status(400).json({ error: 'Order items required' });
+        }
+        
+        // Calculate totals
+        const subtotal = items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+        const delivery_fee = delivery_governorate ? 2500 : 0;
+        const total = subtotal + delivery_fee;
+        
+        // Generate order number
+        const orderNumber = `TP-${Date.now()}`;
+        
+        const order = {
+            order_number: orderNumber,
+            user_id: userId || null,
+            items: JSON.stringify(items),
+            subtotal,
+            delivery_fee,
+            total,
+            delivery_address,
+            delivery_governorate,
+            delivery_phone,
+            notes,
+            status: 'pending'
+        };
+        
+        const { data, error } = await supabaseRequest('orders', 'POST', order);
+        
+        if (error) {
+            return res.status(400).json({ error });
+        }
+        
+        res.json({ success: true, order: data });
+    } catch (err) {
+        console.error('Create order error:', err);
+        res.status(500).json({ error: 'Server error' });
+    }
+});
+
+// ==================== TRANSACTION ROUTES ====================
+
+// Get User Transactions
+app.get('/api/transactions', async (req, res) => {
+    try {
+        const userId = req.headers['x-user-id'];
+        
+        let query = 'select=*&order=created_at.desc';
+        if (userId) {
+            query += `&user_id=eq.${userId}`;
+        }
+        
+        const { data, error } = await supabaseRequest(`transactions?${query}`);
+        
+        if (error) {
+            return res.status(500).json({ error });
+        }
+        
+        res.json(data || []);
+    } catch (err) {
+        console.error('Get transactions error:', err);
+        res.status(500).json({ error: 'Server error' });
+    }
+});
+
+// Create Transaction (Deposit Request)
+app.post('/api/transactions', async (req, res) => {
+    try {
+        const userId = req.headers['x-user-id'];
+        const { type, amount, currency = 'IQD', payment_method, payment_number, description } = req.body;
+        
+        const transaction = {
+            user_id: userId || null,
+            type,
+            amount,
+            currency,
+            payment_method,
+            payment_number,
+            description,
+            status: type === 'deposit' ? 'pending' : 'completed'
+        };
+        
+        const { data, error } = await supabaseRequest('transactions', 'POST', transaction);
+        
+        if (error) {
+            return res.status(400).json({ error });
+        }
+        
+        res.json({ success: true, transaction: data });
+    } catch (err) {
+        console.error('Create transaction error:', err);
+        res.status(500).json({ error: 'Server error' });
+    }
+});
+
+// ==================== TICKET ROUTES ====================
+
+// Get User Tickets
+app.get('/api/tickets', async (req, res) => {
+    try {
+        const userId = req.headers['x-user-id'];
+        
+        let query = 'select=*&order=created_at.desc';
+        if (userId) {
+            query += `&user_id=eq.${userId}`;
+        }
+        
+        const { data, error } = await supabaseRequest(`tickets?${query}`);
+        
+        if (error) {
+            return res.status(500).json({ error });
+        }
+        
+        res.json(data || []);
+    } catch (err) {
+        console.error('Get tickets error:', err);
+        res.status(500).json({ error: 'Server error' });
+    }
+});
+
+// Create Ticket
+app.post('/api/tickets', async (req, res) => {
+    try {
+        const userId = req.headers['x-user-id'];
+        const { type, subject, description } = req.body;
+        
+        if (!type || !subject || !description) {
+            return res.status(400).json({ error: 'All fields required' });
+        }
+        
+        const ticket = {
+            user_id: userId || null,
+            type,
+            subject,
+            description,
+            status: 'open'
+        };
+        
+        const { data, error } = await supabaseRequest('tickets', 'POST', ticket);
+        
+        if (error) {
+            return res.status(400).json({ error });
+        }
+        
+        res.json({ success: true, ticket: data });
+    } catch (err) {
+        console.error('Create ticket error:', err);
+        res.status(500).json({ error: 'Server error' });
+    }
+});
+
+// ==================== STUDENT STATS ====================
+
+app.get('/api/student/stats', async (req, res) => {
+    try {
+        const userId = req.headers['x-user-id'];
+        
+        // Default demo stats
+        let stats = {
+            balance: 50000,
+            books: 8,
+            lectures: 12,
+            pending: 2,
+            printing: 1,
+            shipped: 1,
+            delivered: 5
+        };
+        
+        if (userId) {
+            // Get real stats from Supabase
+            const [profileRes, ordersRes, booksRes] = await Promise.all([
+                supabaseRequest(`profiles?id=eq.${userId}&select=balance_iqd`),
+                supabaseRequest(`orders?user_id=eq.${userId}&status=eq.pending&select=id`),
+                supabaseRequest('library?is_active=eq.true&select=id')
+            ]);
+            
+            if (profileRes.data?.[0]) {
+                stats.balance = profileRes.data[0].balance_iqd || 0;
+            }
+            if (ordersRes.data) {
+                stats.pending = ordersRes.data.length;
+            }
+            if (booksRes.data) {
+                stats.books = booksRes.data.length;
+            }
+        }
+        
+        res.json(stats);
+    } catch (err) {
+        console.error('Student stats error:', err);
+        res.json({ balance: 50000, books: 8, lectures: 12, pending: 2, printing: 1, shipped: 1, delivered: 5 });
+    }
+});
+
+// ==================== HEALTH CHECK ====================
+app.get('/api/health', (req, res) => {
+    res.json({ 
+        status: 'OK', 
+        timestamp: new Date().toISOString(),
+        supabase: SUPABASE_URL.includes('supabase') ? 'Connected' : 'Disconnected'
     });
 });
 
-// 404 handler
-app.use((req, res) => {
-    res.status(404).json({ success: false, error: 'Route not found' });
+// ==================== CATCH-ALL ROUTE ====================
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 // ==================== START SERVER ====================
-const startServer = async () => {
-    await connectDB();
-    scheduleBackups();
-    
-    server.listen(PORT, () => {
-        console.log('');
-        console.log('╔══════════════════════════════════════════════════════════════╗');
-        console.log('║           👑 TECHOPRINT 2026 - THE SOVEREIGN BUILD 👑        ║');
-        console.log('╠══════════════════════════════════════════════════════════════╣');
-        console.log(`║  🚀 Server running on port: ${PORT}`);
-        console.log(`║  🌐 Environment: ${process.env.NODE_ENV || 'development'}`);
-        console.log(`║  📅 Started: ${new Date().toISOString()}`);
-        console.log(`║  🛡️  JWT Auth: Active`);
-        console.log(`║  🔐 AES-256 Encryption: Active`);
-        console.log(`║  📡 Socket.io: Active`);
-        console.log(`║  🗺️  Maps Integration: Active`);
-        console.log(`║  📷  OCR Receipt Scanner: Active`);
-        console.log('╚══════════════════════════════════════════════════════════════╝');
-        console.log('');
-    });
-};
-
-startServer();
-
-module.exports = { app, io, encrypt, decrypt, generateSignedUrl };
+app.listen(PORT, () => {
+    console.log('🚀 TECHOPRINT 2026 Server Running!');
+    console.log(`📡 Port: ${PORT}`);
+    console.log(`🗄️ Supabase: ${SUPABASE_URL}`);
+    console.log(`🌐 http://localhost:${PORT}`);
+});

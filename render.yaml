@@ -1,5 +1,4 @@
-# TECHOPRINT 2026 - Render.com Deployment Blueprint
-# Connect this file to Render.com via GitHub
+# TECHOPRINT 2026 - Render.com Blueprint
 
 services:
   - type: web
@@ -15,7 +14,9 @@ services:
         value: production
       - key: PORT
         value: 3000
+      - key: SUPABASE_URL
+        value: https://avabozirwdefwtabywqo.supabase.co
+      - key: SUPABASE_ANON_KEY
+        value: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF2YWJvemlyd2RlZnd0YWJ5d3FvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY4NjM1NDQsImV4cCI6MjA5MjQzOTU0NH0.boDU0pXR1MGYiJXF1Jos-w0uehKCCZHsKgxHP7nbQVY
       - key: JWT_SECRET
         generateValue: true
-      - key: MONGODB_URI
-        sync: false
