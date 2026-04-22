@@ -1,0 +1,833 @@
+<!-- TECHOPRINT 2026 - Master Dashboard - Royal Galaxy Glassmorphism -->
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TECHOPRINT 2026 - The Sovereign Build</title>
+    <link rel="icon" href="data:,">
+    
+    <!-- Google Fonts - Amiri for Titles, Cairo for Operations -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome 6 Pro Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Leaflet Maps -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- ==================== PRELOADER ==================== -->
+    <div id="preloader" class="preloader">
+        <div class="loader-content">
+            <div class="logo-icon">T</div>
+            <h1>TECHOPRINT</h1>
+            <p>Loading The Sovereign Build...</p>
+            <div class="progress-bar">
+                <div class="progress-fill"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== LANGUAGE SWITCHER (Royal Gold Style) ==================== -->
+    <div id="languageSwitcher" class="language-switcher">
+        <button class="lang-btn active" data-lang="ar" onclick="window.i18n.setLanguage('ar')">
+            <span class="flag">🇮🇶</span>
+            <span class="lang-name">العربية</span>
+        </button>
+        <button class="lang-btn" data-lang="ku" onclick="window.i18n.setLanguage('ku')">
+            <span class="flag">🧞</span>
+            <span class="lang-name">کوردی</span>
+        </button>
+        <button class="lang-btn" data-lang="en" onclick="window.i18n.setLanguage('en')">
+            <span class="flag">🇺🇸</span>
+            <span class="lang-name">English</span>
+        </button>
+    </div>
+
+    <!-- ==================== MAIN APP CONTAINER ==================== -->
+    <div id="app" class="app-container" style="display: none;">
+        
+        <!-- ==================== SIDEBAR NAVIGATION ==================== -->
+        <aside class="sidebar glass-panel">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <span class="logo-icon">T</span>
+                    <span class="logo-text">TECHOPRINT</span>
+                </div>
+                <span class="version">2026</span>
+            </div>
+            
+            <nav class="nav-menu">
+                <a href="#" class="nav-item active" data-page="dashboard">
+                    <span class="nav-icon">🏛️</span>
+                    <span class="nav-text" data-i18n="nav.dashboard">لوحة التحكم</span>
+                </a>
+                <a href="#" class="nav-item" data-page="wallet">
+                    <span class="nav-icon">💰</span>
+                    <span class="nav-text" data-i18n="nav.wallet">المحفظة</span>
+                </a>
+                <a href="#" class="nav-item" data-page="library">
+                    <span class="nav-icon">📚</span>
+                    <span class="nav-text" data-i18n="nav.library">المكتبة</span>
+                </a>
+                <a href="#" class="nav-item" data-page="orders">
+                    <span class="nav-icon">📦</span>
+                    <span class="nav-text" data-i18n="nav.orders">الطلبات</span>
+                </a>
+                <a href="#" class="nav-item" data-page="transfer">
+                    <span class="nav-icon">🔄</span>
+                    <span class="nav-text" data-i18n="nav.transfer">التحويل</span>
+                </a>
+                <a href="#" class="nav-item" data-page="tracking">
+                    <span class="nav-icon">📍</span>
+                    <span class="nav-text" data-i18n="nav.tracking">تتبع الطلب</span>
+                </a>
+                <a href="#" class="nav-item" data-page="designer">
+                    <span class="nav-icon">🎨</span>
+                    <span class="nav-text" data-i18n="nav.designer">المصممون</span>
+                </a>
+                <a href="#" class="nav-item" data-page="support">
+                    <span class="nav-icon">🎫</span>
+                    <span class="nav-text" data-i18n="nav.support">الدعم</span>
+                </a>
+            </nav>
+            
+            <!-- Admin Panel (Only for admins) -->
+            <div class="admin-section" id="adminPanel" style="display: none;">
+                <h3 class="section-title" data-i18n="common.admin">لوحة الأدمن</h3>
+                <a href="#" class="nav-item" data-page="admin-dashboard">
+                    <span class="nav-icon">👑</span>
+                    <span class="nav-text" data-i18n="nav.adminDashboard">الرقابة المالية</span>
+                </a>
+                <a href="#" class="nav-item" data-page="admin-users">
+                    <span class="nav-icon">👥</span>
+                    <span class="nav-text" data-i18n="nav.adminUsers">إدارة المستخدمين</span>
+                </a>
+                <a href="#" class="nav-item" data-page="admin-delivery">
+                    <span class="nav-icon">🚚</span>
+                    <span class="nav-text" data-i18n="nav.adminDelivery">إدارة التوصيل</span>
+                </a>
+            </div>
+            
+            <!-- User Profile Section -->
+            <div class="user-profile">
+                <div class="profile-image" id="profileImage">
+                    <span>👤</span>
+                </div>
+                <div class="profile-info">
+                    <span class="user-name" id="userName">المستخدم</span>
+                    <span class="user-role" id="userRole" data-i18n="roles.student">دور المستخدم</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- ==================== MAIN CONTENT ==================== -->
+        <main class="main-content">
+            
+            <!-- ==================== HEADER ==================== -->
+            <header class="header glass-panel">
+                <div class="header-right">
+                    <button class="menu-toggle" id="menuToggle">☰</button>
+                    <h1 class="page-title" id="pageTitle" data-i18n="nav.dashboard">لوحة التحكم</h1>
+                </div>
+                <div class="header-left">
+                    <button class="back-home-btn" onclick="showPortal()">
+                        <i class="fas fa-home"></i> <span class="back-text">رجوع للرئيسية</span>
+                    </button>
+                    <div class="notifications-btn" id="notificationsBtn">
+                        <span class="notification-icon">🔔</span>
+                        <span class="notification-badge" id="notificationBadge">0</span>
+                    </div>
+                    <div class="balance-display">
+                        <span class="balance-label" data-i18n="wallet.balance">الرصيد:</span>
+                        <span class="balance-value" id="headerBalance">0 IQD</span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- ==================== DYNAMIC PAGE CONTENT ==================== -->
+            <div class="page-content" id="pageContent">
+                
+                <!-- Dashboard Page -->
+                <section class="page active" id="dashboardPage">
+                    <div class="welcome-banner glass-panel">
+                        <div class="welcome-text">
+                            <h2><span data-i18n="dashboard.welcome">مرحباً بك في</span> <span class="gold-text" data-i18n="dashboard.techoprint">TECHOPRINT 2026</span></h2>
+                            <p data-i18n="dashboard.subtitle">المنصة التعليمية الأولى في العراق - الطباعة والتوصيل</p>
+                        </div>
+                        <div class="welcome-stats">
+                            <div class="stat-item glass-panel">
+                                <span class="stat-value" id="totalOrders">0</span>
+                                <span class="stat-label" data-i18n="dashboard.totalOrders">إجمالي الطلبات</span>
+                            </div>
+                            <div class="stat-item glass-panel">
+                                <span class="stat-value" id="totalBooks">0</span>
+                                <span class="stat-label" data-i18n="dashboard.totalBooks">الكتب المتاحة</span>
+                            </div>
+                            <div class="stat-item glass-panel">
+                                <span class="stat-value" id="activeOrders">0</span>
+                                <span class="stat-label" data-i18n="dashboard.activeOrders">طلبات نشطة</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Quick Actions -->
+                    <div class="quick-actions">
+                        <button class="action-btn glass-panel" onclick="navigateTo('wallet')">
+                            <span class="action-icon">💰</span>
+                            <span class="action-text" data-i18n="dashboard.myWallet">المحفظة</span>
+                        </button>
+                        <button class="action-btn glass-panel" onclick="navigateTo('library')">
+                            <span class="action-icon">📚</span>
+                            <span class="action-text" data-i18n="dashboard.browseLibrary">تصفح المكتبة</span>
+                        </button>
+                        <button class="action-btn glass-panel" onclick="navigateTo('transfer')">
+                            <span class="action-icon">🔄</span>
+                            <span class="action-text" data-i18n="dashboard.transferBalance">تحويل رصيد</span>
+                        </button>
+                        <button class="action-btn glass-panel" onclick="navigateTo('tracking')">
+                            <span class="action-icon">📍</span>
+                            <span class="action-text" data-i18n="dashboard.trackOrder">تتبع الطلب</span>
+                        </button>
+                    </div>
+                    
+                    <!-- Recent Activity -->
+                    <div class="recent-activity glass-panel">
+                        <h3 data-i18n="dashboard.recentActivity">آخر النشاطات</h3>
+                        <div id="recentActivity" class="activity-list">
+                            <p class="empty-state" data-i18n="dashboard.noActivity">لا توجد نشاطات حتى الآن</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Wallet Page -->
+                <section class="page" id="walletPage">
+                    <div class="wallet-container">
+                        <div class="wallet-card glass-panel">
+                            <div class="wallet-header">
+                                <h2 data-i18n="wallet.title">💰 محفظتي الذهبية</h2>
+                            </div>
+                            <div class="balance-section">
+                                <div class="balance-item">
+                                    <span class="currency">IQD</span>
+                                    <span class="amount" id="walletIQD">0</span>
+                                </div>
+                                <div class="balance-item">
+                                    <span class="currency">USD</span>
+                                    <span class="amount" id="walletUSD">0</span>
+                                </div>
+                            </div>
+                            <div class="wallet-actions">
+                                <button class="wallet-btn deposit" onclick="showDepositModal()">
+                                    <span>💎</span> <span data-i18n="wallet.deposit">إيداع</span>
+                                </button>
+                                <button class="wallet-btn withdraw" onclick="showWithdrawModal()">
+                                    <span>💸</span> <span data-i18n="wallet.withdraw">سحب</span>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Transaction History -->
+                        <div class="transactions-section glass-panel">
+                            <h3 data-i18n="wallet.transactionHistory">سجل المعاملات</h3>
+                            <div id="transactionList" class="transaction-list">
+                                <!-- Dynamic transactions will be loaded here -->
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Library Page -->
+                <section class="page" id="libraryPage">
+                    <div class="library-container">
+                        <div class="library-filters glass-panel">
+                            <input type="text" id="searchInput" data-i18n-placeholder="library.searchPlaceholder" placeholder="🔍 البحث في المكتبة..." class="search-input">
+                            <select id="subjectFilter" class="filter-select">
+                                <option value="" data-i18n="library.allSubjects">جميع المواد</option>
+                                <option value="math" data-i18n="library.math">الرياضيات</option>
+                                <option value="science" data-i18n="library.science">العلوم</option>
+                                <option value="arabic" data-i18n="library.arabic">العربية</option>
+                                <option value="english" data-i18n="library.english">الإنجليزية</option>
+                            </select>
+                            <select id="gradeFilter" class="filter-select">
+                                <option value="" data-i18n="library.allGrades">جميع الصفوف</option>
+                                <option value="1">الصف الأول</option>
+                                <option value="2">الصف الثاني</option>
+                                <option value="3">الصف الثالث</option>
+                            </select>
+                        </div>
+                        
+                        <div id="bookGrid" class="book-grid">
+                            <!-- Books will be loaded dynamically -->
+                            <p class="empty-state" data-i18n="library.noBooks">جاري تحميل الكتب...</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Orders Page -->
+                <section class="page" id="ordersPage">
+                    <div class="orders-container">
+                        <div class="orders-header glass-panel">
+                            <h2 data-i18n="orders.title">📦 طلباتي</h2>
+                            <div class="order-status-tabs">
+                                <button class="tab-btn active" data-status="all" data-i18n="orders.all">الكل</button>
+                                <button class="tab-btn" data-status="pending" data-i18n="orders.pending">معلق</button>
+                                <button class="tab-btn" data-status="processing" data-i18n="orders.processing">قيد التنفيذ</button>
+                                <button class="tab-btn" data-status="out_for_delivery" data-i18n="orders.outForDelivery">قيد التوصيل</button>
+                                <button class="tab-btn" data-status="delivered" data-i18n="orders.delivered">تم التوصيل</button>
+                            </div>
+                        </div>
+                        
+                        <div id="ordersList" class="orders-list">
+                            <!-- Orders will be loaded dynamically -->
+                            <p class="empty-state" data-i18n="orders.noOrders">جاري تحميل الطلبات...</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Transfer Page -->
+                <section class="page" id="transferPage">
+                    <div class="transfer-container">
+                        <div class="transfer-card glass-panel">
+                            <h2 data-i18n="transfer.title">🔄 تحويل رصيد</h2>
+                            <form id="transferForm" onsubmit="handleTransfer(event)">
+                                <div class="form-group">
+                                    <label data-i18n="transfer.recipientId">معرف المستخدم المستلم</label>
+                                    <input type="text" id="recipientId" data-i18n-placeholder="transfer.recipientPlaceholder" placeholder="معرف المستخدم أو البريد الإلكتروني" required>
+                                </div>
+                                <div class="form-group">
+                                    <label data-i18n="transfer.amount">المبلغ</label>
+                                    <input type="number" id="transferAmount" data-i18n-placeholder="transfer.amountPlaceholder" placeholder="أدخل المبلغ" required>
+                                </div>
+                                <div class="form-group">
+                                    <label data-i18n="transfer.currency">العملة</label>
+                                    <select id="transferCurrency">
+                                        <option value="IQD">IQD - الدينار العراقي</option>
+                                        <option value="USD">USD - الدولار</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label data-i18n="transfer.description">الوصف (اختياري)</label>
+                                    <textarea id="transferDescription" data-i18n-placeholder="transfer.descriptionPlaceholder" placeholder="أضف ملاحظة..."></textarea>
+                                </div>
+                                <button type="submit" class="submit-btn" data-i18n="transfer.submit">إرسال التحويل</button>
+                            </form>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Tracking Page -->
+                <section class="page" id="trackingPage">
+                    <div class="tracking-container">
+                        <div class="tracking-card glass-panel">
+                            <h2 data-i18n="tracking.title">📍 تتبع الطلب</h2>
+                            <form onsubmit="trackOrder(event)">
+                                <div class="form-group">
+                                    <label data-i18n="tracking.orderNumber">رقم الطلب</label>
+                                    <input type="text" id="trackOrderId" data-i18n-placeholder="tracking.orderNumberPlaceholder" placeholder="أدخل رقم الطلب" required>
+                                </div>
+                                <button type="submit" class="submit-btn" data-i18n="tracking.track">تتبع</button>
+                            </form>
+                        </div>
+                        
+                        <div id="trackingResult" class="tracking-result glass-panel" style="display: none;">
+                            <!-- Tracking info will be shown here -->
+                        </div>
+                        
+                        <!-- Live Map -->
+                        <div id="trackingMap" class="tracking-map glass-panel" style="display: none;">
+                            <div id="mapContainer" style="height: 400px; border-radius: 12px;"></div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Designer Page -->
+                <section class="page" id="designerPage">
+                    <div class="designer-container">
+                        <h2 data-i18n="designer.title">🎨 المصممون والمؤلفون</h2>
+                        <div id="designerGrid" class="designer-grid">
+                            <!-- Designers will be loaded here -->
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Support Page -->
+                <section class="page" id="supportPage">
+                    <div class="support-container">
+                        <div class="ticket-form glass-panel">
+                            <h2 data-i18n="support.title">🎫 فتح تذكرة دعم</h2>
+                            <form onsubmit="createTicket(event)">
+                                <div class="form-group">
+                                    <label data-i18n="support.type">نوع المشكلة</label>
+                                    <select id="ticketType" required>
+                                        <option value="support" data-i18n="support.general">استفسار عام</option>
+                                        <option value="receipt_issue" data-i18n="support.receiptIssue">مشكلة في إيصال</option>
+                                        <option value="delivery_issue" data-i18n="support.deliveryIssue">مشكلة في التوصيل</option>
+                                        <option value="custom_design" data-i18n="support.customDesign">طلب تصميم مخصص</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label data-i18n="support.subject">الموضوع</label>
+                                    <input type="text" id="ticketSubject" data-i18n-placeholder="support.subjectPlaceholder" placeholder="موضوع التذكرة" required>
+                                </div>
+                                <div class="form-group">
+                                    <label data-i18n="support.description">الوصف</label>
+                                    <textarea id="ticketDescription" data-i18n-placeholder="support.descriptionPlaceholder" placeholder="وصف المشكلة..." required></textarea>
+                                </div>
+                                <button type="submit" class="submit-btn" data-i18n="support.submit">إرسال التذكرة</button>
+                            </form>
+                        </div>
+                        
+                        <div class="my-tickets glass-panel">
+                            <h3 data-i18n="support.myTickets">تذاكري</h3>
+                            <div id="ticketList">
+                                <!-- User's tickets will be shown here -->
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ==================== ADMIN PAGES ==================== -->
+                
+                <!-- Admin Dashboard -->
+                <section class="page" id="admin-dashboardPage">
+                    <div class="admin-container">
+                        <h2 class="gold-text">👑 <span data-i18n="admin.financialRadar">لوحة الرقابة المالية</span></h2>
+                        
+                        <!-- Financial Radar -->
+                        <div class="financial-radar glass-panel">
+                            <h3>📊 <span data-i18n="admin.financialRadar">الرادار المالي</span></h3>
+                            <div class="radar-stats">
+                                <div class="radar-item">
+                                    <span class="radar-label" data-i18n="admin.totalTransactions">إجمالي المعاملات</span>
+                                    <span class="radar-value" id="totalTransactions">0</span>
+                                </div>
+                                <div class="radar-item">
+                                    <span class="radar-label" data-i18n="admin.pendingTransactions">المعاملات المعلقة</span>
+                                    <span class="radar-value pending" id="pendingTransactions">0</span>
+                                </div>
+                                <div class="radar-item">
+                                    <span class="radar-label" data-i18n="admin.totalRevenueIQD">إجمالي الإيرادات (IQD)</span>
+                                    <span class="radar-value gold" id="totalRevenueIQD">0</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Pending Deposits -->
+                        <div class="pending-section glass-panel">
+                            <h3>💎 <span data-i18n="admin.pendingDeposits">الإيداعات المعلقة للمراجعة</span></h3>
+                            <div id="pendingDeposits">
+                                <!-- Pending deposits will be shown here -->
+                            </div>
+                        </div>
+                        
+                        <!-- Server Health -->
+                        <div class="server-health glass-panel">
+                            <h3>🖥️ <span data-i18n="admin.serverHealth">حالة الخادم</span></h3>
+                            <div class="health-info">
+                                <span><span data-i18n="admin.uptime">Uptime</span>: <strong id="serverUptime">--</strong></span>
+                                <span><span data-i18n="admin.memory">Memory</span>: <strong id="serverMemory">--</strong></span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Admin Users Management -->
+                <section class="page" id="admin-usersPage">
+                    <div class="admin-container">
+                        <h2 class="gold-text">👥 <span data-i18n="admin.userManagement">إدارة المستخدمين</span></h2>
+                        <div class="user-management glass-panel">
+                            <table id="usersTable" class="users-table">
+                                <thead>
+                                    <tr>
+                                        <th data-i18n="admin.user">المستخدم</th>
+                                        <th data-i18n="admin.email">البريد</th>
+                                        <th data-i18n="admin.role">الدور</th>
+                                        <th data-i18n="admin.status">الحالة</th>
+                                        <th data-i18n="admin.actions">إجراءات</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="usersList">
+                                    <!-- Users will be loaded here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+        <!-- Admin Delivery Management -->
+        <section class="page" id="admin-deliveryPage">
+            <div class="admin-container">
+                <h2 class="gold-text">🚚 <span data-i18n="admin.deliveryManagement">إدارة التوصيل</span></h2>
+                
+                <!-- Live Map -->
+                <div class="delivery-map glass-panel">
+                    <div id="deliveryMapContainer" style="height: 500px; border-radius: 12px;"></div>
+                </div>
+                
+                <!-- Active Deliveries -->
+                <div class="active-deliveries glass-panel">
+                    <h3 data-i18n="admin.activeDeliveries">التوصيلات النشطة</h3>
+                    <div id="activeDeliveriesList">
+                        <!-- Active deliveries will be shown here -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- ==================== MASTER GATEWAY PORTAL ==================== -->
+    <div id="masterPortal" class="master-portal">
+        <!-- Language Switcher on Portal -->
+        <div class="portal-lang-switcher">
+            <button class="lang-btn active" data-lang="ar" onclick="switchPortalLanguage('ar')">🇮🇶 <span data-i18n-portal="langAR">العربية</span></button>
+            <button class="lang-btn" data-lang="ku" onclick="switchPortalLanguage('ku')">🧞 <span data-i18n-portal="langKU">کوردی</span></button>
+            <button class="lang-btn" data-lang="en" onclick="switchPortalLanguage('en')">🇺🇸 <span data-i18n-portal="langEN">English</span></button>
+        </div>
+        
+        <div class="portal-hero">
+            <div class="hero-logo">T</div>
+            <h1>TECHOPRINT 2026</h1>
+            <p class="tagline" data-i18n-portal="tagline">The Sovereign Educational Empire</p>
+            <p class="subtitle" data-i18n-portal="subtitle">Choose your gateway to the empire</p>
+        </div>
+        
+        <div class="portals-grid">
+            <!-- 🎓 STUDENT PORTAL - THE MAIN ONE -->
+            <div class="portal-card student-portal" onclick="openPortal('student')">
+                <div class="portal-icon"><i class="fas fa-graduation-cap"></i></div>
+                <h2 data-i18n-portal="studentTitle">🎓 بوابة الطالب</h2>
+                <p data-i18n-portal="studentDesc">Your 4 Pillars: Library, Orders, Tracking, Upload</p>
+                <div class="portal-features">
+                    <span class="feature-tag">📚 <span data-i18n-portal="fLibrary">المكتبة</span></span>
+                    <span class="feature-tag">📦 <span data-i18n-portal="fOrders">طلباتي</span></span>
+                    <span class="feature-tag">🚚 <span data-i18n-portal="fTracking">التتبع</span></span>
+                    <span class="feature-tag">📤 <span data-i18n-portal="fUpload">رفع ملفات</span></span>
+                </div>
+                <button class="portal-btn gold"><i class="fas fa-user-graduate"></i> <span data-i18n-portal="enterStudent">دخول الطالب</span></button>
+            </div>
+            
+            <!-- 📚 TEACHER PORTAL -->
+            <div class="portal-card teacher-portal" onclick="openPortal('teacher')">
+                <div class="portal-icon"><i class="fas fa-chalkboard-teacher"></i></div>
+                <h2 data-i18n-portal="teacherTitle">📚 Teacher Portal</h2>
+                <p data-i18n-portal="teacherDesc">Upload lectures - Manage students</p>
+                <button class="portal-btn"><i class="fas fa-sign-in-alt"></i> Enter</button>
+            </div>
+            
+            <!-- 🎨 DESIGNER PORTAL -->
+            <div class="portal-card designer-portal" onclick="openPortal('designer')">
+                <div class="portal-icon"><i class="fas fa-palette"></i></div>
+                <h2 data-i18n-portal="designerTitle">🎨 Designer Studio</h2>
+                <p data-i18n-portal="designerDesc">Custom designs - Portfolio</p>
+                <button class="portal-btn"><i class="fas fa-sign-in-alt"></i> Enter</button>
+            </div>
+            
+            <!-- 📖 PUBLISHER PORTAL -->
+            <div class="portal-card publisher-portal" onclick="openPortal('publisher')">
+                <div class="portal-icon"><i class="fas fa-book-open"></i></div>
+                <h2 data-i18n-portal="publisherTitle">📖 Publisher Portal</h2>
+                <p data-i18n-portal="publisherDesc">Manage books - View profits</p>
+                <button class="portal-btn"><i class="fas fa-sign-in-alt"></i> Enter</button>
+            </div>
+            
+            <!-- 🌐 LIBRARY PORTAL -->
+            <div class="portal-card library-portal" onclick="openPortal('library')">
+                <div class="portal-icon"><i class="fas fa-landmark"></i></div>
+                <h2 data-i18n-portal="libraryTitle">🌍 Global Library</h2>
+                <p data-i18n-portal="libraryDesc">All books - Translations</p>
+                <button class="portal-btn"><i class="fas fa-sign-in-alt"></i> Enter</button>
+            </div>
+            
+            <!-- 🤖 AI PORTAL -->
+            <div class="portal-card ai-portal" onclick="openPortal('ai')">
+                <div class="portal-icon"><i class="fas fa-robot"></i></div>
+                <h2 data-i18n-portal="aiTitle">🤖 AI Center</h2>
+                <p data-i18n-portal="aiDesc">Analytics - Predictions</p>
+                <button class="portal-btn"><i class="fas fa-sign-in-alt"></i> Enter</button>
+            </div>
+            
+            <!-- 🚚 DELIVERY PORTAL -->
+            <div class="portal-card delivery-portal" onclick="openPortal('delivery')">
+                <div class="portal-icon"><i class="fas fa-truck"></i></div>
+                <h2 data-i18n-portal="deliveryTitle">🚚 Delivery Portal</h2>
+                <p data-i18n-portal="deliveryDesc">GPS - Live map</p>
+                <button class="portal-btn"><i class="fas fa-sign-in-alt"></i> Enter</button>
+            </div>
+            
+            <!-- 👑 ADMIN PORTAL -->
+            <div class="portal-card admin-portal" onclick="openPortal('admin')">
+                <div class="portal-icon"><i class="fas fa-crown"></i></div>
+                <h2 data-i18n-portal="adminTitle">👑 Sovereign Control</h2>
+                <p data-i18n-portal="adminDesc">Full control - Financial radar</p>
+                <button class="portal-btn gold"><i class="fas fa-crown"></i> Enter</button>
+            </div>
+            
+            <!-- 👤 GUEST PORTAL -->
+            <div class="portal-card guest-portal" onclick="openPortal('guest')">
+                <div class="portal-icon"><i class="fas fa-user-secret"></i></div>
+                <h2 data-i18n-portal="guestTitle">👤 Guest Portal</h2>
+                <p data-i18n-portal="guestDesc">Browse only</p>
+                <button class="portal-btn"><i class="fas fa-sign-in-alt"></i> Enter</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== STUDENT PORTAL (4 PILLARS) ==================== -->
+    <div id="studentPortal" class="student-portal-page">
+        <div class="student-header glass-panel">
+            <div class="student-header-left">
+                <button class="back-gate-btn" onclick="showPortal()">
+                    <i class="fas fa-arrow-right"></i> <span data-i18n="common.back">رجوع</span>
+                </button>
+                <div class="hero-logo small">T</div>
+                <h1 data-i18n-portal="studentDash">بوابة الطالب</h1>
+            </div>
+            <div class="student-wallet glass-panel">
+                <i class="fas fa-wallet"></i>
+                <span class="wallet-label" data-i18n="wallet.balance">الرصيد:</span>
+                <span class="wallet-amount" id="studentBalance">0 IQD</span>
+            </div>
+        </div>
+        
+        <!-- The 4 Pillars -->
+        <div class="four-pillars">
+            <!-- Pillar 1: Global Library -->
+            <div class="pillar-card glass-panel" id="pillarLibrary">
+                <div class="pillar-icon"><i class="fas fa-book-open-reader"></i></div>
+                <h2 data-i18n-portal="p1Title">📚 المكتبة العالمية</h2>
+                <p data-i18n-portal="p1Desc">تصفح واشترِ الكتب والمحاضرات</p>
+                <div class="pillar-stats">
+                    <span><i class="fas fa-books"></i> <span id="libraryBooks">0</span> كتاب</span>
+                    <span><i class="fas fa-video"></i> <span id="libraryLectures">0</span> محاضرة</span>
+                </div>
+                <button class="pillar-btn" onclick="studentViewLibrary()">
+                    <i class="fas fa-arrow-left"></i> <span data-i18n-portal="browse">تصفح المكتبة</span>
+                </button>
+            </div>
+            
+            <!-- Pillar 2: My Orders -->
+            <div class="pillar-card glass-panel" id="pillarOrders">
+                <div class="pillar-icon"><i class="fas fa-boxes-stacked"></i></div>
+                <h2 data-i18n-portal="p2Title">📦 طلباتي</h2>
+                <p data-i18n-portal="p2Desc">تتبع حالة طلباتك من الطباعة للتسليم</p>
+                <div class="order-status-list">
+                    <div class="status-item">
+                        <span class="status-dot pending"></span>
+                        <span data-i18n-portal="pending">معلق</span>
+                        <span class="status-count" id="ordersPending">0</span>
+                    </div>
+                    <div class="status-item">
+                        <span class="status-dot printing"></span>
+                        <span data-i18n-portal="printing">قيد الطباعة</span>
+                        <span class="status-count" id="ordersPrinting">0</span>
+                    </div>
+                    <div class="status-item">
+                        <span class="status-dot shipped"></span>
+                        <span data-i18n-portal="shipped">شحن</span>
+                        <span class="status-count" id="ordersShipped">0</span>
+                    </div>
+                    <div class="status-item">
+                        <span class="status-dot delivered"></span>
+                        <span data-i18n-portal="delivered">تم التسليم</span>
+                        <span class="status-count" id="ordersDelivered">0</span>
+                    </div>
+                </div>
+                <button class="pillar-btn" onclick="studentViewOrders()">
+                    <i class="fas fa-list"></i> <span data-i18n-portal="viewOrders">عرض الطلبات</span>
+                </button>
+            </div>
+            
+            <!-- Pillar 3: Live Tracking -->
+            <div class="pillar-card glass-panel" id="pillarTracking">
+                <div class="pillar-icon"><i class="fas fa-map-location-dot"></i></div>
+                <h2 data-i18n-portal="p3Title">🚚 تتبع التوصيل</h2>
+                <p data-i18n-portal="p3Desc">GPS مباشر لحالة التوصيل في العراق</p>
+                <div class="tracking-preview">
+                    <div id="trackingMapSmall" style="height: 150px; border-radius: 12px;"></div>
+                </div>
+                <button class="pillar-btn" onclick="studentViewTracking()">
+                    <i class="fas fa-location-dot"></i> <span data-i18n-portal="openMap">فتح الخريطة</span>
+                </button>
+            </div>
+            
+            <!-- Pillar 4: Upload Center -->
+            <div class="pillar-card glass-panel" id="pillarUpload">
+                <div class="pillar-icon"><i class="fas fa-cloud-arrow-up"></i></div>
+                <h2 data-i18n-portal="p4Title">📤 مركز الرفع</h2>
+                <p data-i18n-portal="p4Desc">ارفع ملفاتك للطباعة المخصصة</p>
+                
+                <!-- Price Calculator -->
+                <div class="price-calculator glass-panel">
+                    <h4><i class="fas fa-calculator"></i> <span data-i18n-portal="priceCalc">حاسبة السعر</span></h4>
+                    <div class="calc-row">
+                        <label data-i18n-portal="pages">عدد الصفحات:</label>
+                        <input type="number" id="calcPages" value="1" min="1" onchange="calculatePrice()">
+                    </div>
+                    <div class="calc-row">
+                        <label data-i18n-portal="copies">عدد النسخ:</label>
+                        <input type="number" id="calcCopies" value="1" min="1" onchange="calculatePrice()">
+                    </div>
+                    <div class="calc-row">
+                        <label data-i18n-portal="paperType">نوع الورق:</label>
+                        <select id="calcPaper" onchange="calculatePrice()">
+                            <option value="a4" data-i18n-portal="a4">A4 عادي</option>
+                            <option value="a4glossy" data-i18n-portal="a4glossy">A4 لامع</option>
+                            <option value="a3" data-i18n-portal="a3">A3</option>
+                        </select>
+                    </div>
+                    <div class="calc-result">
+                        <span data-i18n-portal="totalPrice">السعر الكلي:</span>
+                        <span class="price-result" id="totalPrice">500 IQD</span>
+                    </div>
+                </div>
+                
+                <div class="upload-zone" id="uploadZone">
+                    <input type="file" id="studentFileUpload" accept=".pdf,.doc,.docx,.jpg,.png" style="display:none">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <p data-i18n-portal="dropFiles">أسقط الملفات هنا أو اضغط للرفع</p>
+                    <span class="upload-hint">PDF, DOC, JPG, PNG</span>
+                </div>
+                <button class="pillar-btn gold" onclick="submitStudentFile()">
+                    <i class="fas fa-paper-plane"></i> <span data-i18n-portal="submitFile">إرسال للطباعة</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== MODALS ==================== -->
+    
+    <!-- Deposit Modal - Iraqi Market Financial Engine -->
+    <div id="depositModal" class="modal fullscreen-modal">
+        <div class="modal-content modal-large glass-panel">
+            <span class="modal-close" onclick="closeModal('depositModal')">&times;</span>
+            <h2><i class="fas fa-plus-circle gold-text"></i> <span data-i18n="wallet.deposit">إيداع رصيد - الدينار العراقي</span></h2>
+            <form id="depositForm" onsubmit="handleDeposit(event)">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label><i class="fas fa-coins gold-icon"></i> المبلغ بالدينار العراقي (IQD)</label>
+                        <input type="number" id="depositAmount" placeholder="مثال: 50000" required>
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-money-bill-wave gold-icon"></i> العملة</label>
+                        <select id="depositCurrency">
+                            <option value="IQD" selected>🇮🇶 IQD - الدينار العراقي</option>
+                            <option value="USD">🇺🇸 USD - الدولار</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label><i class="fas fa-mobile-alt gold-icon"></i> رقم Zain Cash</label>
+                        <input type="text" id="zainNumber" placeholder="07XX XXX XXXX">
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-hashtag gold-icon"></i> رقم المعاملة / الحوالة</label>
+                        <input type="text" id="transactionRef" placeholder="رقم الحوالة أو المرجع">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-image gold-icon"></i> صورة الإيصال / الوصل</label>
+                    <input type="file" id="receiptImage" accept="image/*,.pdf" required>
+                </div>
+                <div class="form-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="useOCR"> <i class="fas fa-scan gold-icon"></i> استخراج المرجع تلقائياً عبر OCR
+                    </label>
+                </div>
+                <button type="submit" class="submit-btn gold-btn"><i class="fas fa-paper-plane"></i> إرسال للإدارة</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Withdraw Modal - Iraqi Market -->
+    <div id="withdrawModal" class="modal fullscreen-modal">
+        <div class="modal-content modal-large glass-panel">
+            <span class="modal-close" onclick="closeModal('withdrawModal')">&times;</span>
+            <h2><i class="fas fa-wallet withdraw"></i> <span data-i18n="wallet.withdraw">سحب رصيد - الدينار العراقي</span></h2>
+            <form id="withdrawForm" onsubmit="handleWithdraw(event)">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label><i class="fas fa-coins gold-icon"></i> المبلغ بالدينار العراقي (IQD)</label>
+                        <input type="number" id="withdrawAmount" placeholder="مثال: 50000" required>
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-money-bill-wave gold-icon"></i> العملة</label>
+                        <select id="withdrawCurrency">
+                            <option value="IQD" selected>🇮🇶 IQD - الدينار العراقي</option>
+                            <option value="USD">🇺🇸 USD - الدولار</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-hand-holding-usd gold-icon"></i> طريقة الاستلام</label>
+                    <select id="withdrawMethod" required>
+                        <option value="zain">📱 Zain Cash</option>
+                        <option value="asiago">📱 Asia SDF</option>
+                        <option value="iraqino">📱 Iraqino</option>
+                        <option value="bank">🏦 تحويل بنكي</option>
+                        <option value="cash">💵 نقداً</option>
+                    </select>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label><i class="fas fa-phone-alt gold-icon"></i> رقم الهاتف</label>
+                        <input type="text" id="withdrawPhone" placeholder="07XX XXX XXXX" required>
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-credit-card gold-icon"></i> رقم البطاقة / الحساب</label>
+                        <input type="text" id="withdrawDetails" placeholder="رقم البطاقة أو الحساب">
+                    </div>
+                </div>
+                <button type="submit" class="submit-btn gold-btn"><i class="fas fa-paper-plane"></i> طلب السحب</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div id="toastContainer" class="toast-container"></div>
+
+    <!-- ==================== MOBILE BOTTOM NAVIGATION ==================== -->
+    <nav class="bottom-nav" id="bottomNav">
+        <button class="bottom-nav-item active" onclick="navigateTo('dashboard')">
+            <i class="fas fa-home"></i>
+            <span>الرئيسية</span>
+        </button>
+        <button class="bottom-nav-item" onclick="navigateTo('wallet')">
+            <i class="fas fa-wallet"></i>
+            <span>المحفظة</span>
+        </button>
+        <button class="bottom-nav-item" onclick="navigateTo('library')">
+            <i class="fas fa-book"></i>
+            <span>المكتبة</span>
+        </button>
+        <button class="bottom-nav-item" onclick="navigateTo('orders')">
+            <i class="fas fa-box"></i>
+            <span>طلباتي</span>
+        </button>
+        <button class="bottom-nav-item" onclick="showPortal()">
+            <i class="fas fa-th"></i>
+            <span>المزيد</span>
+        </button>
+    </nav>
+
+    <!-- Leaflet Maps Script -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    
+    <!-- i18n Multi-language Support -->
+    <script src="i18n.js"></script>
+    
+    <!-- App Scripts - Modular -->
+    <script src="app.js"></script>
+    <script src="js/modules/StudentPortal.js"></script>
+</body>
+</html>

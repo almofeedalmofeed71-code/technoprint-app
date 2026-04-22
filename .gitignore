@@ -1,0 +1,30 @@
+# Dependencies
+node_modules/
+
+# Environment variables (keep template)
+.env.example
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Uploads (keep structure, not files)
+uploads/*
+!uploads/.gitkeep
+
+# Build outputs
+dist/
+build/
+
+# Temp files
+tmp/
+temp/

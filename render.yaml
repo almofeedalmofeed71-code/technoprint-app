@@ -1,0 +1,21 @@
+# TECHOPRINT 2026 - Render.com Deployment Blueprint
+# Connect this file to Render.com via GitHub
+
+services:
+  - type: web
+    name: techoprint-2026
+    runtime: node
+    region: frankfurt
+    plan: free
+    buildCommand: npm install
+    startCommand: node server.js
+    healthCheckPath: /
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3000
+      - key: JWT_SECRET
+        generateValue: true
+      - key: MONGODB_URI
+        sync: false
