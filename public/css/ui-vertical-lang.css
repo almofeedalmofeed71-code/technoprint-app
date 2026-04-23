@@ -1,0 +1,21 @@
+/* TECHOPRINT 2026 - UI VERTICAL LANG */
+/* Far Right Language Sidebar */
+
+.vertical-lang-sidebar {
+    position: fixed;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 12px 10px;
+    background: rgba(10, 10, 11, 0.9);
+    border-radius: 25px;
+    border: 1px solid rgba(212, 175, 55, 0.3);
+}
+
+html[dir="ltr"] .vertical-lang-sidebar { right: auto; left: 15px; }
+
+.vert-lang-btn { cursor: pointer; }

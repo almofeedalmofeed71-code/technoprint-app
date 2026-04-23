@@ -1,0 +1,69 @@
+/* TECHOPRINT 2026 - UI CARDS */
+/* Ad Cards & Portal Cards - Under 100 Lines */
+
+/* Portal Card */
+.portal-card {
+    flex: 0 0 280px;
+    height: 380px;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    position: relative;
+    cursor: pointer;
+    transition: transform var(--transition-normal);
+}
+
+.portal-card:hover {
+    transform: translateY(-10px);
+}
+
+.portal-bg {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-size: cover;
+    background-position: center;
+    filter: brightness(0.6);
+}
+
+.portal-card:hover .portal-bg { filter: brightness(0.7); }
+
+.portal-overlay {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: linear-gradient(180deg, transparent 40%, rgba(10,10,11,0.95) 100%);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 25px;
+}
+
+.portal-icon { font-size: 3.5rem; margin-bottom: 15px; }
+.portal-title { font-family: 'Amiri'; font-size: 1.6rem; font-weight: 700; color: var(--gold-royal); }
+.portal-desc { font-size: 0.85rem; opacity: 0.8; line-height: 1.5; }
+
+/* Ad Card */
+.ad-card {
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    position: relative;
+    cursor: pointer;
+    transition: transform var(--transition-normal);
+}
+
+.ad-card:hover { transform: scale(1.02); }
+.ad-card img { width: 100%; height: 100%; object-fit: cover; }
+
+.ad-overlay {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    padding: 10px 8px 8px;
+    background: linear-gradient(transparent, rgba(0,0,0,0.9));
+}
+
+.ad-title { font-size: 0.8rem; font-weight: 600; margin: 0; }
+.ad-subtitle { font-size: 0.65rem; opacity: 0.8; margin: 2px 0 0; }
+
+@media (max-width: 768px) {
+    .portal-card { flex: 0 0 240px; height: 320px; }
+    .portal-icon { font-size: 2.5rem; }
+    .portal-title { font-size: 1.3rem; }
+}

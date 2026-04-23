@@ -8,22 +8,13 @@ const Main = {
         console.log(`[MAIN] TECHOPRINT ${this.version} Loading...`);
         
         // Phase 1: Core Engines
-        I18n.init();
-        console.log('[MAIN] ✓ I18n Engine');
+        if (window.I18n) { I18n.init(); console.log('[MAIN] ✓ I18n Engine'); }
+        if (window.Auth) { Auth.init(); console.log('[MAIN] ✓ Auth Engine'); }
+        if (window.Nav) { Nav.init(); console.log('[MAIN] ✓ Nav Engine'); }
+        if (window.Slider) { Slider.init(); console.log('[MAIN] ✓ Slider Engine'); }
+        if (window.Events) { Events.init(); console.log('[MAIN] ✓ Events Engine'); }
         
-        // Phase 2: Auth
-        Auth.init();
-        console.log('[MAIN] ✓ Auth Engine');
-        
-        // Phase 3: Navigation
-        Nav.init();
-        console.log('[MAIN] ✓ Nav Engine');
-        
-        // Phase 4: Slider
-        Slider.init();
-        console.log('[MAIN] ✓ Slider Engine');
-        
-        // Phase 5: Splash Flow
+        // Phase 2: Splash Flow
         this.initSplash();
     },
     
@@ -82,7 +73,7 @@ const Main = {
         const app = document.getElementById('app');
         if (mp) mp.style.display = 'none';
         if (app) app.style.display = 'flex';
-        Nav.go('dashboard');
+        if (window.Nav) Nav.go('dashboard');
     }
 };
 

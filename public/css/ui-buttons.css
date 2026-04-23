@@ -1,0 +1,84 @@
+/* TECHOPRINT 2026 - UI BUTTONS */
+/* All Button Styles - Under 100 Lines */
+
+.portal-btn {
+    padding: 12px 24px;
+    border-radius: 25px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition-normal);
+    border: 2px solid var(--gold-royal);
+    background: transparent;
+    color: var(--gold-royal);
+}
+
+.portal-btn:hover {
+    background: var(--gold-royal);
+    color: var(--bg-cosmic);
+}
+
+.portal-btn.gold {
+    background: var(--gold-royal);
+    color: var(--bg-cosmic);
+}
+
+.portal-btn.gold:hover {
+    background: var(--gold-light);
+    border-color: var(--gold-light);
+}
+
+/* Arrow Button */
+.portal-arrow {
+    position: absolute;
+    bottom: 25px;
+    left: 25px;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    background: var(--gold-royal);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    color: var(--bg-cosmic);
+    cursor: pointer;
+}
+
+/* Close Button */
+.modal-close {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+.modal-close:hover { color: var(--gold-royal); }
+
+/* Language Button */
+.vert-lang-btn {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all var(--transition-normal);
+    border: 2px solid rgba(212, 175, 55, 0.3);
+    background: rgba(20, 20, 25, 0.9);
+    font-size: 1.3rem;
+}
+
+.vert-lang-btn:hover {
+    transform: scale(1.1);
+    border-color: var(--gold-royal);
+}
+
+.vert-lang-btn.active {
+    background: linear-gradient(135deg, var(--gold-dark), var(--gold-royal));
+    border-color: var(--gold-light);
+}
