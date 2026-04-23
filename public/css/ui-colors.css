@@ -1,15 +1,9 @@
 /* TECHOPRINT 2026 - COLORS */
-/* Gold/Black Empire - NO WHITE */
-
 :root { --gold: #D4AF37; --gold-light: #F4E4BA; --black: #000000; --dark: #0a0a0f; }
-
 body { background-color: #000000 !important; color: #ffffff; margin: 0; padding: 0; }
-
 @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
 .slider-frame { position: relative; background: #000000; border: 3px solid #D4AF37; border-radius: 15px; overflow: hidden; }
 .slider-frame::before { content: ''; position: absolute; inset: -3px; border-radius: 15px; background: linear-gradient(45deg, #D4AF37, #F4E4BA, #D4AF37, #F4E4BA); animation: spin 4s linear infinite; z-index: -1; }
-
 .modal { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.9); display: flex; align-items: center; justify-content: center; z-index: 99999; }
 .modal-box { background: var(--dark); border: 2px solid var(--gold); border-radius: 20px; padding: 30px; max-width: 400px; width: 90%; }
 .modal-close { position: absolute; top: 10px; left: 10px; background: transparent; border: none; color: var(--gold); font-size: 1.5rem; cursor: pointer; }

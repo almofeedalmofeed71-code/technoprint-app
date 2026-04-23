@@ -6,16 +6,15 @@
     <title>TECHOPRINT 2026</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- CSS ORDER -->
     <link rel="stylesheet" href="css/ui-colors.css">
     <link rel="stylesheet" href="css/ui-glass.css">
     <link rel="stylesheet" href="css/ui-ads-slider.css">
+    <link rel="stylesheet" href="css/ui-vertical-lang.css">
     <link rel="stylesheet" href="css/ui-header.css">
     <link rel="stylesheet" href="css/ui-buttons.css">
     <link rel="stylesheet" href="css/ui-cards.css">
     <link rel="stylesheet" href="css/ui-inputs.css">
     <link rel="stylesheet" href="css/ui-modals.css">
-    <link rel="stylesheet" href="css/ui-vertical-lang.css">
     <link rel="stylesheet" href="css/slider-ui.css">
     <link rel="stylesheet" href="css/student-portal.css">
     <link rel="stylesheet" href="css/animations.css">
@@ -25,7 +24,6 @@
     <div id="splash" class="splash">
         <div class="splash-logo">T</div>
         <p class="splash-text">TECHOPRINT 2026</p>
-        <p class="splash-welcome">Welcome to Techoprint 2026</p>
     </div>
 
     <header class="app-header">
@@ -34,18 +32,12 @@
             <span class="brand-name">TECHOPRINT</span>
         </div>
         <div class="header-actions">
-            <div class="header-notif" onclick="showNotification()">
-                <i class="fas fa-bell"></i>
-                <span class="notif-badge">3</span>
-            </div>
-            <div class="header-wallet" onclick="Nav.go('wallet')">
-                <i class="fas fa-wallet"></i>
-                <span id="headerBalance">0 IQD</span>
-            </div>
+            <div class="header-notif" onclick="showNotification()"><i class="fas fa-bell"></i><span class="notif-badge">3</span></div>
+            <div class="header-wallet" onclick="Nav.go('wallet')"><i class="fas fa-wallet"></i><span id="headerBalance">0 IQD</span></div>
         </div>
     </header>
 
-    <nav id="language-bar" class="language-bar">
+    <nav class="language-bar">
         <button class="lang-btn active" onclick="I18n.set('ar')">عربي</button>
         <button class="lang-btn" onclick="I18n.set('ku')">کوردی</button>
         <button class="lang-btn" onclick="I18n.set('en')">English</button>
@@ -54,13 +46,17 @@
     <section class="slider-section">
         <div class="slider-frame">
             <div class="slider-container">
-                <div class="slide">
+                <div class="slide" style="display:grid;">
                     <div class="slide-block"><img src="https://picsum.photos/400/300?random=1" alt="Ad 1"></div>
                     <div class="slide-block"><img src="https://picsum.photos/400/300?random=2" alt="Ad 2"></div>
                     <div class="slide-block"><img src="https://picsum.photos/400/300?random=3" alt="Ad 3"></div>
+                </div>
+                <div class="slide">
                     <div class="slide-block"><img src="https://picsum.photos/400/300?random=4" alt="Ad 4"></div>
                     <div class="slide-block"><img src="https://picsum.photos/400/300?random=5" alt="Ad 5"></div>
                     <div class="slide-block"><img src="https://picsum.photos/400/300?random=6" alt="Ad 6"></div>
+                </div>
+                <div class="slide">
                     <div class="slide-block"><img src="https://picsum.photos/400/300?random=7" alt="Ad 7"></div>
                     <div class="slide-block"><img src="https://picsum.photos/400/300?random=8" alt="Ad 8"></div>
                     <div class="slide-block"><img src="https://picsum.photos/400/300?random=9" alt="Ad 9"></div>
@@ -74,45 +70,18 @@
         </div>
     </section>
 
-    <section id="dashboard" class="dashboard-section">
+    <section id="dashboardSection" class="dashboard-section">
         <h2 class="section-title">لوحة التحكم</h2>
         <div class="service-grid">
-            <div class="service-card" onclick="Nav.go('orders')">
-                <div class="service-icon">📦</div>
-                <p class="service-title">طلباتي</p>
-            </div>
-            <div class="service-card" onclick="Nav.go('wallet')">
-                <div class="service-icon">💰</div>
-                <p class="service-title">المحفظة</p>
-            </div>
-            <div class="service-card" onclick="Nav.go('library')">
-                <div class="service-icon">📚</div>
-                <p class="service-title">المكتبة</p>
-            </div>
-            <div class="service-card" onclick="Nav.go('tracking')">
-                <div class="service-icon">📍</div>
-                <p class="service-title">التتبع</p>
-            </div>
-            <div class="service-card" onclick="Nav.go('printing')">
-                <div class="service-icon">🖨️</div>
-                <p class="service-title">الطباعة</p>
-            </div>
-            <div class="service-card" onclick="Nav.go('support')">
-                <div class="service-icon">🔧</div>
-                <p class="service-title">الدعم</p>
-            </div>
-            <div class="service-card" onclick="Nav.go('teacher')">
-                <div class="service-icon">👨‍🏫</div>
-                <p class="service-title">المعلم</p>
-            </div>
-            <div class="service-card" onclick="Nav.go('inks')">
-                <div class="service-icon">🎨</div>
-                <p class="service-title">الحبر</p>
-            </div>
-            <div class="service-card" onclick="openModal('loginModal')">
-                <div class="service-icon">⚙️</div>
-                <p class="service-title">الإعدادات</p>
-            </div>
+            <div class="service-card" onclick="Nav.go('orders')"><div class="service-icon">📦</div><p class="service-title">طلباتي</p></div>
+            <div class="service-card" onclick="Nav.go('wallet')"><div class="service-icon">💰</div><p class="service-title">المحفظة</p></div>
+            <div class="service-card" onclick="Nav.go('library')"><div class="service-icon">📚</div><p class="service-title">المكتبة</p></div>
+            <div class="service-card" onclick="Nav.go('tracking')"><div class="service-icon">📍</div><p class="service-title">التتبع</p></div>
+            <div class="service-card" onclick="Nav.go('printing')"><div class="service-icon">🖨️</div><p class="service-title">الطباعة</p></div>
+            <div class="service-card" onclick="Nav.go('support')"><div class="service-icon">🔧</div><p class="service-title">الدعم</p></div>
+            <div class="service-card" onclick="Nav.go('teacher')"><div class="service-icon">👨‍🏫</div><p class="service-title">المعلم</p></div>
+            <div class="service-card" onclick="Nav.go('inks')"><div class="service-icon">🎨</div><p class="service-title">الحبر</p></div>
+            <div class="service-card" onclick="openModal('loginModal')"><div class="service-icon">⚙️</div><p class="service-title">الإعدادات</p></div>
         </div>
     </section>
 
@@ -139,7 +108,7 @@
     <section id="ordersSection" class="dashboard-section" style="display:none;">
         <h2 class="section-title">طلباتي</h2>
         <div class="glass-card" style="padding:30px;max-width:600px;margin:20px auto;text-align:center;">
-            <p style="color:#fff;">📦 لا توجد طلبات حالياً</p>
+            <p style="color:#fff;">📦 لا توجد طلبات</p>
         </div>
         <button class="btn-gold" onclick="Nav.go('dashboard')" style="display:block;margin:20px auto;">العودة</button>
     </section>
@@ -228,6 +197,7 @@
     <script src="js/eng-main.js"></script>
     <script src="js/eng-i18n.js"></script>
     <script src="js/eng-navigation.js"></script>
+    <script src="js/eng-slider.js"></script>
     <script src="js/eng-auth.js"></script>
 </body>
 </html>

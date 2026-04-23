@@ -1,74 +1,31 @@
-/* TECHOPRINT 2026 - ENG SLIDER */
-/* 3 Slides x 3 Companies = 9 Total Ads */
+/* TECHOPRINT 2026 - SLIDER ENGINE */
+/* 3 Pages, 3 Ads Each, 4-Second Auto-Transition */
 
-const Slider = {
-    current: 0,
-    companies: [
-        ['شركة النور', 'مطبعة Bagdad', 'دار النشر'],
-        ['تصميم مطبوعات', 'ورق فاخر', 'توصيل سريع'],
-        ['طباعة كتب', 'بروشورات', 'كروت اعمال']
-    ],
-    interval: null,
-    duration: 5000,
+(function() {
+    let currentSlide = 0;
+    const totalSlides = 3;
+    const slideDuration = 4000; // 4 seconds
     
-    init() {
-        this.render();
-        this.bindDots();
-        this.start();
-    },
-    
-    render() {
-        const slideEl = document.querySelector('.slide');
-        if (!slideEl) return;
-        
-        const companies = this.companies[this.current];
-        const startIdx = this.current * 3;
-        
-        slideEl.innerHTML = companies.map((name, i) => {
-            const imgIdx = startIdx + i + 1;
-            return `
-                <div class="slide-block">
-                    <img src="https://picsum.photos/400/300?random=${imgIdx}" alt="${name}">
-                    <div class="company-info">
-                        <p class="company-name">${name}</p>
-                    </div>
-                </div>
-            `;
-        }).join('');
-        
-        document.querySelectorAll('.slider-dot').forEach((dot, i) => {
-            dot.classList.toggle('active', i === this.current);
+    function goToSlide(index) {
+        currentSlide = index;
+        document.querySelectorAll('.slide').forEach(function(s, i) {
+            s.style.display = i === index ? 'grid' : 'none';
         });
-    },
-    
-    start() {
-        this.stop();
-        this.interval = setInterval(() => this.next(), this.duration);
-    },
-    
-    stop() {
-        if (this.interval) {
-            clearInterval(this.interval);
-            this.interval = null;
-        }
-    },
-    
-    next() {
-        this.current = (this.current + 1) % 3;
-        this.render();
-    },
-    
-    go(index) {
-        this.current = index;
-        this.render();
-        this.start();
-    },
-    
-    bindDots() {
-        document.querySelectorAll('.slider-dot').forEach((dot, i) => {
-            dot.onclick = () => this.go(i);
+        document.querySelectorAll('.slider-dot').forEach(function(d, i) {
+            d.classList.toggle('active', i === index);
         });
     }
-};
-
-window.Slider = Slider;
+    
+    function nextSlide() {
+        goToSlide((currentSlide + 1) % totalSlides);
+    }
+    
+    window.addEventListener('load', function() {
+        goToSlide(0);
+        setInterval(nextSlide, slideDuration);
+        
+        document.querySelectorAll('.slider-dot').forEach(function(dot, i) {
+            dot.onclick = function() { goToSlide(i); };
+        });
+    });
+})();

@@ -1,21 +1,17 @@
-/* TECHOPRINT 2026 - ENG NAVIGATION */
-/* Direct DOM binding - NO ALERTS */
+/* TECHOPRINT 2026 - NAVIGATION */
+/* NO ALERTS - Use display flex */
 
 const Nav = {
-    screens: ['dashboard', 'wallet', 'library', 'orders', 'tracking', 'printings', 'support', 'teacher', 'inks'],
+    sections: ['dashboard', 'wallet', 'library', 'orders', 'tracking', 'printing', 'support', 'teacher', 'inks'],
     
     go(page) {
-        // Hide all sections
-        this.screens.forEach(s => {
+        this.sections.forEach(function(s) {
             var el = document.getElementById(s + 'Section');
             if (el) el.style.display = 'none';
         });
-        
-        // Show target section
         var target = document.getElementById(page + 'Section');
         if (target) target.style.display = 'block';
         
-        // Update nav buttons
         document.querySelectorAll('.nav-btn').forEach(function(b) { b.classList.remove('active'); });
         var btn = document.getElementById('nav-' + page);
         if (btn) btn.classList.add('active');
@@ -23,9 +19,8 @@ const Nav = {
 };
 
 window.Nav = Nav;
-window.navigateTo = function(p) { Nav.go(p); };
 
-// Modal functions
+// Modal functions - USE DISPLAY FLEX
 window.openModal = function(id) { var m = document.getElementById(id); if (m) m.style.display = 'flex'; };
 window.closeModal = function(id) { var m = document.getElementById(id); if (m) m.style.display = 'none'; };
 
@@ -39,12 +34,19 @@ window.toggleRegister = function() {
 window.showNotification = function() {
     var m = document.createElement('div');
     m.className = 'modal';
-    m.innerHTML = '<div class="modal-box"><h2>🔔 Notifications</h2><p>📦 New order</p><p>💰 Payment</p></div>';
+    m.innerHTML = '<div class="modal-box"><h2>🔔</h2><p>📦 New order</p><p>💰 Payment</p></div>';
+    m.style.display = 'flex';
     m.onclick = function(e) { if (e.target === m) m.remove(); };
     document.body.appendChild(m);
 };
 
 window.handleRegister = function(form) {
-    Auth.register({ fullName: form.fullName.value, username: form.username.value, email: form.email.value, phone: form.phone.value, governorate: form.governorate.value, address: form.address.value, password: form.password.value });
+    if (window.Auth && Auth.register) Auth.register({
+        fullName: form.fullName.value,
+        username: form.username.value,
+        email: form.email.value,
+        phone: form.phone.value,
+        password: form.password.value
+    });
     return false;
 };
