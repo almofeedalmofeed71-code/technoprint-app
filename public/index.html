@@ -25,8 +25,8 @@
     <!-- Header -->
     <header class="app-header">
         <div class="brand">
-            <div class="brand-logo">ت</div>
-            <span class="brand-name">TECHOPRINT 2026</span>
+            <div class="brand-logo"></div>
+            <span class="brand-name">TECHOPRINT</span>
         </div>
         <div class="header-wallet" onclick="Nav.go('wallet')">
             <i class="fas fa-wallet"></i>
@@ -182,21 +182,10 @@
     </div>
 
     <!-- Scripts -->
-    <script src="js/i18n.js"></script>
-    <script src="js/main.js"></script>
+    <script src="js/eng-i18n.js"></script>
+    <script src="js/eng-navigation.js"></script>
+    <script src="js/eng-slider.js"></script>
+    <script src="js/eng-auth.js"></script>
     <script src="js/app-init.js"></script>
-    <script>
-    // Emergency fallback - show app immediately
-    (function() {
-        setTimeout(function() {
-            var splash = document.getElementById('splashScreen');
-            var portal = document.getElementById('masterPortal');
-            var app = document.getElementById('app');
-            if (splash) splash.style.display = 'none';
-            if (portal) portal.style.display = 'none';
-            if (app) app.style.display = 'block';
-        }, 500);
-    })();
-    </script>
 </body>
 </html>

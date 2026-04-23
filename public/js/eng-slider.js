@@ -1,14 +1,44 @@
 /* TECHOPRINT 2026 - ENG SLIDER */
-/* 5-Second Auto-Rotate for Ads */
+/* 3 Slides x 3 Companies = 9 Total Ads */
 
 const Slider = {
     current: 0,
+    companies: [
+        ['شركة النور', 'مطبعة Bagdad', 'دار النشر'],
+        ['تصميم مطبوعات', 'ورق فاخر', 'توصيل سريع'],
+        ['طباعة كتب', 'بروشورات', 'كروت اعمال']
+    ],
     interval: null,
     duration: 5000,
     
     init() {
+        this.render();
         this.bindDots();
         this.start();
+    },
+    
+    render() {
+        const slideEl = document.querySelector('.slide');
+        if (!slideEl) return;
+        
+        const companies = this.companies[this.current];
+        const startIdx = this.current * 3;
+        
+        slideEl.innerHTML = companies.map((name, i) => {
+            const imgIdx = startIdx + i + 1;
+            return `
+                <div class="slide-block">
+                    <img src="https://picsum.photos/400/300?random=${imgIdx}" alt="${name}">
+                    <div class="company-info">
+                        <p class="company-name">${name}</p>
+                    </div>
+                </div>
+            `;
+        }).join('');
+        
+        document.querySelectorAll('.slider-dot').forEach((dot, i) => {
+            dot.classList.toggle('active', i === this.current);
+        });
     },
     
     start() {
@@ -24,25 +54,18 @@ const Slider = {
     },
     
     next() {
-        const dots = document.querySelectorAll('.slider-dot, .ads-dot');
-        if (!dots.length) return;
-        dots[this.current].classList.remove('active');
-        this.current = (this.current + 1) % dots.length;
-        dots[this.current].classList.add('active');
+        this.current = (this.current + 1) % 3;
+        this.render();
     },
     
     go(index) {
-        const dots = document.querySelectorAll('.slider-dot, .ads-dot');
-        if (!dots.length || index < 0 || index >= dots.length) return;
-        dots[this.current].classList.remove('active');
         this.current = index;
-        dots[this.current].classList.add('active');
+        this.render();
         this.start();
     },
     
     bindDots() {
-        document.querySelectorAll('.slider-dot, .ads-dot').forEach((dot, i) => {
-            dot.style.cursor = 'pointer';
+        document.querySelectorAll('.slider-dot').forEach((dot, i) => {
             dot.onclick = () => this.go(i);
         });
     }

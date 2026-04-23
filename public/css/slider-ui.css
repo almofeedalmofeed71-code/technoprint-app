@@ -1,5 +1,5 @@
 /* TECHOPRINT 2026 - SLIDER */
-/* Central Ad Slider */
+/* 3x3 Ad Grid: 3 slides, 3 companies each */
 
 .slider-section {
     padding: 20px;
@@ -9,52 +9,66 @@
 
 .slider-container {
     width: 100%;
-    aspect-ratio: 16/9;
     overflow: hidden;
-    border-radius: 20px;
-    border: 2px solid var(--gold-royal);
-    box-shadow: var(--shadow-gold);
+    border-radius: 15px;
+    border: 2px solid #D4AF37;
+    box-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
+    background: #0a0a0f;
 }
 
 .slide {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    grid-template-rows: repeat(3, 1fr);
-    gap: 5px;
-    width: 100%;
-    height: 100%;
-    background: var(--bg-dark);
+    gap: 15px;
+    padding: 15px;
+    min-height: 280px;
 }
 
 .slide-block {
+    background: rgba(255,255,255,0.05);
+    border-radius: 12px;
     overflow: hidden;
-    position: relative;
+    border: 1px solid rgba(212, 175, 55, 0.3);
+    display: flex;
+    flex-direction: column;
 }
 
 .slide-block img {
     width: 100%;
-    height: 100%;
+    height: 140px;
     object-fit: cover;
 }
 
-.slider-nav {
+.slide-block .company-info {
+    padding: 10px;
+    text-align: center;
+}
+
+.slide-block .company-name {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #D4AF37;
+    margin: 0;
+}
+
+.slide-nav {
     display: flex;
     justify-content: center;
-    gap: 8px;
+    gap: 10px;
     margin-top: 15px;
 }
 
 .slider-dot {
-    width: 10px;
-    height: 10px;
+    width: 12px;
+    height: 12px;
     border-radius: 50%;
-    background: var(--gold-dark);
-    border: 1px solid var(--gold-royal);
+    background: rgba(212, 175, 55, 0.3);
+    border: 2px solid #D4AF37;
     cursor: pointer;
     transition: all 0.3s ease;
 }
 
 .slider-dot.active {
-    background: var(--gold-royal);
-    box-shadow: var(--shadow-gold);
+    background: #D4AF37;
+    box-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
 }

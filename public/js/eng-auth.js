@@ -1,68 +1,65 @@
-/* TECHOPRINT 2026 - ENG AUTH */
-/* Authentication Logic ONLY */
+/* TECHOPOPRINT 2026 - ENG AUTH */
+/* Registration with Server-side storage */
 
 const Auth = {
-    currentUser: null,
+    API_URL: '/api/auth',
     
-    init() {
-        const saved = localStorage.getItem('tp-user');
-        if (saved) {
-            try { this.currentUser = JSON.parse(saved); } 
-            catch { localStorage.removeItem('tp-user'); }
+    async register(data) {
+        const { fullName, username, password, phone, governorate, address } = data;
+        
+        if (!fullName || !username || !password || !phone) {
+            alert('Please fill all required fields');
+            return false;
         }
-        this.bindForms();
-        this.updateUI();
+        
+        try {
+            const res = await fetch(`${this.API_URL}/register`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ fullName, username, password, phone, governorate, address })
+            });
+            
+            const result = await res.json();
+            
+            if (result.success) {
+                alert('Registration successful!');
+                return true;
+            } else {
+                alert(result.message || 'Registration failed');
+                return false;
+            }
+        } catch (err) {
+            console.error('Register error:', err);
+            alert('Connection error. Please try again.');
+            return false;
+        }
     },
     
-    save() {
-        if (this.currentUser) localStorage.setItem('tp-user', JSON.stringify(this.currentUser));
-        else localStorage.removeItem('tp-user');
-        this.updateUI();
-    },
-    
-    login(email, password) {
-        this.currentUser = { id: Date.now(), email, name: email.split('@')[0], role: 'student', balance: 100000 };
-        this.save();
-        return true;
+    async login(email, password) {
+        try {
+            const res = await fetch(`${this.API_URL}/login`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password })
+            });
+            
+            const result = await res.json();
+            
+            if (result.success) {
+                this.currentUser = result.user;
+                return true;
+            } else {
+                alert(result.message || 'Login failed');
+                return false;
+            }
+        } catch (err) {
+            console.error('Login error:', err);
+            return false;
+        }
     },
     
     logout() {
         this.currentUser = null;
-        this.save();
-        showPortal();
-    },
-    
-    register(data) {
-        this.currentUser = { id: Date.now(), ...data, role: 'student', balance: 0, createdAt: new Date().toISOString() };
-        this.save();
-        return true;
-    },
-    
-    updateBalance(amount) {
-        if (this.currentUser) { this.currentUser.balance = (this.currentUser.balance || 0) + amount; this.save(); }
-    },
-    
-    updateUI() {
-        const u = this.currentUser;
-        const el = (id) => document.getElementById(id);
-        if (u) {
-            if (el('userName')) el('userName').textContent = u.name || 'المستخدم';
-            if (el('userRole')) el('userRole').textContent = u.role === 'admin' ? 'أدمن' : 'طالب';
-            const bal = (u.balance || 0).toLocaleString() + ' IQD';
-            if (el('headerBalance')) el('headerBalance').textContent = bal;
-            if (el('studentBalance')) el('studentBalance').textContent = bal;
-        }
-    },
-    
-    bindForms() {
-        const lf = document.getElementById('loginForm');
-        if (lf) {
-            lf.onsubmit = (e) => { e.preventDefault(); this.login(document.getElementById('loginEmail')?.value, document.getElementById('loginPassword')?.value) && (closeModal('loginModal'), showMainDashboard()); };
-        }
-        const rf = document.getElementById('registerForm');
-        if (rf) {
-            rf.onsubmit = (e) => { e.preventDefault(); this.register({}); closeRegisterPage(); showMainDashboard(); };
-        }
     }
 };
 

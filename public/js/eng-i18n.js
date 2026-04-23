@@ -1,65 +1,110 @@
-/* TECHOPRINT 2026 - ENG I18N ENGINE */
-/* LANGUAGE TRIO: Arabic, Kurdish, English */
+/* TECHOPRINT 2026 - ENG I18N */
+/* Working Language Switcher */
+
+const translations = {
+    ar: {
+        student_gate: 'بوابة الطالب',
+        student_desc: 'ادارة طلباتك ومتابعة الطباعة',
+        wallet_gate: 'المحفظة',
+        wallet_desc: 'ادارة رصيدك وتحويل الاموال',
+        login_gate: 'تسجيل الدخول',
+        login_desc: 'ادخل حسابك او انشئ جديد',
+        my_orders: 'طلباتي',
+        wallet_nav: 'المحفظة',
+        library_nav: 'المكتبة',
+        track_nav: 'التتبع',
+        print_nav: 'الطباعة',
+        support_nav: 'الدعم',
+        teacher_nav: 'المعلم',
+        inks_nav: 'الحبر',
+        settings_nav: 'الاعدادات',
+        home: 'الرئيسية',
+        wallet_btn: 'المحفظة',
+        library_btn: 'المكتبة',
+        orders_btn: 'طلباتي',
+        login_title: 'تسجيل الدخول',
+        login_btn: 'دخول'
+    },
+    ku: {
+        student_gate: 'دروازەی قوتابی',
+        student_desc: 'بەڕێوەبردنی داواکارییەکان',
+        wallet_gate: 'سندووق',
+        wallet_desc: 'بەڕێوەبردنی هاوکێشەکەت',
+        login_gate: 'چوونەژوورەوە',
+        login_desc: 'بچۆ ژوورەوە یان هەژمارێک دروست بکە',
+        my_orders: 'داواکارییەکانم',
+        wallet_nav: 'سندووق',
+        library_nav: 'پەرتووکخانە',
+        track_nav: 'بینین',
+        print_nav: 'چاپکردن',
+        support_nav: 'پشتگری',
+        teacher_nav: 'مامۆستا',
+        inks_nav: 'مرەج',
+        settings_nav: 'ڕێکخستنەکان',
+        home: 'سەرەتا',
+        wallet_btn: 'سندووق',
+        library_btn: 'پەرتووکخانە',
+        orders_btn: 'داواکارییەکان',
+        login_title: 'چوونەژوورەوە',
+        login_btn: 'بچۆ ژوورەوە'
+    },
+    en: {
+        student_gate: 'Student Portal',
+        student_desc: 'Manage your orders and track printing',
+        wallet_gate: 'Wallet',
+        wallet_desc: 'Manage your balance and transfers',
+        login_gate: 'Login',
+        login_desc: 'Sign in or create account',
+        my_orders: 'My Orders',
+        wallet_nav: 'Wallet',
+        library_nav: 'Library',
+        track_nav: 'Track',
+        print_nav: 'Print',
+        support_nav: 'Support',
+        teacher_nav: 'Teacher',
+        inks_nav: 'Inks',
+        settings_nav: 'Settings',
+        home: 'Home',
+        wallet_btn: 'Wallet',
+        library_btn: 'Library',
+        orders_btn: 'My Orders',
+        login_title: 'Login',
+        login_btn: 'Sign In'
+    }
+};
 
 const I18n = {
     current: 'ar',
     
-    dict: {
-        ar: {
-            app: { name: 'TECHOPRINT 2026', loading: 'جاري التحميل...' },
-            nav: { dashboard: 'لوحة التحكم', wallet: 'المحفظة', library: 'المكتبة', orders: 'الطلبات', tracking: 'تتبع الطلب', designer: 'المصممون', maintenance: 'الصيانة', printing: 'الطباعة', inks: 'الحبر' },
-            auth: { login: 'تسجيل الدخول', register: 'إنشاء حساب', logout: 'خروج', email: 'البريد الالكتروني', password: 'كلمة المرور', enter: 'دخول' },
-            wallet: { balance: 'الرصيد', deposit: 'إيداع', withdraw: 'سحب', iqd: 'IQD' },
-            screens: { student: 'بوابة الطالب', teacher: 'بوابة المعلم', maintenance: 'الصيانة', printing: 'الطباعة', inks: 'الحبر', wallet: 'المحفظة' },
-            common: { back: 'رجوع', admin: 'الأدمن', more: 'المزيد', welcome: 'مرحباً بك', home: 'الرئيسية', myOrders: 'طلباتي' }
-        },
-        ku: {
-            app: { name: 'TECHOPRINT 2026', loading: 'بار دەکرێت...' },
-            nav: { dashboard: 'داشبۆرد', wallet: 'سەرف', library: 'پارەگە', orders: 'داواکان', tracking: 'هەڵگر', designer: 'دیزاینەر', maintenance: 'چاککردن', printing: 'پرینت', inks: 'مەرکەز' },
-            auth: { login: 'چوونەژوورەوە', register: 'دروستکردن', logout: 'چوونەدەر', email: 'ئیمەیڵ', password: 'تێپەرە', enter: 'بچۆ ژوورەوە' },
-            wallet: { balance: 'سەرف', deposit: 'پارەدان', withdraw: 'رەوانەکردن', iqd: 'IQD' },
-            screens: { student: 'دروازەی قوتابی', teacher: 'دروازەی مامۆستا', maintenance: 'چاککردن', printing: 'پرینت', inks: 'مەرکەز', wallet: 'سەرف' },
-            common: { back: 'گەڕانەوە', admin: 'بەڕێوبەرایەتی', more: 'زیاتر', welcome: 'بەخێربێیت', home: 'سەرەتا', myOrders: 'داواکانم' }
-        },
-        en: {
-            app: { name: 'TECHOPRINT 2026', loading: 'Loading...' },
-            nav: { dashboard: 'Dashboard', wallet: 'Wallet', library: 'Library', orders: 'Orders', tracking: 'Track Order', designer: 'Designers', maintenance: 'Maintenance', printing: 'Printing', inks: 'Inks' },
-            auth: { login: 'Login', register: 'Create Account', logout: 'Logout', email: 'Email', password: 'Password', enter: 'Enter' },
-            wallet: { balance: 'Balance', deposit: 'Deposit', withdraw: 'Withdraw', iqd: 'IQD' },
-            screens: { student: 'Student Portal', teacher: 'Teacher Portal', maintenance: 'Maintenance', printing: 'Printing', inks: 'Inks', wallet: 'Wallet' },
-            common: { back: 'Back', admin: 'Admin', more: 'More', welcome: 'Welcome', home: 'Home', myOrders: 'My Orders' }
-        }
-    },
-    
     init() {
-        const saved = localStorage.getItem('tp-lang');
-        if (saved && this.dict[saved]) this.current = saved;
-        this.bindButtons();
+        this.apply();
+        document.querySelectorAll('.lang-btn').forEach(btn => {
+            btn.onclick = () => this.set(btn.dataset.lang);
+        });
     },
     
     set(lang) {
-        if (!this.dict[lang]) return;
+        if (!translations[lang]) return;
         this.current = lang;
-        localStorage.setItem('tp-lang', lang);
-        document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+        this.apply();
         document.documentElement.lang = lang;
-        document.querySelectorAll('.lang-btn, .vert-lang-btn').forEach(b => {
-            b.classList.toggle('active', b.dataset.lang === lang);
+        document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+        document.querySelectorAll('.lang-btn').forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.lang === lang);
+        });
+    },
+    
+    apply() {
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+            const key = el.dataset.i18n;
+            if (translations[this.current][key]) {
+                el.textContent = translations[this.current][key];
+            }
         });
     },
     
     t(key) {
-        const k = key.split('.');
-        let val = this.dict[this.current];
-        for (const x of k) { if (val && val[x]) val = val[x]; else return key; }
-        return val;
-    },
-    
-    bindButtons() {
-        document.querySelectorAll('.lang-btn[data-lang], .vert-lang-btn[data-lang]').forEach(btn => {
-            btn.style.cursor = 'pointer';
-            btn.onclick = () => this.set(btn.dataset.lang);
-        });
+        return translations[this.current][key] || key;
     }
 };
 
