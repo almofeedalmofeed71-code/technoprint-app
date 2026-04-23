@@ -45,6 +45,44 @@
     letter-spacing: 1px;
 }
 
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.header-notif {
+    position: relative;
+    padding: 8px;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.header-notif:hover {
+    transform: scale(1.1);
+}
+
+.header-notif i {
+    font-size: 1.2rem;
+    color: #D4AF37;
+}
+
+.notif-badge {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    background: #e74c3c;
+    color: white;
+    font-size: 0.65rem;
+    font-weight: bold;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 .header-wallet {
     display: flex;
     align-items: center;

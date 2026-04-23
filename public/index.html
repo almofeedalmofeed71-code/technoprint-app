@@ -28,9 +28,15 @@
             <div class="brand-logo"></div>
             <span class="brand-name">TECHOPRINT</span>
         </div>
-        <div class="header-wallet" onclick="Nav.go('wallet')">
-            <i class="fas fa-wallet"></i>
-            <span id="headerBalance">0 IQD</span>
+        <div class="header-actions">
+            <div class="header-notif" onclick="showNotification()">
+                <i class="fas fa-bell"></i>
+                <span class="notif-badge">3</span>
+            </div>
+            <div class="header-wallet" onclick="Nav.go('wallet')">
+                <i class="fas fa-wallet"></i>
+                <span id="headerBalance">0 IQD</span>
+            </div>
         </div>
     </header>
 
@@ -199,8 +205,9 @@
 
     <!-- Splash Screen -->
     <div id="splashScreen" class="splash">
-        <div class="splash-logo">ت</div>
+        <div class="splash-logo">T</div>
         <p class="splash-text">TECHOPRINT 2026</p>
+        <p class="splash-welcome">Welcome to the Empire</p>
     </div>
 
     <!-- Preloader -->

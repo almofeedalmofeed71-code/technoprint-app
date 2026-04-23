@@ -1,5 +1,5 @@
 /* TECHOPRINT 2026 - SLIDER */
-/* 3x3 Ad Grid: 3 slides, 3 companies each */
+/* 3x3 Ad Grid with Animated Borders */
 
 .slider-section {
     padding: 20px;
@@ -14,6 +14,34 @@
     border: 2px solid #D4AF37;
     box-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
     background: #0a0a0f;
+    position: relative;
+}
+
+/* Animated Golden Border */
+.slider-container::before {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    border-radius: 17px;
+    background: linear-gradient(45deg, #D4AF37, #F4E4BA, #D4AF37, #F4E4BA, #D4AF37);
+    background-size: 400% 400%;
+    animation: borderGlow 3s ease infinite;
+    z-index: -1;
+}
+
+@keyframes borderGlow {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+@keyframes pulseGlow {
+    0%, 100% { box-shadow: 0 0 20px rgba(212, 175, 55, 0.3); }
+    50% { box-shadow: 0 0 40px rgba(212, 175, 55, 0.6); }
+}
+
+.slider-container {
+    animation: pulseGlow 2s ease-in-out infinite;
 }
 
 .slide {
@@ -68,7 +96,7 @@
     transition: all 0.3s ease;
 }
 
-.slider-dot.active {
+.slider-dot:hover, .slider-dot.active {
     background: #D4AF37;
     box-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
 }
