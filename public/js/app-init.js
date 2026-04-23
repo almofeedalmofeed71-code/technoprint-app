@@ -1,18 +1,11 @@
 /* TECHOPRINT 2026 - APP INIT */
-/* Master Startup */
+/* Splash Screen: 2 seconds, then show dashboard */
 
 function initApp() {
     console.log('[TECHOPRINT 2026] INITIALIZING...');
     
-    // Hide splash
+    // Show splash for 2 seconds
     var splash = document.getElementById('splashScreen');
-    if (splash) splash.style.display = 'none';
-    
-    // Show dashboard
-    var portal = document.getElementById('masterPortal');
-    var app = document.getElementById('app');
-    if (portal) portal.style.display = 'none';
-    if (app) app.style.display = 'block';
     
     // Init all engines
     if (window.I18n) I18n.init();
@@ -20,31 +13,29 @@ function initApp() {
     if (window.Slider) Slider.init();
     if (window.Auth) Auth.init();
     
-    console.log('[TECHOPRINT 2026] READY');
+    // After 2 seconds, hide splash and show dashboard
+    setTimeout(function() {
+        if (splash) {
+            splash.style.opacity = '0';
+            splash.style.transition = 'opacity 0.5s ease';
+            setTimeout(function() {
+                splash.style.display = 'none';
+            }, 500);
+        }
+        
+        // Show dashboard
+        var portal = document.getElementById('masterPortal');
+        var app = document.getElementById('app');
+        if (portal) portal.style.display = 'none';
+        if (app) app.style.display = 'block';
+        
+        // Ensure dashboard section is visible
+        var dashboard = document.getElementById('dashboardSection');
+        if (dashboard) dashboard.style.display = 'block';
+        
+        console.log('[TECHOPRINT 2026] READY - Dashboard shown');
+    }, 2000);
 }
-
-// Toggle between login and register modals
-window.toggleRegister = function() {
-    var login = document.getElementById('loginModal');
-    var reg = document.getElementById('registerModal');
-    if (login) login.style.display = login.style.display === 'flex' ? 'none' : 'flex';
-    if (reg) reg.style.display = reg.style.display === 'flex' ? 'none' : 'flex';
-};
-
-// Handle registration
-window.handleRegister = function(form) {
-    var data = {
-        fullName: form.fullName.value,
-        username: form.username.value,
-        email: form.email.value,
-        phone: form.phone.value,
-        governorate: form.governorate.value,
-        address: form.address.value,
-        password: form.password.value
-    };
-    Auth.register(data);
-    return false;
-};
 
 // Start
 document.addEventListener('DOMContentLoaded', initApp);

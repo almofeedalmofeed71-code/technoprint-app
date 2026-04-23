@@ -1,37 +1,44 @@
 /* TECHOPRINT 2026 - ENG NAVIGATION */
-/* FORCE ALERT ON EVERY BUTTON CLICK */
+/* REAL SCREEN NAVIGATION - NO ALERTS */
 
 const Nav = {
     current: 'dashboard',
+    screens: ['dashboard', 'wallet', 'library', 'orders', 'tracking', 'printing', 'support', 'teacher', 'inks'],
+    
     init() {
         console.log('[NAV] Navigation ready');
+        this.show('dashboard');
     },
+    
     go(page) {
+        if (!this.screens.includes(page)) return;
         this.current = page;
-        const alerts = {
-            orders: '📦 My Orders - Coming Soon!',
-            wallet: '💰 Wallet - Coming Soon!',
-            library: '📚 Library - Coming Soon!',
-            tracking: '📍 Order Tracking - Coming Soon!',
-            printing: '🖨️ Printing Service - Coming Soon!',
-            support: '🔧 Support Center - Coming Soon!',
-            teacher: '👨‍🏫 Teacher Portal - Coming Soon!',
-            inks: '🎨 Inks & Supplies - Coming Soon!',
-            settings: '⚙️ Settings - Coming Soon!',
-            dashboard: '🏠 Dashboard'
-        };
-        window.alert(alerts[page] || page + ' - Coming Soon!');
+        this.show(page);
+    },
+    
+    show(page) {
+        // Hide all sections
+        const sections = ['dashboard', 'wallet', 'library', 'orders', 'tracking', 'printing', 'support', 'teacher', 'inks'];
+        sections.forEach(s => {
+            const el = document.getElementById(s + 'Section');
+            if (el) el.style.display = 'none';
+        });
+        
+        // Show requested section
+        const target = document.getElementById(page + 'Section');
+        if (target) target.style.display = 'block';
+        
+        // Update active nav button
+        document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+        const activeBtn = document.getElementById('nav-' + page);
+        if (activeBtn) activeBtn.classList.add('active');
     }
 };
 
 window.Nav = Nav;
 window.navigateTo = function(p) { Nav.go(p); };
 
-// DIRECT onClick handlers for ALL buttons
-window.showNotification = function() {
-    window.alert('🔔 You have 3 new notifications!\n\n• New order received\n• Payment confirmed\n• Print job completed');
-};
-
+// Modal functions
 window.openModal = function(id) {
     var modal = document.getElementById(id);
     if (modal) modal.style.display = 'flex';
@@ -49,15 +56,36 @@ window.toggleRegister = function() {
     if (reg) reg.style.display = reg.style.display === 'flex' ? 'none' : 'flex';
 };
 
-window.handleRegister = function(form) {
-    window.alert('Registration form submitted!');
-    return false;
+// Notification
+window.showNotification = function() {
+    var modal = document.createElement('div');
+    modal.className = 'modal';
+    modal.innerHTML = `
+        <div class="modal-box" style="max-width:350px;">
+            <button class="modal-close" onclick="this.closest('.modal').remove()"><i class="fas fa-times"></i></button>
+            <h2>🔔 Notifications</h2>
+            <div style="text-align:right;margin-top:15px;">
+                <p>📦 New order received</p>
+                <p>💰 Payment confirmed</p>
+                <p>🖨️ Print job completed</p>
+            </div>
+        </div>
+    `;
+    modal.onclick = function(e) { if (e.target === modal) modal.remove(); };
+    document.body.appendChild(modal);
 };
 
-window.showMainDashboard = function() {
-    window.alert('🎓 Welcome to Student Portal!');
-    var portal = document.getElementById('masterPortal');
-    var app = document.getElementById('app');
-    if (portal) portal.style.display = 'none';
-    if (app) app.style.display = 'block';
+// Handle register
+window.handleRegister = function(form) {
+    var data = {
+        fullName: form.fullName.value,
+        username: form.username.value,
+        email: form.email.value,
+        phone: form.phone.value,
+        governorate: form.governorate.value,
+        address: form.address.value,
+        password: form.password.value
+    };
+    Auth.register(data);
+    return false;
 };
