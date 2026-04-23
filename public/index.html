@@ -9,7 +9,6 @@
     <link rel="stylesheet" href="css/ui-colors.css">
     <link rel="stylesheet" href="css/ui-glass.css">
     <link rel="stylesheet" href="css/ui-ads-slider.css">
-    <link rel="stylesheet" href="css/ui-vertical-lang.css">
     <link rel="stylesheet" href="css/ui-header.css">
     <link rel="stylesheet" href="css/ui-buttons.css">
     <link rel="stylesheet" href="css/ui-cards.css">
@@ -32,34 +31,28 @@
             <span class="brand-name">TECHOPRINT</span>
         </div>
         <div class="header-actions">
-            <div class="header-notif" onclick="showNotification()"><i class="fas fa-bell"></i><span class="notif-badge">3</span></div>
-            <div class="header-wallet" onclick="Nav.go('wallet')"><i class="fas fa-wallet"></i><span id="headerBalance">0 IQD</span></div>
+            <div class="header-notif" onclick="showNotification()"><i class="fas fa-bell"></i></div>
+            <div class="header-wallet" onclick="Nav.go('wallet')"><i class="fas fa-wallet"></i><span>0 IQD</span></div>
         </div>
     </header>
-
-    <nav class="language-bar">
-        <button class="lang-btn active" onclick="I18n.set('ar')">عربي</button>
-        <button class="lang-btn" onclick="I18n.set('ku')">کوردی</button>
-        <button class="lang-btn" onclick="I18n.set('en')">English</button>
-    </nav>
 
     <section class="slider-section">
         <div class="slider-frame">
             <div class="slider-container">
                 <div class="slide" style="display:grid;">
-                    <div class="slide-block"><img src="https://picsum.photos/400/300?random=1" alt="Ad 1"></div>
-                    <div class="slide-block"><img src="https://picsum.photos/400/300?random=2" alt="Ad 2"></div>
-                    <div class="slide-block"><img src="https://picsum.photos/400/300?random=3" alt="Ad 3"></div>
+                    <div class="slide-block"><img src="https://picsum.photos/400/300?random=1"></div>
+                    <div class="slide-block"><img src="https://picsum.photos/400/300?random=2"></div>
+                    <div class="slide-block"><img src="https://picsum.photos/400/300?random=3"></div>
                 </div>
                 <div class="slide">
-                    <div class="slide-block"><img src="https://picsum.photos/400/300?random=4" alt="Ad 4"></div>
-                    <div class="slide-block"><img src="https://picsum.photos/400/300?random=5" alt="Ad 5"></div>
-                    <div class="slide-block"><img src="https://picsum.photos/400/300?random=6" alt="Ad 6"></div>
+                    <div class="slide-block"><img src="https://picsum.photos/400/300?random=4"></div>
+                    <div class="slide-block"><img src="https://picsum.photos/400/300?random=5"></div>
+                    <div class="slide-block"><img src="https://picsum.photos/400/300?random=6"></div>
                 </div>
                 <div class="slide">
-                    <div class="slide-block"><img src="https://picsum.photos/400/300?random=7" alt="Ad 7"></div>
-                    <div class="slide-block"><img src="https://picsum.photos/400/300?random=8" alt="Ad 8"></div>
-                    <div class="slide-block"><img src="https://picsum.photos/400/300?random=9" alt="Ad 9"></div>
+                    <div class="slide-block"><img src="https://picsum.photos/400/300?random=7"></div>
+                    <div class="slide-block"><img src="https://picsum.photos/400/300?random=8"></div>
+                    <div class="slide-block"><img src="https://picsum.photos/400/300?random=9"></div>
                 </div>
             </div>
         </div>
@@ -73,89 +66,150 @@
     <section id="dashboardSection" class="dashboard-section">
         <h2 class="section-title">لوحة التحكم</h2>
         <div class="service-grid">
-            <div class="service-card" onclick="Nav.go('orders')"><div class="service-icon">📦</div><p class="service-title">طلباتي</p></div>
-            <div class="service-card" onclick="Nav.go('wallet')"><div class="service-icon">💰</div><p class="service-title">المحفظة</p></div>
-            <div class="service-card" onclick="Nav.go('library')"><div class="service-icon">📚</div><p class="service-title">المكتبة</p></div>
-            <div class="service-card" onclick="Nav.go('tracking')"><div class="service-icon">📍</div><p class="service-title">التتبع</p></div>
-            <div class="service-card" onclick="Nav.go('printing')"><div class="service-icon">🖨️</div><p class="service-title">الطباعة</p></div>
-            <div class="service-card" onclick="Nav.go('support')"><div class="service-icon">🔧</div><p class="service-title">الدعم</p></div>
-            <div class="service-card" onclick="Nav.go('teacher')"><div class="service-icon">👨‍🏫</div><p class="service-title">المعلم</p></div>
-            <div class="service-card" onclick="Nav.go('inks')"><div class="service-icon">🎨</div><p class="service-title">الحبر</p></div>
-            <div class="service-card" onclick="openModal('loginModal')"><div class="service-icon">⚙️</div><p class="service-title">الإعدادات</p></div>
+            <div class="service-card" onclick="Nav.go('orders')"><div class="service-icon">📦</div><p>طلباتي</p></div>
+            <div class="service-card" onclick="Nav.go('wallet')"><div class="service-icon">💰</div><p>المحفظة</p></div>
+            <div class="service-card" onclick="Nav.go('library')"><div class="service-icon">📚</div><p>المكتبة</p></div>
+            <div class="service-card" onclick="Nav.go('tracking')"><div class="service-icon">📍</div><p>التتبع</p></div>
+            <div class="service-card" onclick="Nav.go('printing')"><div class="service-icon">🖨️</div><p>الطباعة</p></div>
+            <div class="service-card" onclick="Nav.go('support')"><div class="service-icon">🔧</div><p>الدعم</p></div>
+            <div class="service-card" onclick="Nav.go('teacher')"><div class="service-icon">👨‍🏫</div><p>المعلم</p></div>
+            <div class="service-card" onclick="Nav.go('settings')"><div class="service-icon">⚙️</div><p>الإعدادات</p></div>
+            <div class="service-card" onclick="Nav.go('dashboard')"><div class="service-icon">🏠</div><p>الرئيسية</p></div>
         </div>
-    </section>
-
-    <section id="walletSection" class="dashboard-section" style="display:none;">
-        <h2 class="section-title">المحفظة</h2>
-        <div class="glass-card" style="padding:40px;max-width:400px;margin:20px auto;text-align:center;">
-            <i class="fas fa-wallet" style="font-size:4rem;color:#D4AF37;"></i>
-            <p style="font-size:2.5rem;color:#D4AF37;font-weight:bold;margin:20px 0;">0 IQD</p>
-            <button class="btn-gold" onclick="Nav.go('dashboard')">العودة</button>
-        </div>
-    </section>
-
-    <section id="librarySection" class="dashboard-section" style="display:none;">
-        <h2 class="section-title">المكتبة</h2>
-        <div class="grid-4" style="max-width:800px;margin:20px auto;">
-            <div class="glass-card" style="padding:20px;text-align:center;font-size:3rem;">📖</div>
-            <div class="glass-card" style="padding:20px;text-align:center;font-size:3rem;">📗</div>
-            <div class="glass-card" style="padding:20px;text-align:center;font-size:3rem;">📘</div>
-            <div class="glass-card" style="padding:20px;text-align:center;font-size:3rem;">📕</div>
-        </div>
-        <button class="btn-gold" onclick="Nav.go('dashboard')" style="display:block;margin:20px auto;">العودة</button>
     </section>
 
     <section id="ordersSection" class="dashboard-section" style="display:none;">
         <h2 class="section-title">طلباتي</h2>
-        <div class="glass-card" style="padding:30px;max-width:600px;margin:20px auto;text-align:center;">
-            <p style="color:#fff;">📦 لا توجد طلبات</p>
+        <div class="service-grid">
+            <div class="glass-card"><p>📦 طلب 1</p></div>
+            <div class="glass-card"><p>📦 طلب 2</p></div>
+            <div class="glass-card"><p>📦 طلب 3</p></div>
+            <div class="glass-card"><p>📦 طلب 4</p></div>
+            <div class="glass-card"><p>📦 طلب 5</p></div>
+            <div class="glass-card"><p>📦 طلب 6</p></div>
+            <div class="glass-card"><p>📦 طلب 7</p></div>
+            <div class="glass-card"><p>📦 طلب 8</p></div>
+            <div class="glass-card"><p>📦 طلب 9</p></div>
         </div>
-        <button class="btn-gold" onclick="Nav.go('dashboard')" style="display:block;margin:20px auto;">العودة</button>
+        <button class="btn-gold" onclick="Nav.go('dashboard')">العودة</button>
+    </section>
+
+    <section id="walletSection" class="dashboard-section" style="display:none;">
+        <h2 class="section-title">المحفظة</h2>
+        <div class="service-grid">
+            <div class="glass-card"><p>💰 الرصيد: 0 IQD</p></div>
+            <div class="glass-card"><p>💳 شحن</p></div>
+            <div class="glass-card"><p>📤 سحب</p></div>
+            <div class="glass-card"><p>📊 المعاملات</p></div>
+            <div class="glass-card"><p>💳 البطاقات</p></div>
+            <div class="glass-card"><p>📋 الفواتير</p></div>
+            <div class="glass-card"><p>🎁 المكافآت</p></div>
+            <div class="glass-card"><p>📈 الاستثمار</p></div>
+            <div class="glass-card"><p>🔒 الأمان</p></div>
+        </div>
+        <button class="btn-gold" onclick="Nav.go('dashboard')">العودة</button>
+    </section>
+
+    <section id="librarySection" class="dashboard-section" style="display:none;">
+        <h2 class="section-title">المكتبة</h2>
+        <div class="service-grid">
+            <div class="glass-card"><p>📖 كتاب 1</p></div>
+            <div class="glass-card"><p>📗 كتاب 2</p></div>
+            <div class="glass-card"><p>📘 كتاب 3</p></div>
+            <div class="glass-card"><p>📕 كتاب 4</p></div>
+            <div class="glass-card"><p>📓 كتاب 5</p></div>
+            <div class="glass-card"><p>📔 كتاب 6</p></div>
+            <div class="glass-card"><p>📒 كتاب 7</p></div>
+            <div class="glass-card"><p>📑 كتاب 8</p></div>
+            <div class="glass-card"><p>📃 كتاب 9</p></div>
+        </div>
+        <button class="btn-gold" onclick="Nav.go('dashboard')">العودة</button>
     </section>
 
     <section id="trackingSection" class="dashboard-section" style="display:none;">
         <h2 class="section-title">تتبع الطلب</h2>
-        <div class="glass-card" style="padding:30px;max-width:600px;margin:20px auto;text-align:center;">
-            <input type="text" class="input-field" placeholder="رقم الطلب" style="max-width:300px;">
+        <div class="service-grid">
+            <div class="glass-card"><p>🚚 قيد التوصيل</p></div>
+            <div class="glass-card"><p>✅ تم التوصيل</p></div>
+            <div class="glass-card"><p>⏳ قيد المراجعة</p></div>
+            <div class="glass-card"><p>📦 جاهز</p></div>
+            <div class="glass-card"><p>🔄 جاري التحضير</p></div>
+            <div class="glass-card"><p>❌ ملغي</p></div>
+            <div class="glass-card"><p>📍 الموقع</p></div>
+            <div class="glass-card"><p>📞 التواصل</p></div>
+            <div class="glass-card"><p>📝 التفاصيل</p></div>
         </div>
-        <button class="btn-gold" onclick="Nav.go('dashboard')" style="display:block;margin:20px auto;">العودة</button>
+        <button class="btn-gold" onclick="Nav.go('dashboard')">العودة</button>
     </section>
 
     <section id="printingSection" class="dashboard-section" style="display:none;">
         <h2 class="section-title">خدمة الطباعة</h2>
-        <div class="glass-card" style="padding:30px;max-width:600px;margin:20px auto;text-align:center;">
-            <p style="color:#fff;">🖨️ ارفع ملفك</p>
-            <input type="file" class="input-field" style="max-width:300px;">
+        <div class="service-grid">
+            <div class="glass-card"><p>🖨️ طباعة سوداء</p></div>
+            <div class="glass-card"><p>🖨️ طباعة ملونة</p></div>
+            <div class="glass-card"><p>📄 نسخ</p></div>
+            <div class="glass-card"><p>📁 سكانر</p></div>
+            <div class="glass-card"><p>📅 حجز موعد</p></div>
+            <div class="glass-card"><p>💰 الأسعار</p></div>
+            <div class="glass-card"><p>📐 أحجام</p></div>
+            <div class="glass-card"><p>📎 ملفات</p></div>
+            <div class="glass-card"><p>📨 التوصيل</p></div>
         </div>
-        <button class="btn-gold" onclick="Nav.go('dashboard')" style="display:block;margin:20px auto;">العودة</button>
+        <button class="btn-gold" onclick="Nav.go('dashboard')">العودة</button>
     </section>
 
     <section id="supportSection" class="dashboard-section" style="display:none;">
         <h2 class="section-title">مركز الدعم</h2>
-        <div class="glass-card" style="padding:30px;max-width:600px;margin:20px auto;text-align:center;">
-            <p style="color:#fff;">🔧 كيف يمكننا مساعدتك؟</p>
-            <textarea class="input-field" rows="4" style="max-width:400px;resize:none;"></textarea>
+        <div class="service-grid">
+            <div class="glass-card"><p>💬 محادثة</p></div>
+            <div class="glass-card"><p>📞 اتصال</p></div>
+            <div class="glass-card"><p>📧 بريد</p></div>
+            <div class="glass-card"><p>❓ أسئلة</p></div>
+            <div class="glass-card"><p>📖 مساعدة</p></div>
+            <div class="glass-card"><p>🐛 الإبلاغ</p></div>
+            <div class="glass-card"><p>💡 اقتراحات</p></div>
+            <div class="glass-card"><p>⭐ تقييم</p></div>
+            <div class="glass-card"><p>📜 الشروط</p></div>
         </div>
-        <button class="btn-gold" onclick="Nav.go('dashboard')" style="display:block;margin:20px auto;">العودة</button>
+        <button class="btn-gold" onclick="Nav.go('dashboard')">العودة</button>
     </section>
 
     <section id="teacherSection" class="dashboard-section" style="display:none;">
         <h2 class="section-title">بوابة المعلم</h2>
-        <div class="glass-card" style="padding:30px;max-width:600px;margin:20px auto;text-align:center;">
-            <p style="color:#fff;">👨‍🏫 لوحة تحكم المعلم</p>
+        <div class="service-grid">
+            <div class="glass-card"><p>👨‍🏫 الملف الشخصي</p></div>
+            <div class="glass-card"><p>📚 مواد تعليمية</p></div>
+            <div class="glass-card"><p>📝 الواجبات</p></div>
+            <div class="glass-card"><p>📊 النتائج</p></div>
+            <div class="glass-card"><p>📅 الجدول</p></div>
+            <div class="glass-card"><p>💬 التواصل</p></div>
+            <div class="glass-card"><p>📹 الحصص</p></div>
+            <div class="glass-card"><p>📋 التقارير</p></div>
+            <div class="glass-card"><p>⚙️ الإعدادات</p></div>
         </div>
-        <button class="btn-gold" onclick="Nav.go('dashboard')" style="display:block;margin:20px auto;">العودة</button>
+        <button class="btn-gold" onclick="Nav.go('dashboard')">العودة</button>
     </section>
 
-    <section id="inksSection" class="dashboard-section" style="display:none;">
-        <h2 class="section-title">الحبر والمستلزمات</h2>
-        <div class="grid-4" style="max-width:800px;margin:20px auto;">
-            <div class="glass-card" style="padding:20px;text-align:center;font-size:3rem;">🖤</div>
-            <div class="glass-card" style="padding:20px;text-align:center;font-size:3rem;">🔵</div>
-            <div class="glass-card" style="padding:20px;text-align:center;font-size:3rem;">🔴</div>
-            <div class="glass-card" style="padding:20px;text-align:center;font-size:3rem;">🟢</div>
+    <section id="settingsSection" class="dashboard-section" style="display:none;">
+        <h2 class="section-title">الإعدادات</h2>
+        <div class="service-grid">
+            <div class="glass-card"><p>🌐 اللغة</p></div>
+            <div class="glass-card"><p>🎨 المظهر</p></div>
+            <div class="glass-card"><p>🔔 الإشعارات</p></div>
+            <div class="glass-card"><p>🔒 الخصوصية</p></div>
+            <div class="glass-card"><p>👤 الحساب</p></div>
+            <div class="glass-card"><p>🔐 الأمان</p></div>
+            <div class="glass-card"><p>📱 الأجهزة</p></div>
+            <div class="glass-card"><p>🗑️ البيانات</p></div>
+            <div class="glass-card"><p>ℹ️ عن التطبيق</p></div>
         </div>
-        <button class="btn-gold" onclick="Nav.go('dashboard')" style="display:block;margin:20px auto;">العودة</button>
+        <div class="glass-card" style="margin:20px auto;max-width:400px;text-align:center;">
+            <p>🌐 اللغة:</p>
+            <button class="lang-btn" onclick="I18n.set('ar')">عربي</button>
+            <button class="lang-btn" onclick="I18n.set('ku')">کوردی</button>
+            <button class="lang-btn" onclick="I18n.set('en')">English</button>
+        </div>
+        <button class="btn-gold" onclick="Nav.go('dashboard')">العودة</button>
     </section>
 
     <nav class="bottom-nav">

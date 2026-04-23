@@ -1,13 +1,12 @@
-/* TECHOPRINT 2026 - SLIDER ENGINE */
-/* 3 Pages, 3 Ads Each, 4-Second Auto-Transition */
+/* TECHOPRINT 2026 - SLIDER */
+/* 3 pages, 3 ads each, 4-second transition */
 
 (function() {
-    let currentSlide = 0;
-    const totalSlides = 3;
-    const slideDuration = 4000; // 4 seconds
+    let current = 0;
+    const total = 3;
     
-    function goToSlide(index) {
-        currentSlide = index;
+    function show(index) {
+        current = index;
         document.querySelectorAll('.slide').forEach(function(s, i) {
             s.style.display = i === index ? 'grid' : 'none';
         });
@@ -16,16 +15,11 @@
         });
     }
     
-    function nextSlide() {
-        goToSlide((currentSlide + 1) % totalSlides);
-    }
-    
     window.addEventListener('load', function() {
-        goToSlide(0);
-        setInterval(nextSlide, slideDuration);
-        
+        show(0);
+        setInterval(function() { show((current + 1) % total); }, 4000);
         document.querySelectorAll('.slider-dot').forEach(function(dot, i) {
-            dot.onclick = function() { goToSlide(i); };
+            dot.onclick = function() { show(i); };
         });
     });
 })();
