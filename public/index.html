@@ -5,76 +5,49 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TECHOPRINT 2026 - The Sovereign Build</title>
     <link rel="icon" href="data:,">
-    
-    <!-- Google Fonts - Amiri for Titles, Cairo for Operations -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
-    <!-- FontAwesome 6 Pro Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- Leaflet Maps -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     
-    <!-- CSS Modules (in order) -->
-    <link rel="stylesheet" href="css/theme-core.css">
+    <!-- CSS MODULES (STRICT ORDER) -->
+    <link rel="stylesheet" href="css/sys-colors.css">
     <link rel="stylesheet" href="css/glass-ui.css">
     <link rel="stylesheet" href="css/animations.css">
     <link rel="stylesheet" href="css/header-styles.css">
     <link rel="stylesheet" href="css/slider-ui.css">
-    <link rel="stylesheet" href="css/gates-gallery.css">
-    <link rel="stylesheet" href="css/responsive-core.css">
+    <link rel="stylesheet" href="css/gates-layout.css">
     <link rel="stylesheet" href="css/vertical-lang.css">
     <link rel="stylesheet" href="css/responsive-mobile.css">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- ==================== PREMIUM SPLASH SCREEN ==================== -->
+    <!-- SPLASH SCREEN -->
     <div id="splashScreen" class="splash-screen">
-        <div class="splash-content">
-            <div class="splash-logo">T</div>
-            <div class="splash-text">تكنو برنت 2026</div>
-        </div>
+        <div class="splash-content"><div class="splash-logo">T</div><div class="splash-text">تكنو برنت 2026</div></div>
     </div>
 
-    <!-- ==================== PRELOADER ==================== -->
+    <!-- PRELOADER -->
     <div id="preloader" class="preloader">
         <div class="loader-content">
             <div class="logo-icon">T</div>
             <h1>TECHOPRINT</h1>
             <p>Loading The Sovereign Build...</p>
-            <div class="progress-bar">
-                <div class="progress-fill"></div>
-            </div>
+            <div class="progress-bar"><div class="progress-fill"></div></div>
         </div>
     </div>
 
-    <!-- ==================== LANGUAGE SWITCHER (Royal Gold Style) ==================== -->
-    <div id="languageSwitcher" class="language-switcher">
-        <button class="lang-btn active" data-lang="ar" onclick="window.i18n.setLanguage('ar')">
-            <span class="flag">🇮🇶</span>
-            <span class="lang-name">العربية</span>
-        </button>
-        <button class="lang-btn" data-lang="ku" onclick="window.i18n.setLanguage('ku')">
-            <span class="flag">🧞</span>
-            <span class="lang-name">کوردی</span>
-        </button>
-        <button class="lang-btn" data-lang="en" onclick="window.i18n.setLanguage('en')">
-            <span class="flag">🇺🇸</span>
-            <span class="lang-name">English</span>
-        </button>
+    <!-- VERTICAL LANGUAGE SIDEBAR -->
+    <div class="vertical-lang-sidebar">
+        <button class="vert-lang-btn active" data-lang="ar"><span class="flag">🇮🇶</span></button>
+        <button class="vert-lang-btn" data-lang="ku"><span class="flag">🧞</span></button>
+        <button class="vert-lang-btn" data-lang="en"><span class="flag">🇺🇸</span></button>
     </div>
 
-    <!-- ==================== MAIN APP CONTAINER ==================== -->
+    <!-- MAIN APP -->
     <div id="app" class="app-container" style="display: none;">
-        <!-- Sidebar, Header, PageContent - See full app structure -->
         <aside class="sidebar glass-panel">
             <div class="sidebar-header">
-                <div class="logo">
-                    <span class="logo-icon">T</span>
-                    <span class="logo-text">TECHOPRINT</span>
-                </div>
+                <div class="logo"><span class="logo-icon">T</span><span class="logo-text">TECHOPRINT</span></div>
                 <span class="version">2026</span>
             </div>
             <nav class="nav-menu">
@@ -82,82 +55,59 @@
                 <a href="#" class="nav-item" data-page="wallet"><span class="nav-icon">💰</span><span class="nav-text" data-i18n="nav.wallet">المحفظة</span></a>
                 <a href="#" class="nav-item" data-page="library"><span class="nav-icon">📚</span><span class="nav-text" data-i18n="nav.library">المكتبة</span></a>
                 <a href="#" class="nav-item" data-page="orders"><span class="nav-icon">📦</span><span class="nav-text" data-i18n="nav.orders">الطلبات</span></a>
-                <a href="#" class="nav-item" data-page="transfer"><span class="nav-icon">🔄</span><span class="nav-text" data-i18n="nav.transfer">التحويل</span></a>
                 <a href="#" class="nav-item" data-page="tracking"><span class="nav-icon">📍</span><span class="nav-text" data-i18n="nav.tracking">تتبع الطلب</span></a>
                 <a href="#" class="nav-item" data-page="designer"><span class="nav-icon">🎨</span><span class="nav-text" data-i18n="nav.designer">المصممون</span></a>
-                <a href="#" class="nav-item" data-page="support"><span class="nav-icon">🎫</span><span class="nav-text" data-i18n="nav.support">الدعم</span></a>
             </nav>
-            <div class="admin-section" id="adminPanel" style="display: none;">
-                <h3 class="section-title" data-i18n="common.admin">لوحة الأدمن</h3>
-                <a href="#" class="nav-item" data-page="admin-dashboard"><span class="nav-icon">👑</span><span class="nav-text" data-i18n="nav.adminDashboard">الرقابة المالية</span></a>
-                <a href="#" class="nav-item" data-page="admin-users"><span class="nav-icon">👥</span><span class="nav-text" data-i18n="nav.adminUsers">إدارة المستخدمين</span></a>
-                <a href="#" class="nav-item" data-page="admin-delivery"><span class="nav-icon">🚚</span><span class="nav-text" data-i18n="nav.adminDelivery">إدارة التوصيل</span></a>
-            </div>
             <div class="user-profile">
                 <div class="profile-image" id="profileImage"><span>👤</span></div>
                 <div class="profile-info">
                     <span class="user-name" id="userName">المستخدم</span>
-                    <span class="user-role" id="userRole" data-i18n="roles.student">دور المستخدم</span>
+                    <span class="user-role" id="userRole">طالب</span>
                 </div>
             </div>
         </aside>
-
         <main class="main-content">
             <header class="header glass-panel">
                 <div class="header-right">
                     <button class="menu-toggle" id="menuToggle">☰</button>
-                    <h1 class="page-title" id="pageTitle" data-i18n="nav.dashboard">لوحة التحكم</h1>
+                    <h1 class="page-title" id="pageTitle">لوحة التحكم</h1>
                 </div>
                 <div class="header-left">
-                    <button class="back-home-btn" onclick="showPortal()"><i class="fas fa-home"></i> <span class="back-text" data-i18n="common.back">رجوع للرئيسية</span></button>
-                    <div class="notifications-btn" id="notificationsBtn"><span class="notification-icon">🔔</span><span class="notification-badge" id="notificationBadge">0</span></div>
-                    <div class="balance-display" onclick="navigateTo('wallet')"><span class="wallet-icon">💰</span><span class="balance-label" data-i18n="wallet.balance">الرصيد:</span><span class="balance-value" id="headerBalance">0 IQD</span></div>
+                    <button class="back-home-btn" onclick="showPortal()"><i class="fas fa-home"></i> <span data-i18n="common.back">رجوع</span></button>
+                    <div class="balance-display"><span class="wallet-icon">💰</span><span class="balance-label" data-i18n="wallet.balance">الرصيد:</span><span class="balance-value" id="headerBalance">0 IQD</span></div>
                 </div>
             </header>
             <div class="page-content" id="pageContent"></div>
         </main>
     </div>
 
-    <!-- ==================== VERTICAL LANGUAGE SIDEBAR ==================== -->
-    <div class="vertical-lang-sidebar" id="verticalLangSidebar">
-        <button class="vert-lang-btn active" data-lang="ar" onclick="switchPortalLanguage('ar')"><span class="flag">🇮🇶</span></button>
-        <button class="vert-lang-btn" data-lang="ku" onclick="switchPortalLanguage('ku')"><span class="flag">🧞</span></button>
-        <button class="vert-lang-btn" data-lang="en" onclick="switchPortalLanguage('en')"><span class="flag">🇺🇸</span></button>
-    </div>
-
-    <!-- ==================== MASTER GATEWAY PORTAL ==================== -->
+    <!-- MASTER PORTAL -->
     <div id="masterPortal" class="master-portal">
         <div class="portal-hero">
             <div class="hero-logo">T</div>
             <h1>TECHOPRINT 2026</h1>
-            <p class="tagline" data-i18n-portal="tagline">The Sovereign Educational Empire</p>
-            <p class="subtitle" data-i18n-portal="subtitle">Choose your gateway to the empire</p>
+            <p class="tagline">The Sovereign Educational Empire</p>
+            <p class="subtitle">Choose your gateway to the empire</p>
         </div>
         
-        <!-- MEGA SLIDER 3x3 GRID -->
-        <div class="mega-slider" id="megaSlider">
-            <div class="mega-track" id="megaTrack">
-                <!-- Slide 1: Academic -->
-                <div class="mega-slide slide-academic">
-                    <span class="mega-indicator">📚 الأكاديمية</span>
+        <!-- MEGA SLIDER 3x3 -->
+        <div class="mega-slider">
+            <div class="mega-track">
+                <div class="mega-slide slide-academic"><span class="mega-indicator">📚 الأكاديمية</span>
                     <div class="mega-grid">
                         <div class="mega-block block-math" onclick="openPortal('library')"><span class="block-icon">📐</span><h4>الرياضيات</h4><p>حساب - هندسة</p><button class="block-btn">تصفح</button></div>
                         <div class="mega-block block-physics" onclick="openPortal('library')"><span class="block-icon">⚡</span><h4>الفيزياء</h4><p>ميكانيك - بصريات</p><button class="block-btn">تصفح</button></div>
                         <div class="mega-block block-chemistry" onclick="openPortal('library')"><span class="block-icon">🧪</span><h4>الكيمياء</h4><p>عضوية - غير عضوية</p><button class="block-btn">تصفح</button></div>
                     </div>
                 </div>
-                <!-- Slide 2: Creative -->
-                <div class="mega-slide slide-creative">
-                    <span class="mega-indicator">🎨 الإبداعية</span>
+                <div class="mega-slide slide-creative"><span class="mega-indicator">🎨 الإبداعية</span>
                     <div class="mega-grid">
                         <div class="mega-block block-design" onclick="openPortal('designer')"><span class="block-icon">🎨</span><h4>التصميم</h4><p>غلاف كتب</p><button class="block-btn">سجل</button></div>
                         <div class="mega-block block-arabic" onclick="openPortal('library')"><span class="block-icon">📖</span><h4>العربية</h4><p>نحو - بلاغة</p><button class="block-btn">تصفح</button></div>
                         <div class="mega-block block-english" onclick="openPortal('library')"><span class="block-icon">📕</span><h4>الإنجليزية</h4><p>قواعد - محادثة</p><button class="block-btn">تصفح</button></div>
                     </div>
                 </div>
-                <!-- Slide 3: Services -->
-                <div class="mega-slide slide-services">
-                    <span class="mega-indicator">🖨️ الخدمات</span>
+                <div class="mega-slide slide-services"><span class="mega-indicator">🖨️ الخدمات</span>
                     <div class="mega-grid">
                         <div class="mega-block block-print" onclick="openPortal('student')"><span class="block-icon">🖨️</span><h4>طباعة</h4><p>A4 - A3</p><button class="block-btn">اطلب</button></div>
                         <div class="mega-block block-delivery" onclick="openPortal('delivery')"><span class="block-icon">🚚</span><h4>توصيل</h4><p>GPS حقيقي</p><button class="block-btn">تتبع</button></div>
@@ -168,118 +118,76 @@
             <div class="mega-dots"><span class="mega-dot active" data-slide="0"></span><span class="mega-dot" data-slide="1"></span><span class="mega-dot" data-slide="2"></span></div>
         </div>
         
-        <div class="advertising-slider" id="advertisingSlider">
-            <div class="ad-track" id="adTrack">
-                <div class="ad-slide ad-exam"><div class="ad-content"><div class="ad-badge">🔥 عروض Exams</div><h3>امتحانات 2026</h3><p>خصم 40% على دورات التحضير</p><button class="ad-btn">سجل الآن</button></div></div>
-                <div class="ad-slide ad-printing"><div class="ad-content"><div class="ad-badge">🖨️ Printing Offers</div><h3>طباعة اقتصادية</h3><p>100 صفحة بسعر 25,000 IQD فقط!</p><button class="ad-btn">اطلب الآن</button></div></div>
-                <div class="ad-slide ad-delivery"><div class="ad-content"><div class="ad-badge">🚚 توصيل سريع</div><h3>توصيل مجاني</h3><p>للطلبات فوق 50,000 IQD</p><button class="ad-btn">اكتشف المزيد</button></div></div>
-            </div>
-            <div class="ad-dots" id="adDots"><span class="ad-dot active" data-ad="0"></span><span class="ad-dot" data-ad="1"></span><span class="ad-dot" data-ad="2"></span></div>
-        </div>
-        
-        <div class="portals-grid horizontal-scroll-section">
-            <div class="portal-card student-portal" onclick="openPortal('student')"><div class="portal-icon"><i class="fas fa-graduation-cap"></i></div><h2 data-i18n-portal="studentTitle">🎓 بوابة الطالب</h2><p data-i18n-portal="studentDesc">Your 4 Pillars: Library, Orders, Tracking, Upload</p><div class="portal-features"><span class="feature-tag">📚 <span data-i18n-portal="fLibrary">المكتبة</span></span><span class="feature-tag">📦 <span data-i18n-portal="fOrders">طلباتي</span></span><span class="feature-tag">🚚 <span data-i18n-portal="fTracking">التتبع</span></span><span class="feature-tag">📤 <span data-i18n-portal="fUpload">رفع ملفات</span></span></div><button class="portal-btn gold"><i class="fas fa-user-graduate"></i> <span data-i18n-portal="enterStudent">دخول الطالب</span></button></div>
-            <div class="portal-card teacher-portal" onclick="openPortal('teacher')"><div class="portal-icon"><i class="fas fa-chalkboard-teacher"></i></div><h2 data-i18n-portal="teacherTitle">📚 Teacher Portal</h2><p data-i18n-portal="teacherDesc">Upload lectures - Manage students</p><button class="portal-btn"><i class="fas fa-sign-in-alt"></i> Enter</button></div>
-            <div class="portal-card designer-portal" onclick="openPortal('designer')"><div class="portal-icon"><i class="fas fa-palette"></i></div><h2 data-i18n-portal="designerTitle">🎨 Designer Studio</h2><p data-i18n-portal="designerDesc">Custom designs - Portfolio</p><button class="portal-btn"><i class="fas fa-sign-in-alt"></i> Enter</button></div>
-            <div class="portal-card publisher-portal" onclick="openPortal('publisher')"><div class="portal-icon"><i class="fas fa-book-open"></i></div><h2 data-i18n-portal="publisherTitle">📖 Publisher Portal</h2><p data-i18n-portal="publisherDesc">Manage books - View profits</p><button class="portal-btn"><i class="fas fa-sign-in-alt"></i> Enter</button></div>
-            <div class="portal-card library-portal" onclick="openPortal('library')"><div class="portal-icon"><i class="fas fa-landmark"></i></div><h2 data-i18n-portal="libraryTitle">🌍 Global Library</h2><p data-i18n-portal="libraryDesc">All books - Translations</p><button class="portal-btn"><i class="fas fa-sign-in-alt"></i> Enter</button></div>
-            <div class="portal-card ai-portal" onclick="openPortal('ai')"><div class="portal-icon"><i class="fas fa-robot"></i></div><h2 data-i18n-portal="aiTitle">🤖 AI Center</h2><p data-i18n-portal="aiDesc">Analytics - Predictions</p><button class="portal-btn"><i class="fas fa-sign-in-alt"></i> Enter</button></div>
-            <div class="portal-card delivery-portal" onclick="openPortal('delivery')"><div class="portal-icon"><i class="fas fa-truck"></i></div><h2 data-i18n-portal="deliveryTitle">🚚 Delivery Portal</h2><p data-i18n-portal="deliveryDesc">GPS - Live map</p><button class="portal-btn"><i class="fas fa-sign-in-alt"></i> Enter</button></div>
-            <div class="portal-card admin-portal" onclick="openPortal('admin')"><div class="portal-icon"><i class="fas fa-crown"></i></div><h2 data-i18n-portal="adminTitle">👑 Sovereign Control</h2><p data-i18n-portal="adminDesc">Full control - Financial radar</p><button class="portal-btn gold"><i class="fas fa-crown"></i> Enter</button></div>
-            <div class="portal-card guest-portal" onclick="openPortal('guest')"><div class="portal-icon"><i class="fas fa-user-secret"></i></div><h2 data-i18n-portal="guestTitle">👤 Guest Portal</h2><p data-i18n-portal="guestDesc">Browse only</p><button class="portal-btn"><i class="fas fa-sign-in-alt"></i> Enter</button></div>
+        <!-- PORTALS GRID -->
+        <div class="portals-grid">
+            <div class="portal-card student-portal" onclick="openPortal('student')"><div class="portal-icon"><i class="fas fa-graduation-cap"></i></div><h2>🎓 بوابة الطالب</h2><p>Your 4 Pillars: Library, Orders, Tracking, Upload</p><button class="portal-btn gold">دخول الطالب</button></div>
+            <div class="portal-card teacher-portal" onclick="openPortal('teacher')"><div class="portal-icon"><i class="fas fa-chalkboard-teacher"></i></div><h2>📚 Teacher Portal</h2><p>Upload lectures - Manage students</p><button class="portal-btn">Enter</button></div>
+            <div class="portal-card designer-portal" onclick="openPortal('designer')"><div class="portal-icon"><i class="fas fa-palette"></i></div><h2>🎨 Designer Studio</h2><p>Custom designs - Portfolio</p><button class="portal-btn">Enter</button></div>
+            <div class="portal-card library-portal" onclick="openPortal('library')"><div class="portal-icon"><i class="fas fa-landmark"></i></div><h2>🌍 Global Library</h2><p>All books - Translations</p><button class="portal-btn">Enter</button></div>
+            <div class="portal-card admin-portal" onclick="openPortal('admin')"><div class="portal-icon"><i class="fas fa-crown"></i></div><h2>👑 Sovereign Control</h2><p>Full control - Financial radar</p><button class="portal-btn gold">Enter</button></div>
+            <div class="portal-card guest-portal" onclick="openPortal('guest')"><div class="portal-icon"><i class="fas fa-user-secret"></i></div><h2>👤 Guest Portal</h2><p>Browse only</p><button class="portal-btn">Enter</button></div>
         </div>
     </div>
 
-    <!-- ==================== STUDENT PORTAL (4 PILLARS) ==================== -->
-    <div id="studentPortal" class="student-portal-page">
+    <!-- STUDENT PORTAL -->
+    <div id="studentPortal" class="student-portal-page" style="display:none;">
         <div class="student-header glass-panel">
-            <div class="student-header-left">
-                <button class="back-gate-btn" onclick="showPortal()"><i class="fas fa-arrow-right"></i> <span data-i18n="common.back">رجوع</span></button>
-                <div class="hero-logo small">T</div>
-                <h1 data-i18n-portal="studentDash">بوابة الطالب</h1>
-            </div>
-            <div class="student-wallet glass-panel"><i class="fas fa-wallet"></i><span class="wallet-label" data-i18n="wallet.balance">الرصيد:</span><span class="wallet-amount" id="studentBalance">0 IQD</span></div>
+            <button class="back-gate-btn" onclick="showPortal()"><i class="fas fa-arrow-right"></i> رجوع</button>
+            <div class="hero-logo small">T</div>
+            <h1>بوابة الطالب</h1>
+            <div class="student-wallet glass-panel"><i class="fas fa-wallet"></i><span id="studentBalance">0 IQD</span></div>
         </div>
-        
-        <div class="premium-slider-container">
-            <div class="slider-wrapper"><div class="slider-track" id="sliderTrack">
-                <div class="slider-slide slide-blue"><div class="slide-content"><span class="slide-icon">📚</span><div class="slide-text"><h3>الكتب الحصرية</h3><p>خصم 30% على جميع الكتب التعليمية</p></div><button class="slide-btn btn-blue">تسوق الآن</button></div></div>
-                <div class="slider-slide slide-green"><div class="slide-content"><span class="slide-icon">🖨️</span><div class="slide-text"><h3>عروض الطباعة</h3><p>طباعة اقتصادية بأفضل جودة</p></div><button class="slide-btn btn-green">اطلب الآن</button></div></div>
-                <div class="slider-slide slide-orange"><div class="slide-content"><span class="slide-icon">🚚</span><div class="slide-text"><h3>توصيل مجاني</h3><p>لجميع الطلبات فوق 50,000 IQD</p></div><button class="slide-btn btn-orange">اكتشف المزيد</button></div></div>
-                <div class="slider-slide slide-purple"><div class="slide-content"><span class="slide-icon">💎</span><div class="slide-text"><h3>اشتراك مميز</h3><p>احصل على عضوية VIP سنوية</p></div><button class="slide-btn btn-purple">اشترك الآن</button></div></div>
-            </div></div>
-            <div class="slider-dots" id="sliderDots"><span class="dot dot-blue active" data-slide="0"></span><span class="dot dot-green" data-slide="1"></span><span class="dot dot-orange" data-slide="2"></span><span class="dot dot-purple" data-slide="3"></span></div>
-        </div>
-        
         <div class="four-pillars">
-            <div class="pillar-card glass-panel"><div class="pillar-icon"><i class="fas fa-book-open-reader"></i></div><h2 data-i18n-portal="p1Title">📚 المكتبة العالمية</h2><p data-i18n-portal="p1Desc">تصفح واشترِ الكتب والمحاضرات</p><div class="pillar-stats"><span><i class="fas fa-books"></i> <span id="libraryBooks">0</span> كتاب</span><span><i class="fas fa-video"></i> <span id="libraryLectures">0</span> محاضرة</span></div><button class="pillar-btn" onclick="studentViewLibrary()"><i class="fas fa-arrow-left"></i> <span data-i18n-portal="browse">تصفح المكتبة</span></button></div>
-            <div class="pillar-card glass-panel"><div class="pillar-icon"><i class="fas fa-boxes-stacked"></i></div><h2 data-i18n-portal="p2Title">📦 طلباتي</h2><p data-i18n-portal="p2Desc">تتبع حالة طلباتك من الطباعة للتسليم</p><div class="order-status-list"><div class="status-item"><span class="status-dot pending"></span><span data-i18n-portal="pending">معلق</span><span class="status-count" id="ordersPending">0</span></div><div class="status-item"><span class="status-dot printing"></span><span data-i18n-portal="printing">قيد الطباعة</span><span class="status-count" id="ordersPrinting">0</span></div><div class="status-item"><span class="status-dot shipped"></span><span data-i18n-portal="shipped">شحن</span><span class="status-count" id="ordersShipped">0</span></div><div class="status-item"><span class="status-dot delivered"></span><span data-i18n-portal="delivered">تم التسليم</span><span class="status-count" id="ordersDelivered">0</span></div></div><button class="pillar-btn" onclick="studentViewOrders()"><i class="fas fa-list"></i> <span data-i18n-portal="viewOrders">عرض الطلبات</span></button></div>
-            <div class="pillar-card glass-panel"><div class="pillar-icon"><i class="fas fa-map-location-dot"></i></div><h2 data-i18n-portal="p3Title">🚚 تتبع التوصيل</h2><p data-i18n-portal="p3Desc">GPS مباشر لحالة التوصيل في العراق</p><div class="tracking-preview"><div id="trackingMapSmall" style="height: 150px; border-radius: 12px;"></div></div><button class="pillar-btn" onclick="studentViewTracking()"><i class="fas fa-location-dot"></i> <span data-i18n-portal="openMap">فتح الخريطة</span></button></div>
-            <div class="pillar-card glass-panel"><div class="pillar-icon"><i class="fas fa-cloud-arrow-up"></i></div><h2 data-i18n-portal="p4Title">📤 مركز الرفع</h2><p data-i18n-portal="p4Desc">ارفع ملفاتك للطباعة المخصصة</p><div class="price-calculator glass-panel"><h4><i class="fas fa-calculator"></i> <span data-i18n-portal="priceCalc">حاسبة السعر</span></h4><div class="calc-row"><label data-i18n-portal="pages">عدد الصفحات:</label><input type="number" id="calcPages" value="1" min="1" onchange="calculatePrice()"></div><div class="calc-row"><label data-i18n-portal="copies">عدد النسخ:</label><input type="number" id="calcCopies" value="1" min="1" onchange="calculatePrice()"></div><div class="calc-row"><label data-i18n-portal="paperType">نوع الورق:</label><select id="calcPaper" onchange="calculatePrice()"><option value="a4" data-i18n-portal="a4">A4 عادي</option><option value="a4glossy" data-i18n-portal="a4glossy">A4 لامع</option><option value="a3" data-i18n-portal="a3">A3</option></select></div><div class="calc-result"><span data-i18n-portal="totalPrice">السعر الكلي:</span><span class="price-result" id="totalPrice">500 IQD</span></div></div><div class="upload-zone" id="uploadZone"><input type="file" id="studentFileUpload" accept=".pdf,.doc,.docx,.jpg,.png" style="display:none"><i class="fas fa-cloud-upload-alt"></i><p data-i18n-portal="dropFiles">أسقط الملفات هنا أو اضغط للرفع</p><span class="upload-hint">PDF, DOC, JPG, PNG</span></div><button class="pillar-btn gold" onclick="submitStudentFile()"><i class="fas fa-paper-plane"></i> <span data-i18n-portal="submitFile">إرسال للطباعة</span></button></div>
+            <div class="pillar-card glass-panel"><div class="pillar-icon"><i class="fas fa-book-open-reader"></i></div><h2>📚 المكتبة</h2><p>تصفح واشترِ الكتب</p><button class="pillar-btn">تصفح</button></div>
+            <div class="pillar-card glass-panel"><div class="pillar-icon"><i class="fas fa-boxes-stacked"></i></div><h2>📦 طلباتي</h2><p>تتبع حالة الطلبات</p><button class="pillar-btn">عرض</button></div>
+            <div class="pillar-card glass-panel"><div class="pillar-icon"><i class="fas fa-map-location-dot"></i></div><h2>🚚 التتبع</h2><p>GPS مباشر</p><button class="pillar-btn">فتح</button></div>
+            <div class="pillar-card glass-panel"><div class="pillar-icon"><i class="fas fa-cloud-arrow-up"></i></div><h2>📤 الرفع</h2><p>ارفع ملفاتك</p><button class="pillar-btn">رفع</button></div>
         </div>
     </div>
 
-    <!-- ==================== REGISTRATION PAGE ==================== -->
-    <div id="registerPage" class="register-page" style="display: none;">
-        <div class="register-container glass-panel">
-            <span class="modal-close" onclick="closeRegisterPage()">&times;</span>
-            <div class="register-header"><div class="hero-logo small">T</div><h2 data-i18n="auth.registerTitle">إنشاء حساب جديد</h2><p data-i18n="auth.joinEmpire">انضم إلى TECHOPRINT 2026</p></div>
-            <form id="registerForm" onsubmit="handleRegister(event)">
-                <div class="form-group"><label><i class="fas fa-user gold-icon"></i> <span data-i18n="auth.fullName">الاسم الكامل</span></label><input type="text" id="regFullName" placeholder="أدخل اسمك الكامل" required></div>
-                <div class="form-group"><label><i class="fas fa-at gold-icon"></i> <span data-i18n="auth.username">اسم المستخدم</span></label><input type="text" id="regUsername" placeholder="اختر اسم مستخدم فريد" required></div>
-                <div class="form-group"><label><i class="fas fa-lock gold-icon"></i> <span data-i18n="auth.password">كلمة المرور</span></label><input type="password" id="regPassword" placeholder="••••••••" minlength="6" required></div>
-                <div class="form-group"><label><i class="fas fa-lock gold-icon"></i> <span data-i18n="auth.confirmPassword">تأكيد كلمة المرور</span></label><input type="password" id="regConfirmPassword" placeholder="••••••••" minlength="6" required></div>
-                <div class="form-group"><label><i class="fas fa-phone gold-icon"></i> <span data-i18n="auth.phone">رقم الهاتف</span></label><div class="phone-input-wrapper"><span class="phone-prefix">+964</span><input type="tel" id="regPhone" class="phone-input" placeholder="7XX XXX XXXX" pattern="^7[0-9]{9}$" maxlength="10" required></div><small class="phone-hint" data-i18n="auth.phoneHint">ابدأ من الرقم 7 - مثال: 7701234567</small></div>
-                <div class="form-group"><label><i class="fas fa-map-marker-alt gold-icon"></i> <span data-i18n="auth.address">العنوان</span></label><input type="text" id="regAddress" placeholder="أدخل عنوانك (مدينة، حي)" required></div>
-                <div class="form-group"><label><i class="fas fa-user-tag gold-icon"></i> <span data-i18n="auth.role">الدور</span></label><select id="regRole" required><option value="student" data-i18n="roles.student">طالب</option><option value="teacher" data-i18n="roles.teacher">معلم</option></select></div>
-                <div id="registerError" class="error-message" style="display: none;"></div>
-                <button type="submit" class="submit-btn gold-btn"><i class="fas fa-user-plus"></i> <span data-i18n="auth.registerButton">إنشاء حساب</span></button>
-            </form>
-            <div class="register-footer"><p><span data-i18n="auth.haveAccount">لديك حساب؟</span> <a href="#" onclick="closeRegisterPage(); showLoginModal(); return false;" data-i18n="auth.loginNow">تسجيل الدخول</a></p></div>
-        </div>
-    </div>
-
-    <!-- ==================== LOGIN MODAL ==================== -->
-    <div id="loginModal" class="modal fullscreen-modal" style="display: none;">
+    <!-- LOGIN MODAL -->
+    <div id="loginModal" class="modal fullscreen-modal" style="display:none;">
         <div class="modal-content modal-large glass-panel">
             <span class="modal-close" onclick="closeModal('loginModal')">&times;</span>
             <div class="register-header"><div class="hero-logo small">T</div><h2 data-i18n="auth.loginTitle">تسجيل الدخول</h2></div>
-            <form id="loginForm" onsubmit="handleLogin(event)">
-                <div class="form-group"><label><i class="fas fa-envelope gold-icon"></i> <span data-i18n="auth.emailField">البريد الإلكتروني</span></label><input type="email" id="loginEmail" placeholder="example@email.com" required></div>
-                <div class="form-group"><label><i class="fas fa-lock gold-icon"></i> <span data-i18n="auth.password">كلمة المرور</span></label><input type="password" id="loginPassword" placeholder="••••••••" required></div>
-                <div id="loginError" class="error-message" style="display: none;"></div>
-                <button type="submit" class="submit-btn gold-btn"><i class="fas fa-sign-in-alt"></i> <span data-i18n="auth.loginButton">دخول</span></button>
-            </form>
-            <div class="register-footer"><p><span data-i18n="auth.noAccount">ليس لديك حساب؟</span> <a href="#" onclick="closeModal('loginModal'); openRegisterPage(); return false;" data-i18n="auth.registerNow">سجل الآن</a></p></div>
+            <form id="loginForm"><div class="form-group"><label>البريد الإلكتروني</label><input type="email" id="loginEmail" placeholder="example@email.com" required></div><div class="form-group"><label>كلمة المرور</label><input type="password" id="loginPassword" placeholder="••••••••" required></div><button type="submit" class="submit-btn gold-btn"><i class="fas fa-sign-in-alt"></i> دخول</button></form>
         </div>
     </div>
 
-    <!-- ==================== MODALS ==================== -->
-    <div id="depositModal" class="modal fullscreen-modal"><div class="modal-content modal-large glass-panel"><span class="modal-close" onclick="closeModal('depositModal')">&times;</span><h2><i class="fas fa-plus-circle gold-text"></i> <span data-i18n="wallet.deposit">إيداع رصيد - الدينار العراقي</span></h2><form id="depositForm" onsubmit="handleDeposit(event)"><div class="form-row"><div class="form-group"><label><i class="fas fa-coins gold-icon"></i> <span data-i18n="deposit.amount">المبلغ بالدينار العراقي (IQD)</span></label><input type="number" id="depositAmount" placeholder="مثال: 50000" required></div><div class="form-group"><label><i class="fas fa-money-bill-wave gold-icon"></i> <span data-i18n="deposit.currency">العملة</span></label><select id="depositCurrency"><option value="IQD" selected>🇮🇶 IQD - الدينار العراقي</option><option value="USD">🇺🇸 USD - الدولار</option></select></div></div><div class="form-row"><div class="form-group"><label><i class="fas fa-mobile-alt gold-icon"></i> <span data-i18n="deposit.phone">رقم Zain Cash</span></label><div class="phone-input-wrapper"><span class="phone-prefix">+964</span><input type="tel" id="zainNumber" class="phone-input" placeholder="7XX XXX XXXX" maxlength="10" required></div></div><div class="form-group"><label><i class="fas fa-hashtag gold-icon"></i> <span data-i18n="deposit.refNumber">رقم الحوالة</span></label><input type="text" id="transactionRef" placeholder="رقم الحوالة أو المرجع" required onblur="checkDuplicateTransfer(this.value)"><small class="error-text" id="transferRefError" style="color: #FF4757; display: none;"><i class="fas fa-exclamation-triangle"></i> <span data-i18n="errors.duplicateTransfer">رقم الحوالة مستخدم مسبقاً! يرجى إدخال رقم مختلف</span></small></div></div><div class="form-group"><label><i class="fas fa-image gold-icon"></i> <span data-i18n="deposit.receipt">صورة الإيصال / الوصل</span></label><input type="file" id="receiptImage" accept="image/*,.pdf" required></div><button type="submit" class="submit-btn gold-btn"><i class="fas fa-paper-plane"></i> <span data-i18n="deposit.submit">إرسال للإدارة</span></button></form></div></div>
+    <!-- REGISTER MODAL -->
+    <div id="registerPage" class="register-page" style="display:none;">
+        <div class="register-container glass-panel">
+            <span class="modal-close" onclick="closeRegisterPage()">&times;</span>
+            <div class="register-header"><div class="hero-logo small">T</div><h2>إنشاء حساب جديد</h2></div>
+            <form id="registerForm">
+                <div class="form-group"><label>الاسم الكامل</label><input type="text" id="regFullName" required></div>
+                <div class="form-group"><label>اسم المستخدم</label><input type="text" id="regUsername" required></div>
+                <div class="form-group"><label>كلمة المرور</label><input type="password" id="regPassword" minlength="6" required></div>
+                <div class="form-group"><label>رقم الهاتف</label><div class="phone-input-wrapper"><span class="phone-prefix">+964</span><input type="tel" id="regPhone" class="phone-input" placeholder="7XX XXX XXXX" maxlength="10" required></div></div>
+                <div class="form-group"><label>العنوان</label><input type="text" id="regAddress" required></div>
+                <div class="form-group"><label>الدور</label><select id="regRole"><option value="student">طالب</option><option value="teacher">معلم</option></select></div>
+                <button type="submit" class="submit-btn gold-btn">إنشاء حساب</button>
+            </form>
+        </div>
+    </div>
 
-    <div id="withdrawModal" class="modal fullscreen-modal"><div class="modal-content modal-large glass-panel"><span class="modal-close" onclick="closeModal('withdrawModal')">&times;</span><h2><i class="fas fa-wallet withdraw"></i> <span data-i18n="wallet.withdraw">سحب رصيد - الدينار العراقي</span></h2><form id="withdrawForm" onsubmit="handleWithdraw(event)"><div class="form-row"><div class="form-group"><label><i class="fas fa-coins gold-icon"></i> <span data-i18n="withdraw.amount">المبلغ بالدينار العراقي (IQD)</span></label><input type="number" id="withdrawAmount" placeholder="مثال: 50000" required></div><div class="form-group"><label><i class="fas fa-money-bill-wave gold-icon"></i> <span data-i18n="withdraw.currency">العملة</span></label><select id="withdrawCurrency"><option value="IQD" selected>🇮🇶 IQD - الدينار العراقي</option><option value="USD">🇺🇸 USD - الدولار</option></select></div></div><div class="form-group"><label><i class="fas fa-hand-holding-usd gold-icon"></i> <span data-i18n="withdraw.method">طريقة الاستلام</span></label><select id="withdrawMethod" required><option value="zain">📱 Zain Cash</option><option value="asiago">📱 Asia SDF</option><option value="iraqino">📱 Iraqino</option><option value="bank">🏦 تحويل بنكي</option><option value="cash">💵 نقداً</option></select></div><div class="form-row"><div class="form-group"><label><i class="fas fa-phone-alt gold-icon"></i> <span data-i18n="withdraw.phone">رقم الهاتف</span></label><div class="phone-input-wrapper"><span class="phone-prefix">+964</span><input type="tel" id="withdrawPhone" class="phone-input" placeholder="7XX XXX XXXX" maxlength="10" required></div></div><div class="form-group"><label><i class="fas fa-credit-card gold-icon"></i> <span data-i18n="withdraw.details">رقم البطاقة / الحساب</span></label><input type="text" id="withdrawDetails" placeholder="رقم البطاقة أو الحساب"></div></div><button type="submit" class="submit-btn gold-btn"><i class="fas fa-paper-plane"></i> <span data-i18n="withdraw.submit">طلب السحب</span></button></form></div></div>
+    <!-- BOTTOM NAV -->
+    <nav class="bottom-nav" id="bottomNav">
+        <button class="bottom-nav-item active" onclick="navigateTo('dashboard')"><i class="fas fa-home"></i><span>الرئيسية</span></button>
+        <button class="bottom-nav-item" onclick="navigateTo('wallet')"><i class="fas fa-wallet"></i><span>المحفظة</span></button>
+        <button class="bottom-nav-item" onclick="navigateTo('library')"><i class="fas fa-book"></i><span>المكتبة</span></button>
+        <button class="bottom-nav-item" onclick="navigateTo('orders')"><i class="fas fa-box"></i><span>طلباتي</span></button>
+        <button class="bottom-nav-item" onclick="showPortal()"><i class="fas fa-th"></i><span>المزيد</span></button>
+    </nav>
 
     <div id="toastContainer" class="toast-container"></div>
 
-    <nav class="bottom-nav" id="bottomNav">
-        <button class="bottom-nav-item active" onclick="navigateTo('dashboard')"><i class="fas fa-home"></i><span data-i18n="nav.home">الرئيسية</span></button>
-        <button class="bottom-nav-item" onclick="navigateTo('wallet')"><i class="fas fa-wallet"></i><span data-i18n="nav.wallet">المحفظة</span></button>
-        <button class="bottom-nav-item" onclick="navigateTo('library')"><i class="fas fa-book"></i><span data-i18n="nav.library">المكتبة</span></button>
-        <button class="bottom-nav-item" onclick="navigateTo('orders')"><i class="fas fa-box"></i><span data-i18n="nav.orders">طلباتي</span></button>
-        <button class="bottom-nav-item" onclick="showPortal()"><i class="fas fa-th"></i><span data-i18n="common.more">المزيد</span></button>
-    </nav>
-
-    <!-- Leaflet Maps Script -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    
-    <!-- JS Modules (EXACT ORDER - Critical for binding) -->
-    <script src="i18n.js"></script>
-    <script src="js/components.js"></script>
-    <script src="js/auth-manager.js"></script>
-    <script src="js/student-dashboard.js"></script>
-    <script src="js/navigation-logic.js"></script>
-    <script src="js/app-init.js"></script>
+    <!-- JS MODULES (STRICT DEPENDENCY ORDER) -->
+    <script src="js/i18n-engine.js"></script>
+    <script src="js/auth-logic.js"></script>
+    <script src="js/nav-logic.js"></script>
     <script src="js/slider-logic.js"></script>
-    <script src="app.js" defer></script>
+    <script src="js/app-init.js"></script>
 </body>
 </html>

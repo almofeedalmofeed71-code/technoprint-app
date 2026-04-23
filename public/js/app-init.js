@@ -1,112 +1,194 @@
-/**
- * TECHOPRINT 2026 - APP INITIALIZATION
- * Global State, API Helper, Router, Startup
- */
+/* TECHOPRINT 2026 - MASTER INITIALIZATION */
+/* Centralized Function Map - Calls All Modules in Order */
 
-// ==================== GLOBAL STATE ====================
-window.APP_STATE = {
-    currentLang: localStorage.getItem('techoprint_lang') || 'ar',
-    user: JSON.parse(localStorage.getItem('techoprint_user') || 'null'),
-    token: localStorage.getItem('techoprint_token') || null,
-    balance: { IQD: 0, USD: 0 },
-    usedTransferRefs: new Set()
-};
-
-// ==================== API HELPER ====================
-window.apiCall = async function(endpoint, method = 'GET', body = null) {
-    try {
-        const options = {
-            method,
-            headers: {
-                'Content-Type': 'application/json',
-                'x-user-id': window.APP_STATE.user?.id || ''
-            }
-        };
-        if (body) options.body = JSON.stringify(body);
-        const res = await fetch(`/api/${endpoint}`, options);
-        return await res.json();
-    } catch (err) {
-        console.error('API Error:', err);
-        return { error: err.message };
-    }
-};
-
-// ==================== ROUTER ====================
-window.Router = {
-    routes: {
-        'dashboard': () => loadDashboard(),
-        'student': () => { if(window.StudentDashboard) window.StudentDashboard.render(); },
-        'library': () => loadLibrary(),
-        'orders': () => loadOrders(),
-        'wallet': () => loadWallet(),
-        'tracking': () => loadTracking(),
-        'transfer': () => loadTransfer(),
-        'support': () => loadSupport(),
-        'designer': () => loadDesigner(),
-        'admin-dashboard': () => AdminPortal?.renderDashboard?.(),
-        'admin-users': () => AdminPortal?.renderUsers?.(),
-        'admin-delivery': () => AdminPortal?.renderDelivery?.()
+const MasterLoader = {
+    version: '2026.1.0',
+    
+    init() {
+        console.log(`[MASTER] TECHOPRINT ${this.version} Loading...`);
+        
+        // Phase 1: Core Systems (No dependencies)
+        this.phase1_Core();
+        
+        // Phase 2: UI Systems (After core)
+        this.phase2_UI();
+        
+        // Phase 3: App Systems (After UI)
+        this.phase3_App();
+        
+        console.log('[MASTER] Initialization Complete');
     },
     
-    navigate(page) {
-        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-        const activeNav = document.querySelector(`.nav-item[data-page="${page}"]`);
-        if (activeNav) activeNav.classList.add('active');
+    phase1_Core() {
+        // 1. Initialize Internationalization
+        if (window.initLanguages) {
+            initLanguages();
+            console.log('[MASTER] ✓ Languages Initialized');
+        }
         
-        const titles = {
-            'dashboard': '🏛️ ' + window.i18n?.t('nav.dashboard'),
-            'student': '🎓 ' + window.i18n?.t('portal.studentTitle'),
-            'library': '📚 ' + window.i18n?.t('nav.library'),
-            'orders': '📦 ' + window.i18n?.t('nav.orders'),
-            'wallet': '💰 ' + window.i18n?.t('nav.wallet'),
-            'tracking': '📍 ' + window.i18n?.t('nav.tracking'),
-            'transfer': '🔄 ' + window.i18n?.t('nav.transfer'),
-            'support': '🎫 ' + window.i18n?.t('nav.support'),
-            'designer': '🎨 ' + window.i18n?.t('nav.designer'),
-            'admin-dashboard': '👑 ' + window.i18n?.t('nav.adminDashboard'),
-            'admin-users': '👥 ' + window.i18n?.t('nav.adminUsers'),
-            'admin-delivery': '🚚 ' + window.i18n?.t('nav.adminDelivery')
+        // 2. Initialize Authentication
+        if (window.initAuth) {
+            initAuth();
+            console.log('[MASTER] ✓ Auth Initialized');
+        }
+        
+        // 3. Initialize Navigation
+        if (window.initNavigation) {
+            initNavigation();
+            console.log('[MASTER] ✓ Navigation Initialized');
+        }
+    },
+    
+    phase2_UI() {
+        // 4. Initialize Splash Screen
+        this.initSplash();
+        
+        // 5. Initialize Preloader
+        this.initPreloader();
+        
+        // 6. Initialize Modals
+        this.initModals();
+    },
+    
+    phase3_App() {
+        // 7. Initialize Slider Logic
+        if (window.initMegaSlider) {
+            initMegaSlider();
+            console.log('[MASTER] ✓ Slider Initialized');
+        }
+        
+        // 8. Initialize Portals
+        this.initPortals();
+        
+        // 9. Check Authentication State
+        this.checkAuthState();
+    },
+    
+    initSplash() {
+        const splash = document.getElementById('splashScreen');
+        if (splash) {
+            setTimeout(() => {
+                splash.classList.add('hidden');
+                setTimeout(() => {
+                    splash.style.display = 'none';
+                    this.initPreloader();
+                }, 500);
+            }, 1500);
+        }
+    },
+    
+    initPreloader() {
+        const preloader = document.getElementById('preloader');
+        const progress = preloader?.querySelector('.progress-fill');
+        if (progress) {
+            let width = 0;
+            const interval = setInterval(() => {
+                width += Math.random() * 15;
+                if (width >= 100) {
+                    width = 100;
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        preloader.classList.add('hidden');
+                        setTimeout(() => {
+                            preloader.style.display = 'none';
+                            this.showMasterPortal();
+                        }, 500);
+                    }, 300);
+                }
+                progress.style.width = width + '%';
+            }, 200);
+        }
+    },
+    
+    initModals() {
+        // Bind modal close buttons
+        document.querySelectorAll('.modal-close').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const modal = btn.closest('.modal');
+                if (modal) modal.style.display = 'none';
+            });
+        });
+        
+        // Close modals on outside click
+        document.querySelectorAll('.modal').forEach(modal => {
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) modal.style.display = 'none';
+            });
+        });
+    },
+    
+    initPortals() {
+        // Portal visibility controls
+        window.showPortal = () => {
+            document.getElementById('masterPortal')?.classList.remove('hidden');
+            document.getElementById('app')?.style.setProperty('display', 'none');
+            document.getElementById('studentPortal')?.classList.add('hidden');
         };
         
-        const pageTitle = document.getElementById('pageTitle');
-        if (pageTitle) pageTitle.textContent = titles[page] || 'TECHOPRINT 2026';
+        window.openPortal = (type) => {
+            if (type === 'student') {
+                document.getElementById('masterPortal')?.classList.add('hidden');
+                document.getElementById('studentPortal')?.classList.remove('hidden');
+            } else {
+                // For other portals, check auth first
+                if (!AuthLogic?.isLoggedIn()) {
+                    showLoginModal();
+                    return;
+                }
+                this.showMainApp();
+            }
+        };
         
-        const handler = this.routes[page];
-        if (handler) handler();
-        else loadDashboard?.();
+        window.showMainDashboard = () => {
+            this.showMainApp();
+            NavLogic?.navigate('dashboard');
+        };
+        
+        window.showMainApp = () => {
+            document.getElementById('masterPortal')?.classList.add('hidden');
+            document.getElementById('studentPortal')?.classList.add('hidden');
+            document.getElementById('app')?.style.setProperty('display', 'flex');
+        };
+    },
+    
+    showMasterPortal() {
+        document.getElementById('masterPortal')?.classList.remove('hidden');
+        document.getElementById('app')?.style.setProperty('display', 'none');
+    },
+    
+    checkAuthState() {
+        if (AuthLogic?.isLoggedIn()) {
+            this.showMainApp();
+        } else {
+            this.showMasterPortal();
+        }
     }
 };
 
-// Aliases
-window.navigateTo = (page) => window.Router?.navigate(page);
-window.navigate = (page) => window.Router?.navigate(page);
+// Start the Master Loader
+window.addEventListener('DOMContentLoaded', () => {
+    MasterLoader.init();
+});
 
-// ==================== STARTUP SEQUENCE ====================
-window.showMainDashboard = function() {
-    const splash = document.getElementById('splashScreen');
-    const preloader = document.getElementById('preloader');
-    const masterPortal = document.getElementById('masterPortal');
-    
-    if (splash) {
-        splash.style.animation = 'splashFadeOut 0.8s ease-in-out forwards';
-        setTimeout(() => splash.style.display = 'none', 800);
-    }
-    
-    if (preloader) {
-        preloader.style.opacity = '0';
-        setTimeout(() => preloader.style.display = 'none', 300);
-    }
-    
-    if (masterPortal) {
-        masterPortal.style.display = 'flex';
-    }
-    
-    // Apply language
-    if (window.i18n?.applyLanguage) {
-        window.i18n.applyLanguage(window.APP_STATE.currentLang);
+// Global exports
+window.MasterLoader = MasterLoader;
+window.showPortal = () => MasterLoader.showMasterPortal();
+window.showMainDashboard = () => MasterLoader.showMainApp();
+window.openPortal = (type) => {
+    if (type === 'student') {
+        MasterLoader.showMasterPortal();
+        document.getElementById('masterPortal')?.classList.add('hidden');
+        document.getElementById('studentPortal')?.classList.remove('hidden');
+    } else {
+        if (!AuthLogic?.isLoggedIn()) {
+            showLoginModal();
+        } else {
+            MasterLoader.showMainApp();
+        }
     }
 };
-
-window.triggerStartup = function() {
-    setTimeout(() => window.showMainDashboard(), 2500);
-};
+window.closeModal = (id) => { const m = document.getElementById(id); if (m) m.style.display = 'none'; };
+window.openModal = (id) => { const m = document.getElementById(id); if (m) m.style.display = 'flex'; };
+window.showLoginModal = () => openModal('loginModal');
+window.openRegisterPage = () => { document.getElementById('registerPage')?.style.setProperty('display', 'flex'); };
+window.closeRegisterPage = () => { document.getElementById('registerPage')?.style.setProperty('display', 'none'); };

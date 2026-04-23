@@ -1,0 +1,223 @@
+/* TECHOPRINT 2026 - GATES LAYOUT MODULE */
+/* Portal Cards & Master Gateway Styles */
+
+/* ==================== MASTER PORTAL ==================== */
+.master-portal {
+    min-height: 100vh;
+    padding: 20px;
+    padding-bottom: 100px;
+}
+
+.portal-hero {
+    text-align: center;
+    padding: 40px 20px;
+}
+
+.hero-logo {
+    width: 120px;
+    height: 120px;
+    margin: 0 auto 20px;
+    background: linear-gradient(135deg, var(--gold-dark), var(--gold-royal));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Amiri';
+    font-size: 4rem;
+    font-weight: 700;
+    color: var(--bg-cosmic);
+    box-shadow: var(--shadow-gold), 0 0 60px rgba(212, 175, 55, 0.3);
+}
+
+.hero-logo.small {
+    width: 60px;
+    height: 60px;
+    font-size: 2rem;
+}
+
+.portal-hero h1 {
+    font-family: 'Amiri';
+    font-size: 2.5rem;
+    color: var(--gold-royal);
+    margin-bottom: 10px;
+}
+
+.portal-hero .tagline {
+    font-size: 1.3rem;
+    color: var(--gold-light);
+    margin-bottom: 5px;
+}
+
+.portal-hero .subtitle {
+    color: var(--text-secondary);
+    font-size: 1rem;
+}
+
+/* ==================== PORTALS GRID ==================== */
+.portals-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+    max-width: 1200px;
+    margin: 30px auto;
+    padding: 0 20px;
+}
+
+.portal-card {
+    background: linear-gradient(135deg, rgba(26, 26, 31, 0.9), rgba(42, 42, 48, 0.9));
+    border: 1px solid rgba(212, 175, 55, 0.2);
+    border-radius: var(--radius-lg);
+    padding: 30px 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: all var(--transition-normal);
+}
+
+.portal-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--gold-royal);
+    box-shadow: var(--shadow-gold);
+}
+
+.portal-icon {
+    width: 70px;
+    height: 70px;
+    margin: 0 auto 15px;
+    background: rgba(212, 175, 55, 0.1);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+}
+
+.portal-icon i { color: var(--gold-royal); }
+
+.portal-card h2 {
+    font-family: 'Amiri';
+    font-size: 1.3rem;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+}
+
+.portal-card p {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    margin-bottom: 15px;
+}
+
+.portal-btn {
+    display: inline-block;
+    padding: 10px 25px;
+    background: rgba(212, 175, 55, 0.1);
+    border: 1px solid rgba(212, 175, 55, 0.3);
+    border-radius: 25px;
+    color: var(--gold-royal);
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition-normal);
+}
+
+.portal-btn:hover {
+    background: var(--gold-royal);
+    color: var(--bg-cosmic);
+}
+
+.portal-btn.gold {
+    background: linear-gradient(135deg, var(--gold-dark), var(--gold-royal));
+    color: var(--bg-cosmic);
+}
+
+/* ==================== STUDENT PORTAL ==================== */
+.student-portal-page {
+    min-height: 100vh;
+    padding: 20px;
+    padding-bottom: 100px;
+}
+
+.student-header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.student-wallet {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 20px;
+}
+
+.four-pillars {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.pillar-card {
+    padding: 25px 20px;
+    text-align: center;
+}
+
+.pillar-icon {
+    width: 60px;
+    height: 60px;
+    margin: 0 auto 15px;
+    background: rgba(212, 175, 55, 0.1);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+}
+
+.pillar-card h2 {
+    font-family: 'Amiri';
+    font-size: 1.2rem;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+}
+
+.pillar-card p {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    margin-bottom: 15px;
+}
+
+.pillar-btn {
+    padding: 8px 20px;
+    background: rgba(212, 175, 55, 0.1);
+    border: 1px solid rgba(212, 175, 55, 0.3);
+    border-radius: 20px;
+    color: var(--gold-royal);
+    cursor: pointer;
+    transition: all var(--transition-normal);
+}
+
+.pillar-btn:hover {
+    background: var(--gold-royal);
+    color: var(--bg-cosmic);
+}
+
+/* ==================== BACK BUTTONS ==================== */
+.back-gate-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 18px;
+    background: rgba(212, 175, 55, 0.1);
+    border: 1px solid rgba(212, 175, 55, 0.3);
+    border-radius: 20px;
+    color: var(--gold-royal);
+    cursor: pointer;
+    transition: all var(--transition-normal);
+}
+
+.back-gate-btn:hover {
+    background: rgba(212, 175, 55, 0.2);
+}
