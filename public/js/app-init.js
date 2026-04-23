@@ -1,5 +1,5 @@
 /* TECHOPRINT 2026 - MASTER INITIALIZATION */
-/* Centralized Function Map - Calls All Modules in Order */
+/* Centralized Function Map - FIXED BINDING */
 
 const MasterLoader = {
     version: '2026.1.0',
@@ -7,13 +7,13 @@ const MasterLoader = {
     init() {
         console.log(`[MASTER] TECHOPRINT ${this.version} Loading...`);
         
-        // Phase 1: Core Systems (No dependencies)
+        // Phase 1: Core Systems
         this.phase1_Core();
         
-        // Phase 2: UI Systems (After core)
+        // Phase 2: UI Systems
         this.phase2_UI();
         
-        // Phase 3: App Systems (After UI)
+        // Phase 3: App Systems
         this.phase3_App();
         
         console.log('[MASTER] Initialization Complete');
@@ -21,20 +21,20 @@ const MasterLoader = {
     
     phase1_Core() {
         // 1. Initialize Internationalization
-        if (window.initLanguages) {
-            initLanguages();
+        if (window.I18nEngine) {
+            I18nEngine.init();
             console.log('[MASTER] ✓ Languages Initialized');
         }
         
         // 2. Initialize Authentication
-        if (window.initAuth) {
-            initAuth();
+        if (window.AuthLogic) {
+            AuthLogic.init();
             console.log('[MASTER] ✓ Auth Initialized');
         }
         
         // 3. Initialize Navigation
-        if (window.initNavigation) {
-            initNavigation();
+        if (window.NavLogic) {
+            NavLogic.init();
             console.log('[MASTER] ✓ Navigation Initialized');
         }
     },
@@ -42,26 +42,17 @@ const MasterLoader = {
     phase2_UI() {
         // 4. Initialize Splash Screen
         this.initSplash();
-        
-        // 5. Initialize Preloader
-        this.initPreloader();
-        
-        // 6. Initialize Modals
-        this.initModals();
     },
     
     phase3_App() {
-        // 7. Initialize Slider Logic
+        // 5. Initialize Slider Logic
         if (window.initMegaSlider) {
             initMegaSlider();
             console.log('[MASTER] ✓ Slider Initialized');
         }
         
-        // 8. Initialize Portals
-        this.initPortals();
-        
-        // 9. Check Authentication State
-        this.checkAuthState();
+        // 6. Initialize Portal Functions
+        this.initPortalFunctions();
     },
     
     initSplash() {
@@ -74,6 +65,8 @@ const MasterLoader = {
                     this.initPreloader();
                 }, 500);
             }, 1500);
+        } else {
+            this.initPreloader();
         }
     },
     
@@ -83,7 +76,7 @@ const MasterLoader = {
         if (progress) {
             let width = 0;
             const interval = setInterval(() => {
-                width += Math.random() * 15;
+                width += Math.random() * 20;
                 if (width >= 100) {
                     width = 100;
                     clearInterval(interval);
@@ -91,104 +84,101 @@ const MasterLoader = {
                         preloader.classList.add('hidden');
                         setTimeout(() => {
                             preloader.style.display = 'none';
-                            this.showMasterPortal();
-                        }, 500);
-                    }, 300);
+                            this.showPortal();
+                        }, 300);
+                    }, 200);
                 }
                 progress.style.width = width + '%';
-            }, 200);
+            }, 150);
+        } else {
+            this.showPortal();
         }
     },
     
-    initModals() {
-        // Bind modal close buttons
-        document.querySelectorAll('.modal-close').forEach(btn => {
-            btn.addEventListener('click', () => {
-                const modal = btn.closest('.modal');
-                if (modal) modal.style.display = 'none';
-            });
-        });
-        
-        // Close modals on outside click
-        document.querySelectorAll('.modal').forEach(modal => {
-            modal.addEventListener('click', (e) => {
-                if (e.target === modal) modal.style.display = 'none';
-            });
-        });
-    },
-    
-    initPortals() {
-        // Portal visibility controls
+    initPortalFunctions() {
+        // Show Portal (Master Gateway)
         window.showPortal = () => {
-            document.getElementById('masterPortal')?.classList.remove('hidden');
-            document.getElementById('app')?.style.setProperty('display', 'none');
-            document.getElementById('studentPortal')?.classList.add('hidden');
+            const mp = document.getElementById('masterPortal');
+            const app = document.getElementById('app');
+            const sp = document.getElementById('studentPortal');
+            if (mp) mp.style.display = 'block';
+            if (app) app.style.display = 'none';
+            if (sp) sp.style.display = 'none';
         };
         
+        // Open Portal (Specific Type)
         window.openPortal = (type) => {
+            const mp = document.getElementById('masterPortal');
+            const app = document.getElementById('app');
+            const sp = document.getElementById('studentPortal');
+            
             if (type === 'student') {
-                document.getElementById('masterPortal')?.classList.add('hidden');
-                document.getElementById('studentPortal')?.classList.remove('hidden');
+                if (mp) mp.style.display = 'none';
+                if (app) app.style.display = 'none';
+                if (sp) sp.style.display = 'block';
             } else {
-                // For other portals, check auth first
-                if (!AuthLogic?.isLoggedIn()) {
-                    showLoginModal();
-                    return;
-                }
-                this.showMainApp();
+                // For other portals, show main app
+                if (mp) mp.style.display = 'none';
+                if (sp) sp.style.display = 'none';
+                if (app) app.style.display = 'flex';
             }
         };
         
+        // Show Main Dashboard
         window.showMainDashboard = () => {
-            this.showMainApp();
-            NavLogic?.navigate('dashboard');
+            const mp = document.getElementById('masterPortal');
+            const sp = document.getElementById('studentPortal');
+            const app = document.getElementById('app');
+            if (mp) mp.style.display = 'none';
+            if (sp) sp.style.display = 'none';
+            if (app) app.style.display = 'flex';
+            if (NavLogic) NavLogic.navigate('dashboard');
         };
         
-        window.showMainApp = () => {
-            document.getElementById('masterPortal')?.classList.add('hidden');
-            document.getElementById('studentPortal')?.classList.add('hidden');
-            document.getElementById('app')?.style.setProperty('display', 'flex');
+        // Modal Controls
+        window.closeModal = (id) => {
+            const m = document.getElementById(id);
+            if (m) m.style.display = 'none';
+        };
+        
+        window.openModal = (id) => {
+            const m = document.getElementById(id);
+            if (m) m.style.display = 'flex';
+        };
+        
+        window.showLoginModal = () => {
+            const m = document.getElementById('loginModal');
+            if (m) m.style.display = 'flex';
+        };
+        
+        window.openRegisterPage = () => {
+            const m = document.getElementById('registerPage');
+            if (m) m.style.display = 'flex';
+        };
+        
+        window.closeRegisterPage = () => {
+            const m = document.getElementById('registerPage');
+            if (m) m.style.display = 'none';
         };
     },
     
-    showMasterPortal() {
-        document.getElementById('masterPortal')?.classList.remove('hidden');
-        document.getElementById('app')?.style.setProperty('display', 'none');
-    },
-    
-    checkAuthState() {
-        if (AuthLogic?.isLoggedIn()) {
-            this.showMainApp();
-        } else {
-            this.showMasterPortal();
-        }
+    showPortal() {
+        const mp = document.getElementById('masterPortal');
+        const app = document.getElementById('app');
+        if (mp) mp.style.display = 'block';
+        if (app) app.style.display = 'none';
     }
 };
 
-// Start the Master Loader
-window.addEventListener('DOMContentLoaded', () => {
+// Start on DOM Ready
+document.addEventListener('DOMContentLoaded', () => {
     MasterLoader.init();
 });
 
+// Also try immediate in case DOMContentLoaded already fired
+if (document.readyState === 'complete' || document.readyState === 'interactive') {
+    setTimeout(() => MasterLoader.init(), 10);
+}
+
 // Global exports
 window.MasterLoader = MasterLoader;
-window.showPortal = () => MasterLoader.showMasterPortal();
-window.showMainDashboard = () => MasterLoader.showMainApp();
-window.openPortal = (type) => {
-    if (type === 'student') {
-        MasterLoader.showMasterPortal();
-        document.getElementById('masterPortal')?.classList.add('hidden');
-        document.getElementById('studentPortal')?.classList.remove('hidden');
-    } else {
-        if (!AuthLogic?.isLoggedIn()) {
-            showLoginModal();
-        } else {
-            MasterLoader.showMainApp();
-        }
-    }
-};
-window.closeModal = (id) => { const m = document.getElementById(id); if (m) m.style.display = 'none'; };
-window.openModal = (id) => { const m = document.getElementById(id); if (m) m.style.display = 'flex'; };
-window.showLoginModal = () => openModal('loginModal');
-window.openRegisterPage = () => { document.getElementById('registerPage')?.style.setProperty('display', 'flex'); };
-window.closeRegisterPage = () => { document.getElementById('registerPage')?.style.setProperty('display', 'none'); };
