@@ -106,6 +106,32 @@ const translations = {
         'portal.fUpload': 'رفع ملفات',
         'portal.enter': 'دخول',
         'portal.enterAsAdmin': 'دخول كمدير',
+        'portal.studentDash': 'بوابة الطالب',
+        'portal.p1Title': '📚 المكتبة العالمية',
+        'portal.p1Desc': 'تصفح واشترِ الكتب والمحاضرات',
+        'portal.p2Title': '📦 طلباتي',
+        'portal.p2Desc': 'تتبع حالة طلباتك من الطباعة للتسليم',
+        'portal.p3Title': '🚚 تتبع التوصيل',
+        'portal.p3Desc': 'GPS مباشر لحالة التوصيل في العراق',
+        'portal.p4Title': '📤 مركز الرفع',
+        'portal.p4Desc': 'ارفع ملفاتك للطباعة المخصصة',
+        'portal.browse': 'تصفح المكتبة',
+        'portal.viewOrders': 'عرض الطلبات',
+        'portal.openMap': 'فتح الخريطة',
+        'portal.priceCalc': 'حاسبة السعر',
+        'portal.pages': 'عدد الصفحات',
+        'portal.copies': 'عدد النسخ',
+        'portal.paperType': 'نوع الورق',
+        'portal.a4': 'A4 عادي',
+        'portal.a4glossy': 'A4 لامع',
+        'portal.a3': 'A3',
+        'portal.totalPrice': 'السعر الكلي',
+        'portal.dropFiles': 'أسقط الملفات هنا أو اضغط للرفع',
+        'portal.submitFile': 'إرسال للطباعة',
+        'portal.pending': 'معلق',
+        'portal.printing': 'قيد الطباعة',
+        'portal.shipped': 'شحن',
+        'portal.delivered': 'تم التسليم',
         
         // Dashboard
         'dashboard.welcome': 'مرحباً بك في',
@@ -826,11 +852,20 @@ class I18n {
     }
     
     updateUITranslations() {
-        // Translate elements with data-i18n
+        // Translate elements with data-i18n (handles both data-i18n="key" and data-i18n="portal.key")
         document.querySelectorAll('[data-i18n]').forEach(el => {
             const key = el.getAttribute('data-i18n');
             const translation = this.t(key);
             if (translation) {
+                el.textContent = translation;
+            }
+        });
+        
+        // Also translate legacy data-i18n-portal (prepends 'portal.')
+        document.querySelectorAll('[data-i18n-portal]').forEach(el => {
+            const key = el.getAttribute('data-i18n-portal');
+            const translation = this.t('portal.' + key);
+            if (translation && translation !== 'portal.' + key) {
                 el.textContent = translation;
             }
         });
@@ -845,15 +880,9 @@ class I18n {
         });
     }
     
+    // Legacy function - now unified into updateUITranslations
     updatePortalTranslations() {
-        // Translate elements with data-i18n-portal
-        document.querySelectorAll('[data-i18n-portal]').forEach(el => {
-            const key = el.getAttribute('data-i18n-portal');
-            const translation = this.t('portal.' + key);
-            if (translation && translation !== 'portal.' + key) {
-                el.textContent = translation;
-            }
-        });
+        // Portal translations are now handled in updateUITranslations
     }
     
     t(key, fallback = '') {
