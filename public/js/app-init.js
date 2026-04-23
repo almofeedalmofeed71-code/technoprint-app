@@ -23,5 +23,28 @@ function initApp() {
     console.log('[TECHOPRINT 2026] READY');
 }
 
+// Toggle between login and register modals
+window.toggleRegister = function() {
+    var login = document.getElementById('loginModal');
+    var reg = document.getElementById('registerModal');
+    if (login) login.style.display = login.style.display === 'flex' ? 'none' : 'flex';
+    if (reg) reg.style.display = reg.style.display === 'flex' ? 'none' : 'flex';
+};
+
+// Handle registration
+window.handleRegister = function(form) {
+    var data = {
+        fullName: form.fullName.value,
+        username: form.username.value,
+        email: form.email.value,
+        phone: form.phone.value,
+        governorate: form.governorate.value,
+        address: form.address.value,
+        password: form.password.value
+    };
+    Auth.register(data);
+    return false;
+};
+
 // Start
 document.addEventListener('DOMContentLoaded', initApp);

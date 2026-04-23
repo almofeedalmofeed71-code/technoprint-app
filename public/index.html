@@ -162,11 +162,38 @@
         <div class="modal-box">
             <button class="modal-close" onclick="closeModal('loginModal')"><i class="fas fa-times"></i></button>
             <h2 data-i18n="login_title">تسجيل الدخول</h2>
-            <form id="loginForm">
-                <input type="email" class="input-field" placeholder="البريد الالكتروني" required>
-                <input type="password" class="input-field" placeholder="كلمة المرور" required>
+            <form id="loginForm" onsubmit="return Auth.login(this.email.value, this.password.value)">
+                <input type="email" name="email" class="input-field" placeholder="البريد الالكتروني" required>
+                <input type="password" name="password" class="input-field" placeholder="كلمة المرور" required>
                 <button type="submit" class="btn-gold" data-i18n="login_btn">دخول</button>
             </form>
+            <p style="text-align:center;margin-top:15px;color:#D4AF37;cursor:pointer;" onclick="toggleRegister()">إنشاء حساب جديد</p>
+        </div>
+    </div>
+
+    <!-- Register Modal -->
+    <div id="registerModal" class="modal" style="display:none;">
+        <div class="modal-box">
+            <button class="modal-close" onclick="closeModal('registerModal')"><i class="fas fa-times"></i></button>
+            <h2>إنشاء حساب</h2>
+            <form id="registerForm" onsubmit="return handleRegister(this)">
+                <input type="text" name="fullName" class="input-field" placeholder="الاسم الكامل" required>
+                <input type="text" name="username" class="input-field" placeholder="اسم المستخدم" required>
+                <input type="email" name="email" class="input-field" placeholder="البريد الالكتروني" required>
+                <input type="tel" name="phone" class="input-field" placeholder="رقم الهاتف" required>
+                <select name="governorate" class="input-field" required>
+                    <option value="">اختر المحافظة</option>
+                    <option value="baghdad">بغداد</option>
+                    <option value="basra">البصرة</option>
+                    <option value="erbil">أربيل</option>
+                    <option value="duhok">دهوك</option>
+                    <option value="sulaymaniyah">السليمانية</option>
+                </select>
+                <input type="text" name="address" class="input-field" placeholder="العنوان">
+                <input type="password" name="password" class="input-field" placeholder="كلمة المرور" required>
+                <button type="submit" class="btn-gold">تسجيل</button>
+            </form>
+            <p style="text-align:center;margin-top:15px;color:#D4AF37;cursor:pointer;" onclick="toggleRegister()">لديك حساب؟ تسجيل الدخول</p>
         </div>
     </div>
 
