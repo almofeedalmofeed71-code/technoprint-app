@@ -80,17 +80,18 @@ const Router = {
 window.navigateTo = (page) => Router.navigate(page);
 
 // ==================== PORTAL FUNCTIONS ====================
+// GUEST ACCESS: Allow browsing without login
 window.openPortal = (role) => {
-    document.getElementById('masterPortal').style.display = 'none';
-    document.getElementById('app').style.display = 'grid';
+    const masterPortal = document.getElementById('masterPortal');
+    const app = document.getElementById('app');
+    if (masterPortal) masterPortal.style.display = 'none';
+    if (app) app.style.display = 'grid';
     
-    if (role === 'student' || role === 'teacher') {
-        showLoginModal();
-        return;
-    }
+    // Guest Access: Browse freely, only show login on Order/Upload actions
+    const loginRequiredRoles = ['student', 'teacher'];
     
     const roleRoutes = {
-        'student': 'student', 'teacher': 'library', 'designer': 'designer',
+        'student': 'library', 'teacher': 'library', 'designer': 'designer',
         'publisher': 'library', 'library': 'library', 'ai': 'admin-dashboard',
         'delivery': 'admin-delivery', 'admin': 'admin-dashboard', 'guest': 'dashboard'
     };
@@ -100,8 +101,41 @@ window.openPortal = (role) => {
 };
 
 window.showPortal = () => {
-    document.getElementById('masterPortal').style.display = 'flex';
-    document.getElementById('app').style.display = 'none';
+    const masterPortal = document.getElementById('masterPortal');
+    const app = document.getElementById('app');
+    if (masterPortal) masterPortal.style.display = 'flex';
+    if (app) app.style.display = 'none';
+};
+
+// REQUIRE LOGIN ONLY ON ACTION (Order/Buy/Upload)
+window.requireLogin = (callback) => {
+    if (APP_STATE.user) {
+        callback?.();
+    } else {
+        showLoginModal();
+        showToast(window.i18n.t('auth.loginRequiredForOrder'), 'info');
+    }
+};
+
+// ==================== HORIZONTAL SCROLL FOR PORTALS ====================
+window.initPortalHorizontalScroll = () => {
+    const container = document.getElementById('portalsGrid');
+    if (container) {
+        container.classList.add('horizontal-scroll-section');
+        container.style.display = 'flex';
+        container.style.flexDirection = 'row';
+        container.style.overflowX = 'auto';
+        container.style.scrollSnapType = 'x mandatory';
+        container.style.gap = '20px';
+        container.style.padding = '20px';
+        
+        const cards = container.querySelectorAll('.portal-card');
+        cards.forEach(card => {
+            card.style.minWidth = '320px';
+            card.style.maxWidth = '350px';
+            card.style.flexShrink = '0';
+        });
+    }
 };
 
 // ==================== LANGUAGE SWITCHER ON PORTAL ====================
@@ -944,6 +978,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Initialize Horizontal Scroll
     initHorizontalScroll();
+    initPortalHorizontalScroll();
     
     // Check for updates
     UpdateNotifier.check();
