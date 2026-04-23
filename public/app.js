@@ -81,6 +81,11 @@ window.navigateTo = (page) => Router.navigate(page);
 
 // ==================== PORTAL FUNCTIONS ====================
 // GUEST ACCESS: Allow browsing without login
+window.switchPortalLanguage = (lang) => {
+    window.i18n.setLanguage(lang);
+    window.i18n.applyLanguage(lang);
+};
+
 window.openPortal = (role) => {
     const masterPortal = document.getElementById('masterPortal');
     const app = document.getElementById('app');
