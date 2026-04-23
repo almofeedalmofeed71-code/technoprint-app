@@ -25,6 +25,7 @@
     <link rel="stylesheet" href="css/slider.css">
     <link rel="stylesheet" href="css/gates-gallery.css">
     <link rel="stylesheet" href="css/responsive-core.css">
+    <link rel="stylesheet" href="css/vertical-lang.css">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -116,19 +117,54 @@
         </main>
     </div>
 
+    <!-- ==================== VERTICAL LANGUAGE SIDEBAR ==================== -->
+    <div class="vertical-lang-sidebar" id="verticalLangSidebar">
+        <button class="vert-lang-btn active" data-lang="ar" onclick="switchPortalLanguage('ar')"><span class="flag">🇮🇶</span></button>
+        <button class="vert-lang-btn" data-lang="ku" onclick="switchPortalLanguage('ku')"><span class="flag">🧞</span></button>
+        <button class="vert-lang-btn" data-lang="en" onclick="switchPortalLanguage('en')"><span class="flag">🇺🇸</span></button>
+    </div>
+
     <!-- ==================== MASTER GATEWAY PORTAL ==================== -->
     <div id="masterPortal" class="master-portal">
-        <div class="portal-lang-switcher">
-            <button class="lang-btn active" data-lang="ar" onclick="switchPortalLanguage('ar')">🇮🇶 <span data-i18n-portal="langAR">العربية</span></button>
-            <button class="lang-btn" data-lang="ku" onclick="switchPortalLanguage('ku')">🧞 <span data-i18n-portal="langKU">کوردی</span></button>
-            <button class="lang-btn" data-lang="en" onclick="switchPortalLanguage('en')">🇺🇸 <span data-i18n-portal="langEN">English</span></button>
-        </div>
-        
         <div class="portal-hero">
             <div class="hero-logo">T</div>
             <h1>TECHOPRINT 2026</h1>
             <p class="tagline" data-i18n-portal="tagline">The Sovereign Educational Empire</p>
             <p class="subtitle" data-i18n-portal="subtitle">Choose your gateway to the empire</p>
+        </div>
+        
+        <!-- MEGA SLIDER 3x3 GRID -->
+        <div class="mega-slider" id="megaSlider">
+            <div class="mega-track" id="megaTrack">
+                <!-- Slide 1: Academic -->
+                <div class="mega-slide slide-academic">
+                    <span class="mega-indicator">📚 الأكاديمية</span>
+                    <div class="mega-grid">
+                        <div class="mega-block block-math" onclick="openPortal('library')"><span class="block-icon">📐</span><h4>الرياضيات</h4><p>حساب - هندسة</p><button class="block-btn">تصفح</button></div>
+                        <div class="mega-block block-physics" onclick="openPortal('library')"><span class="block-icon">⚡</span><h4>الفيزياء</h4><p>ميكانيك - بصريات</p><button class="block-btn">تصفح</button></div>
+                        <div class="mega-block block-chemistry" onclick="openPortal('library')"><span class="block-icon">🧪</span><h4>الكيمياء</h4><p>عضوية - غير عضوية</p><button class="block-btn">تصفح</button></div>
+                    </div>
+                </div>
+                <!-- Slide 2: Creative -->
+                <div class="mega-slide slide-creative">
+                    <span class="mega-indicator">🎨 الإبداعية</span>
+                    <div class="mega-grid">
+                        <div class="mega-block block-design" onclick="openPortal('designer')"><span class="block-icon">🎨</span><h4>التصميم</h4><p>غلاف كتب</p><button class="block-btn">سجل</button></div>
+                        <div class="mega-block block-arabic" onclick="openPortal('library')"><span class="block-icon">📖</span><h4>العربية</h4><p>نحو - بلاغة</p><button class="block-btn">تصفح</button></div>
+                        <div class="mega-block block-english" onclick="openPortal('library')"><span class="block-icon">📕</span><h4>الإنجليزية</h4><p>قواعد - محادثة</p><button class="block-btn">تصفح</button></div>
+                    </div>
+                </div>
+                <!-- Slide 3: Services -->
+                <div class="mega-slide slide-services">
+                    <span class="mega-indicator">🖨️ الخدمات</span>
+                    <div class="mega-grid">
+                        <div class="mega-block block-print" onclick="openPortal('student')"><span class="block-icon">🖨️</span><h4>طباعة</h4><p>A4 - A3</p><button class="block-btn">اطلب</button></div>
+                        <div class="mega-block block-delivery" onclick="openPortal('delivery')"><span class="block-icon">🚚</span><h4>توصيل</h4><p>GPS حقيقي</p><button class="block-btn">تتبع</button></div>
+                        <div class="mega-block block-biology" onclick="openPortal('library')"><span class="block-icon">🧬</span><h4>علم الأحياء</h4><p>خلايا - جينات</p><button class="block-btn">تصفح</button></div>
+                    </div>
+                </div>
+            </div>
+            <div class="mega-dots"><span class="mega-dot active" data-slide="0"></span><span class="mega-dot" data-slide="1"></span><span class="mega-dot" data-slide="2"></span></div>
         </div>
         
         <div class="advertising-slider" id="advertisingSlider">
