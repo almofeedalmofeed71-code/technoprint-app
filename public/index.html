@@ -496,95 +496,95 @@
     <div id="masterPortal" class="master-portal">
         <!-- Language Switcher on Portal -->
         <div class="portal-lang-switcher">
-            <button class="lang-btn active" data-lang="ar" onclick="window.i18n.setLanguage('ar')">🇮🇶 <span data-i18n="portal.langAR">العربية</span></button>
-            <button class="lang-btn" data-lang="ku" onclick="window.i18n.setLanguage('ku')">🧞 <span data-i18n="portal.langKU">کوردی</span></button>
-            <button class="lang-btn" data-lang="en" onclick="window.i18n.setLanguage('en')">🇺🇸 <span data-i18n="portal.langEN">English</span></button>
+            <button class="lang-btn active" data-lang="ar" onclick="switchPortalLanguage('ar')">🇮🇶 <span data-i18n-portal="langAR">العربية</span></button>
+            <button class="lang-btn" data-lang="ku" onclick="switchPortalLanguage('ku')">🧞 <span data-i18n-portal="langKU">کوردی</span></button>
+            <button class="lang-btn" data-lang="en" onclick="switchPortalLanguage('en')">🇺🇸 <span data-i18n-portal="langEN">English</span></button>
         </div>
         
         <div class="portal-hero">
             <div class="hero-logo">T</div>
             <h1>TECHOPRINT 2026</h1>
-            <p class="tagline" data-i18n="portal.tagline">The Sovereign Educational Empire</p>
-            <p class="subtitle" data-i18n="portal.subtitle">Choose your gateway to the empire</p>
+            <p class="tagline" data-i18n-portal="tagline">The Sovereign Educational Empire</p>
+            <p class="subtitle" data-i18n-portal="subtitle">Choose your gateway to the empire</p>
         </div>
         
-        <div class="portals-grid horizontal-scroll-section">
+        <div class="portals-grid">
             <!-- 🎓 STUDENT PORTAL -->
-            <div class="portal-card student-portal scroll-item" onclick="openPortal('student')">
+            <div class="portal-card student-portal" onclick="openPortal('student')">
                 <div class="portal-icon"><i class="fas fa-graduation-cap"></i></div>
-                <h2 data-i18n="portal.studentTitle">🎓 بوابة الطالب</h2>
-                <p data-i18n="portal.studentDesc">Your 4 Pillars: Library, Orders, Tracking, Upload</p>
+                <h2 data-i18n-portal="studentTitle">🎓 بوابة الطالب</h2>
+                <p data-i18n-portal="studentDesc">Your 4 Pillars: Library, Orders, Tracking, Upload</p>
                 <div class="portal-features">
-                    <span class="feature-tag">📚 <span data-i18n="portal.fLibrary">المكتبة</span></span>
-                    <span class="feature-tag">📦 <span data-i18n="portal.fOrders">طلباتي</span></span>
-                    <span class="feature-tag">🚚 <span data-i18n="portal.fTracking">التتبع</span></span>
-                    <span class="feature-tag">📤 <span data-i18n="portal.fUpload">رفع ملفات</span></span>
+                    <span class="feature-tag">📚 <span data-i18n-portal="fLibrary">المكتبة</span></span>
+                    <span class="feature-tag">📦 <span data-i18n-portal="fOrders">طلباتي</span></span>
+                    <span class="feature-tag">🚚 <span data-i18n-portal="fTracking">التتبع</span></span>
+                    <span class="feature-tag">📤 <span data-i18n-portal="fUpload">رفع ملفات</span></span>
                 </div>
-                <button class="portal-btn gold"><i class="fas fa-user-graduate"></i> <span data-i18n="portal.enterStudent">دخول الطالب</span></button>
+                <button class="portal-btn gold"><i class="fas fa-user-graduate"></i> <span data-i18n-portal="enterStudent">دخول الطالب</span></button>
             </div>
             
             <!-- 📚 TEACHER PORTAL -->
-            <div class="portal-card teacher-portal scroll-item" onclick="openPortal('teacher')">
+            <div class="portal-card teacher-portal" onclick="openPortal('teacher')">
                 <div class="portal-icon"><i class="fas fa-chalkboard-teacher"></i></div>
-                <h2 data-i18n="portal.teacherTitle">📚 Teacher Portal</h2>
-                <p data-i18n="portal.teacherDesc">Upload lectures - Manage students</p>
-                <button class="portal-btn"><i class="fas fa-sign-in-alt"></i> <span data-i18n="portal.enter">Enter</span></button>
+                <h2 data-i18n-portal="teacherTitle">📚 Teacher Portal</h2>
+                <p data-i18n-portal="teacherDesc">Upload lectures - Manage students</p>
+                <button class="portal-btn"><i class="fas fa-sign-in-alt"></i> Enter</button>
             </div>
             
             <!-- 🎨 DESIGNER PORTAL -->
-            <div class="portal-card designer-portal scroll-item" onclick="openPortal('designer')">
+            <div class="portal-card designer-portal" onclick="openPortal('designer')">
                 <div class="portal-icon"><i class="fas fa-palette"></i></div>
-                <h2 data-i18n="portal.designerTitle">🎨 Designer Studio</h2>
-                <p data-i18n="portal.designerDesc">Custom designs - Portfolio</p>
-                <button class="portal-btn"><i class="fas fa-sign-in-alt"></i> <span data-i18n="portal.enter">Enter</span></button>
+                <h2 data-i18n-portal="designerTitle">🎨 Designer Studio</h2>
+                <p data-i18n-portal="designerDesc">Custom designs - Portfolio</p>
+                <button class="portal-btn"><i class="fas fa-sign-in-alt"></i> Enter</button>
             </div>
             
             <!-- 📖 PUBLISHER PORTAL -->
-            <div class="portal-card publisher-portal scroll-item" onclick="openPortal('publisher')">
+            <div class="portal-card publisher-portal" onclick="openPortal('publisher')">
                 <div class="portal-icon"><i class="fas fa-book-open"></i></div>
-                <h2 data-i18n="portal.publisherTitle">📖 Publisher Portal</h2>
-                <p data-i18n="portal.publisherDesc">Manage books - View profits</p>
-                <button class="portal-btn"><i class="fas fa-sign-in-alt"></i> <span data-i18n="portal.enter">Enter</span></button>
+                <h2 data-i18n-portal="publisherTitle">📖 Publisher Portal</h2>
+                <p data-i18n-portal="publisherDesc">Manage books - View profits</p>
+                <button class="portal-btn"><i class="fas fa-sign-in-alt"></i> Enter</button>
             </div>
             
             <!-- 🌐 LIBRARY PORTAL -->
-            <div class="portal-card library-portal scroll-item" onclick="openPortal('library')">
+            <div class="portal-card library-portal" onclick="openPortal('library')">
                 <div class="portal-icon"><i class="fas fa-landmark"></i></div>
-                <h2 data-i18n="portal.libraryTitle">🌍 Global Library</h2>
-                <p data-i18n="portal.libraryDesc">All books - Translations</p>
-                <button class="portal-btn"><i class="fas fa-sign-in-alt"></i> <span data-i18n="portal.enter">Enter</span></button>
+                <h2 data-i18n-portal="libraryTitle">🌍 Global Library</h2>
+                <p data-i18n-portal="libraryDesc">All books - Translations</p>
+                <button class="portal-btn"><i class="fas fa-sign-in-alt"></i> Enter</button>
             </div>
             
             <!-- 🤖 AI PORTAL -->
-            <div class="portal-card ai-portal scroll-item" onclick="openPortal('ai')">
+            <div class="portal-card ai-portal" onclick="openPortal('ai')">
                 <div class="portal-icon"><i class="fas fa-robot"></i></div>
-                <h2 data-i18n="portal.aiTitle">🤖 AI Center</h2>
-                <p data-i18n="portal.aiDesc">Analytics - Predictions</p>
-                <button class="portal-btn"><i class="fas fa-sign-in-alt"></i> <span data-i18n="portal.enter">Enter</span></button>
+                <h2 data-i18n-portal="aiTitle">🤖 AI Center</h2>
+                <p data-i18n-portal="aiDesc">Analytics - Predictions</p>
+                <button class="portal-btn"><i class="fas fa-sign-in-alt"></i> Enter</button>
             </div>
             
             <!-- 🚚 DELIVERY PORTAL -->
-            <div class="portal-card delivery-portal scroll-item" onclick="openPortal('delivery')">
+            <div class="portal-card delivery-portal" onclick="openPortal('delivery')">
                 <div class="portal-icon"><i class="fas fa-truck"></i></div>
-                <h2 data-i18n="portal.deliveryTitle">🚚 Delivery Portal</h2>
-                <p data-i18n="portal.deliveryDesc">GPS - Live map</p>
-                <button class="portal-btn"><i class="fas fa-sign-in-alt"></i> <span data-i18n="portal.enter">Enter</span></button>
+                <h2 data-i18n-portal="deliveryTitle">🚚 Delivery Portal</h2>
+                <p data-i18n-portal="deliveryDesc">GPS - Live map</p>
+                <button class="portal-btn"><i class="fas fa-sign-in-alt"></i> Enter</button>
             </div>
             
             <!-- 👑 ADMIN PORTAL -->
-            <div class="portal-card admin-portal scroll-item" onclick="openPortal('admin')">
+            <div class="portal-card admin-portal" onclick="openPortal('admin')">
                 <div class="portal-icon"><i class="fas fa-crown"></i></div>
-                <h2 data-i18n="portal.adminTitle">👑 Sovereign Control</h2>
-                <p data-i18n="portal.adminDesc">Full control - Financial radar</p>
-                <button class="portal-btn gold"><i class="fas fa-crown"></i> <span data-i18n="portal.enterAsAdmin">Enter</span></button>
+                <h2 data-i18n-portal="adminTitle">👑 Sovereign Control</h2>
+                <p data-i18n-portal="adminDesc">Full control - Financial radar</p>
+                <button class="portal-btn gold"><i class="fas fa-crown"></i> Enter</button>
             </div>
             
             <!-- 👤 GUEST PORTAL -->
-            <div class="portal-card guest-portal scroll-item" onclick="openPortal('guest')">
+            <div class="portal-card guest-portal" onclick="openPortal('guest')">
                 <div class="portal-icon"><i class="fas fa-user-secret"></i></div>
-                <h2 data-i18n="portal.guestTitle">👤 Guest Portal</h2>
-                <p data-i18n="portal.guestDesc">Browse only</p>
-                <button class="portal-btn"><i class="fas fa-sign-in-alt"></i> <span data-i18n="portal.enter">Enter</span></button>
+                <h2 data-i18n-portal="guestTitle">👤 Guest Portal</h2>
+                <p data-i18n-portal="guestDesc">Browse only</p>
+                <button class="portal-btn"><i class="fas fa-sign-in-alt"></i> Enter</button>
             </div>
         </div>
     </div>
@@ -597,7 +597,7 @@
                     <i class="fas fa-arrow-right"></i> <span data-i18n="common.back">رجوع</span>
                 </button>
                 <div class="hero-logo small">T</div>
-                <h1 data-i18n="portal.studentDash">بوابة الطالب</h1>
+                <h1 data-i18n-portal="studentDash">بوابة الطالب</h1>
             </div>
             <div class="student-wallet glass-panel">
                 <i class="fas fa-wallet"></i>
@@ -611,89 +611,89 @@
             <!-- Pillar 1: Global Library -->
             <div class="pillar-card glass-panel" id="pillarLibrary">
                 <div class="pillar-icon"><i class="fas fa-book-open-reader"></i></div>
-                <h2 data-i18n="portal.p1Title">📚 المكتبة العالمية</h2>
-                <p data-i18n="portal.p1Desc">تصفح واشترِ الكتب والمحاضرات</p>
+                <h2 data-i18n-portal="p1Title">📚 المكتبة العالمية</h2>
+                <p data-i18n-portal="p1Desc">تصفح واشترِ الكتب والمحاضرات</p>
                 <div class="pillar-stats">
                     <span><i class="fas fa-books"></i> <span id="libraryBooks">0</span> كتاب</span>
                     <span><i class="fas fa-video"></i> <span id="libraryLectures">0</span> محاضرة</span>
                 </div>
                 <button class="pillar-btn" onclick="studentViewLibrary()">
-                    <i class="fas fa-arrow-left"></i> <span data-i18n="portal.browse">تصفح المكتبة</span>
+                    <i class="fas fa-arrow-left"></i> <span data-i18n-portal="browse">تصفح المكتبة</span>
                 </button>
             </div>
             
             <!-- Pillar 2: My Orders -->
             <div class="pillar-card glass-panel" id="pillarOrders">
                 <div class="pillar-icon"><i class="fas fa-boxes-stacked"></i></div>
-                <h2 data-i18n="portal.p2Title">📦 طلباتي</h2>
-                <p data-i18n="portal.p2Desc">تتبع حالة طلباتك من الطباعة للتسليم</p>
+                <h2 data-i18n-portal="p2Title">📦 طلباتي</h2>
+                <p data-i18n-portal="p2Desc">تتبع حالة طلباتك من الطباعة للتسليم</p>
                 <div class="order-status-list">
                     <div class="status-item">
                         <span class="status-dot pending"></span>
-                        <span data-i18n="portal.pending">معلق</span>
+                        <span data-i18n-portal="pending">معلق</span>
                         <span class="status-count" id="ordersPending">0</span>
                     </div>
                     <div class="status-item">
                         <span class="status-dot printing"></span>
-                        <span data-i18n="portal.printing">قيد الطباعة</span>
+                        <span data-i18n-portal="printing">قيد الطباعة</span>
                         <span class="status-count" id="ordersPrinting">0</span>
                     </div>
                     <div class="status-item">
                         <span class="status-dot shipped"></span>
-                        <span data-i18n="portal.shipped">شحن</span>
+                        <span data-i18n-portal="shipped">شحن</span>
                         <span class="status-count" id="ordersShipped">0</span>
                     </div>
                     <div class="status-item">
                         <span class="status-dot delivered"></span>
-                        <span data-i18n="portal.delivered">تم التسليم</span>
+                        <span data-i18n-portal="delivered">تم التسليم</span>
                         <span class="status-count" id="ordersDelivered">0</span>
                     </div>
                 </div>
                 <button class="pillar-btn" onclick="studentViewOrders()">
-                    <i class="fas fa-list"></i> <span data-i18n="portal.viewOrders">عرض الطلبات</span>
+                    <i class="fas fa-list"></i> <span data-i18n-portal="viewOrders">عرض الطلبات</span>
                 </button>
             </div>
             
             <!-- Pillar 3: Live Tracking -->
             <div class="pillar-card glass-panel" id="pillarTracking">
                 <div class="pillar-icon"><i class="fas fa-map-location-dot"></i></div>
-                <h2 data-i18n="portal.p3Title">🚚 تتبع التوصيل</h2>
-                <p data-i18n="portal.p3Desc">GPS مباشر لحالة التوصيل في العراق</p>
+                <h2 data-i18n-portal="p3Title">🚚 تتبع التوصيل</h2>
+                <p data-i18n-portal="p3Desc">GPS مباشر لحالة التوصيل في العراق</p>
                 <div class="tracking-preview">
                     <div id="trackingMapSmall" style="height: 150px; border-radius: 12px;"></div>
                 </div>
                 <button class="pillar-btn" onclick="studentViewTracking()">
-                    <i class="fas fa-location-dot"></i> <span data-i18n="portal.openMap">فتح الخريطة</span>
+                    <i class="fas fa-location-dot"></i> <span data-i18n-portal="openMap">فتح الخريطة</span>
                 </button>
             </div>
             
             <!-- Pillar 4: Upload Center -->
             <div class="pillar-card glass-panel" id="pillarUpload">
                 <div class="pillar-icon"><i class="fas fa-cloud-arrow-up"></i></div>
-                <h2 data-i18n="portal.p4Title">📤 مركز الرفع</h2>
-                <p data-i18n="portal.p4Desc">ارفع ملفاتك للطباعة المخصصة</p>
+                <h2 data-i18n-portal="p4Title">📤 مركز الرفع</h2>
+                <p data-i18n-portal="p4Desc">ارفع ملفاتك للطباعة المخصصة</p>
                 
                 <!-- Price Calculator -->
                 <div class="price-calculator glass-panel">
-                    <h4><i class="fas fa-calculator"></i> <span data-i18n="portal.priceCalc">حاسبة السعر</span></h4>
+                    <h4><i class="fas fa-calculator"></i> <span data-i18n-portal="priceCalc">حاسبة السعر</span></h4>
                     <div class="calc-row">
-                        <label data-i18n="portal.pages">عدد الصفحات:</label>
+                        <label data-i18n-portal="pages">عدد الصفحات:</label>
                         <input type="number" id="calcPages" value="1" min="1" onchange="calculatePrice()">
                     </div>
                     <div class="calc-row">
-                        <label data-i18n="portal.copies">عدد النسخ:</label>
+                        <label data-i18n-portal="copies">عدد النسخ:</label>
                         <input type="number" id="calcCopies" value="1" min="1" onchange="calculatePrice()">
                     </div>
                     <div class="calc-row">
-                        <label data-i18n="portal.paperType">نوع الورق:</label>
+                        <label data-i18n-portal="paperType">نوع الورق:</label>
                         <select id="calcPaper" onchange="calculatePrice()">
-                            <option value="a4" data-i18n="portal.a4">A4 عادي</option>
-                            <option value="a4glossy" data-i18n="portal.a4glossy">A4 لامع</option>
-                            <option value="a3" data-i18n="portal.a3">A3</option>
+                            <option value="a4" data-i18n-portal="a4">A4 عادي</option>
+                            <option value="a4glossy" data-i18n-portal="a4glossy">A4 لامع</option>
+                            <option value="a3" data-i18n-portal="a3">A3</option>
                         </select>
                     </div>
                     <div class="calc-result">
-                        <span data-i18n="portal.totalPrice">السعر الكلي:</span>
+                        <span data-i18n-portal="totalPrice">السعر الكلي:</span>
                         <span class="price-result" id="totalPrice">500 IQD</span>
                     </div>
                 </div>
@@ -701,11 +701,11 @@
                 <div class="upload-zone" id="uploadZone">
                     <input type="file" id="studentFileUpload" accept=".pdf,.doc,.docx,.jpg,.png" style="display:none">
                     <i class="fas fa-cloud-upload-alt"></i>
-                    <p data-i18n="portal.dropFiles">أسقط الملفات هنا أو اضغط للرفع</p>
+                    <p data-i18n-portal="dropFiles">أسقط الملفات هنا أو اضغط للرفع</p>
                     <span class="upload-hint">PDF, DOC, JPG, PNG</span>
                 </div>
                 <button class="pillar-btn gold" onclick="submitStudentFile()">
-                    <i class="fas fa-paper-plane"></i> <span data-i18n="portal.submitFile">إرسال للطباعة</span>
+                    <i class="fas fa-paper-plane"></i> <span data-i18n-portal="submitFile">إرسال للطباعة</span>
                 </button>
             </div>
         </div>
