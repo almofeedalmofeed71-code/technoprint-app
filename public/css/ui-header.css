@@ -1,0 +1,96 @@
+/* TECHOPRINT 2026 - UI HEADER */
+/* Top Bar, Wallet, Logo Styling ONLY */
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 24px;
+    background: rgba(10, 10, 11, 0.9);
+    border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+}
+
+.header-right, .header-left { display: flex; align-items: center; gap: 12px; }
+
+.page-title {
+    color: var(--gold-royal);
+    font-family: 'Amiri';
+    font-size: 1.3rem;
+    font-weight: 700;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.logo-icon {
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, var(--gold-dark), var(--gold-royal));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Amiri';
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--bg-cosmic);
+}
+
+.logo-text {
+    font-family: 'Amiri';
+    font-size: 1.2rem;
+    color: var(--gold-royal);
+}
+
+.balance-display {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 18px;
+    background: linear-gradient(135deg, rgba(212, 175, 55, 0.15), rgba(212, 175, 55, 0.05));
+    border: 1px solid rgba(212, 175, 55, 0.3);
+    border-radius: 25px;
+    cursor: pointer;
+}
+
+.balance-value {
+    color: var(--gold-royal);
+    font-weight: 700;
+}
+
+.bottom-nav {
+    display: none;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(10, 10, 11, 0.95);
+    border-top: 1px solid rgba(212, 175, 55, 0.2);
+    padding: 8px 0;
+    z-index: 1000;
+    justify-content: space-around;
+}
+
+.bottom-nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 8px 12px;
+    background: transparent;
+    border: none;
+    color: rgba(255,255,255,0.6);
+    font-size: 0.7rem;
+    cursor: pointer;
+}
+
+.bottom-nav-item.active { color: var(--gold-royal); }
+.bottom-nav-item i { font-size: 1.2rem; }
+
+@media (max-width: 768px) {
+    .bottom-nav { display: flex; }
+    .balance-label { display: none; }
+}

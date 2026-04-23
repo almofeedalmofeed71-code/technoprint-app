@@ -1,0 +1,90 @@
+/* TECHOPRINT 2026 - UI ADS SLIDER */
+/* 3x3 Mega Slider Layout for Companies ONLY */
+
+.ads-container {
+    position: relative;
+    width: 100%;
+    max-width: 1200px;
+    margin: 20px auto;
+    overflow: hidden;
+    border-radius: var(--radius-lg);
+}
+
+.ads-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    padding: 20px;
+    background: rgba(10, 10, 11, 0.5);
+    border-radius: var(--radius-lg);
+}
+
+.ad-card {
+    aspect-ratio: 16/10;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    position: relative;
+    cursor: pointer;
+    transition: transform var(--transition-normal);
+}
+
+.ad-card:hover { transform: scale(1.02); }
+
+.ad-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.ad-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 15px 12px 10px;
+    background: linear-gradient(transparent, rgba(0,0,0,0.9));
+}
+
+.ad-title {
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.ad-subtitle {
+    font-size: 0.7rem;
+    opacity: 0.8;
+}
+
+.ads-nav {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.ads-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.3);
+    cursor: pointer;
+    transition: background var(--transition-fast);
+}
+
+.ads-dot.active { background: var(--gold-royal); }
+
+@media (max-width: 768px) {
+    .ads-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+        padding: 12px;
+    }
+    .ad-overlay { padding: 10px 8px 8px; }
+    .ad-title { font-size: 0.75rem; }
+    .ad-subtitle { font-size: 0.65rem; }
+}
+
+@media (max-width: 480px) {
+    .ads-grid { grid-template-columns: repeat(2, 1fr); }
+}

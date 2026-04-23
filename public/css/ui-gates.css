@@ -1,0 +1,114 @@
+/* TECHOPRINT 2026 - UI GATES */
+/* Main Portal Cards & Horizontal Swipe ONLY */
+
+.master-portal {
+    position: relative;
+    width: 100%;
+    min-height: 100vh;
+    overflow-x: auto;
+    overflow-y: hidden;
+    display: flex;
+    align-items: center;
+    padding: 40px 0;
+    scroll-snap-type: x mandatory;
+}
+
+.portal-row {
+    display: flex;
+    gap: 25px;
+    padding: 0 40px;
+    scroll-snap-align: center;
+}
+
+.portal-card {
+    flex: 0 0 280px;
+    height: 380px;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    position: relative;
+    cursor: pointer;
+    scroll-snap-align: center;
+    transition: transform var(--transition-normal), box-shadow var(--transition-normal);
+}
+
+.portal-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 20px 40px rgba(212, 175, 55, 0.3);
+}
+
+.portal-bg {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-size: cover;
+    background-position: center;
+    filter: brightness(0.6);
+    transition: filter var(--transition-normal);
+}
+
+.portal-card:hover .portal-bg { filter: brightness(0.7); }
+
+.portal-overlay {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: linear-gradient(180deg, transparent 40%, rgba(10,10,11,0.95) 100%);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 25px;
+}
+
+.portal-icon {
+    font-size: 3.5rem;
+    margin-bottom: 15px;
+}
+
+.portal-title {
+    font-family: 'Amiri';
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--gold-royal);
+    margin-bottom: 8px;
+}
+
+.portal-desc {
+    font-size: 0.85rem;
+    opacity: 0.8;
+    line-height: 1.5;
+}
+
+.portal-arrow {
+    position: absolute;
+    bottom: 25px;
+    left: 25px;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    background: var(--gold-royal);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    color: var(--bg-cosmic);
+}
+
+.portal-btn {
+    padding: 12px 24px;
+    border-radius: 25px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition-normal);
+    border: 2px solid var(--gold-royal);
+    background: transparent;
+    color: var(--gold-royal);
+}
+
+.portal-btn:hover {
+    background: var(--gold-royal);
+    color: var(--bg-cosmic);
+}
+
+@media (max-width: 768px) {
+    .portal-card { flex: 0 0 240px; height: 320px; }
+    .portal-icon { font-size: 2.5rem; }
+    .portal-title { font-size: 1.3rem; }
+}
