@@ -988,5 +988,14 @@ document.addEventListener('DOMContentLoaded', () => {
     // Check for updates
     UpdateNotifier.check();
     
+    // ==================== PREMIUM SPLASH SCREEN ====================
+    // Hide splash screen after 3 seconds (CSS animation handles fade out)
+    setTimeout(() => {
+        const splash = document.getElementById('splashScreen');
+        if (splash) {
+            splash.style.display = 'none';
+        }
+    }, 3000);
+    
     console.log('🚀 TECHOPRINT 2026 v2.1 - FULLY LOADED!');
 });
