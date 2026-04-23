@@ -16,7 +16,6 @@
     <link rel="stylesheet" href="css/ui-modals.css">
     <link rel="stylesheet" href="css/ui-vertical-lang.css">
     <link rel="stylesheet" href="css/slider-ui.css">
-    <link rel="stylesheet" href="css/gates-gallery.css">
     <link rel="stylesheet" href="css/student-portal.css">
     <link rel="stylesheet" href="css/animations.css">
     <link rel="stylesheet" href="css/responsive-core.css">
@@ -29,25 +28,25 @@
             <span class="brand-name">TECHOPRINT</span>
         </div>
         <div class="header-actions">
-            <div class="header-notif" onclick="showNotification()">
+            <div class="header-notif" id="btn-notification" onclick="showNotification()">
                 <i class="fas fa-bell"></i>
                 <span class="notif-badge">3</span>
             </div>
-            <div class="header-wallet" onclick="Nav.go('wallet')">
+            <div class="header-wallet" id="btn-wallet" onclick="Nav.go('wallet')">
                 <i class="fas fa-wallet"></i>
                 <span id="headerBalance">0 IQD</span>
             </div>
         </div>
     </header>
 
-    <!-- Language Bar (Right Side) -->
+    <!-- Language Bar -->
     <nav id="language-bar" class="language-bar">
         <button class="lang-btn active" data-lang="ar" onclick="I18n.set('ar')">عربي</button>
         <button class="lang-btn" data-lang="ku" onclick="I18n.set('ku')">کوردی</button>
         <button class="lang-btn" data-lang="en" onclick="I18n.set('en')">English</button>
     </nav>
 
-    <!-- Central Ad Slider -->
+    <!-- Central Ad Slider - 3x3 Grid -->
     <section id="slider" class="slider-section">
         <div class="slider-container">
             <div class="slide">
@@ -62,82 +61,79 @@
                 <div class="slide-block"><img src="https://picsum.photos/400/300?random=9" alt="Ad 9"></div>
             </div>
         </div>
-        <div class="slider-nav">
+        <div class="slide-nav">
             <div class="slider-dot active"></div>
             <div class="slider-dot"></div>
             <div class="slider-dot"></div>
         </div>
     </section>
 
-    <!-- Master Portal (3 Gate Cards) -->
+    <!-- Master Portal -->
     <section id="masterPortal" class="gates-section" style="display:none;">
         <div class="gate-row">
-            <div class="gate-card" onclick="showMainDashboard()">
+            <div class="gate-card" id="btn-student" onclick="showMainDashboard()">
                 <div class="gate-bg" style="background:linear-gradient(135deg,#1a1a2e,#16213e);"></div>
                 <div class="gate-content">
                     <div class="gate-icon">🎓</div>
-                    <h3 class="gate-title" data-i18n="student_gate">بوابة الطالب</h3>
-                    <p class="gate-desc" data-i18n="student_desc">ادارة طلباتك ومتابعة الطباعة</p>
+                    <h3>بوابة الطالب</h3>
                 </div>
             </div>
-            <div class="gate-card" onclick="showMainDashboard()">
+            <div class="gate-card" id="btn-wallet-gate" onclick="Nav.go('wallet')">
                 <div class="gate-bg" style="background:linear-gradient(135deg,#0d3b2e,#1a5e3f);"></div>
                 <div class="gate-content">
                     <div class="gate-icon">💰</div>
-                    <h3 class="gate-title" data-i18n="wallet_gate">المحفظة</h3>
-                    <p class="gate-desc" data-i18n="wallet_desc">ادارة رصيدك وتحويل الاموال</p>
+                    <h3>المحفظة</h3>
                 </div>
             </div>
-            <div class="gate-card" onclick="openModal('loginModal')">
+            <div class="gate-card" id="btn-login-gate" onclick="openModal('loginModal')">
                 <div class="gate-bg" style="background:linear-gradient(135deg,#3b1a1a,#5e1a1a);"></div>
                 <div class="gate-content">
                     <div class="gate-icon"><i class="fas fa-sign-in-alt"></i></div>
-                    <h3 class="gate-title" data-i18n="login_gate">تسجيل الدخول</h3>
-                    <p class="gate-desc" data-i18n="login_desc">ادخل حسابك او انشئ جديد</p>
+                    <h3>تسجيل الدخول</h3>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- Student Dashboard -->
-    <section id="app" class="dashboard-section" style="display:none;">
+    <section id="app" class="dashboard-section">
         <main id="pageContent" class="page-content">
             <div class="service-grid">
-                <div class="service-card" onclick="Nav.go('orders')">
+                <div class="service-card" id="btn-orders" onclick="Nav.go('orders')">
                     <div class="service-icon">📦</div>
-                    <p class="service-title" data-i18n="my_orders">طلباتي</p>
+                    <p class="service-title">طلباتي</p>
                 </div>
-                <div class="service-card" onclick="Nav.go('wallet')">
+                <div class="service-card" id="btn-wallet-nav" onclick="Nav.go('wallet')">
                     <div class="service-icon">💰</div>
-                    <p class="service-title" data-i18n="wallet_nav">المحفظة</p>
+                    <p class="service-title">المحفظة</p>
                 </div>
-                <div class="service-card" onclick="Nav.go('library')">
+                <div class="service-card" id="btn-library" onclick="Nav.go('library')">
                     <div class="service-icon">📚</div>
-                    <p class="service-title" data-i18n="library_nav">المكتبة</p>
+                    <p class="service-title">المكتبة</p>
                 </div>
-                <div class="service-card" onclick="Nav.go('tracking')">
+                <div class="service-card" id="btn-tracking" onclick="Nav.go('tracking')">
                     <div class="service-icon">📍</div>
-                    <p class="service-title" data-i18n="track_nav">التتبع</p>
+                    <p class="service-title">التتبع</p>
                 </div>
-                <div class="service-card" onclick="Nav.go('printing')">
+                <div class="service-card" id="btn-printing" onclick="Nav.go('printing')">
                     <div class="service-icon">🖨️</div>
-                    <p class="service-title" data-i18n="print_nav">الطباعة</p>
+                    <p class="service-title">الطباعة</p>
                 </div>
-                <div class="service-card" onclick="Nav.go('support')">
+                <div class="service-card" id="btn-support" onclick="Nav.go('support')">
                     <div class="service-icon">🔧</div>
-                    <p class="service-title" data-i18n="support_nav">الدعم</p>
+                    <p class="service-title">الدعم</p>
                 </div>
-                <div class="service-card" onclick="Nav.go('teacher')">
+                <div class="service-card" id="btn-teacher" onclick="Nav.go('teacher')">
                     <div class="service-icon">👨‍🏫</div>
-                    <p class="service-title" data-i18n="teacher_nav">المعلم</p>
+                    <p class="service-title">المعلم</p>
                 </div>
-                <div class="service-card" onclick="Nav.go('inks')">
+                <div class="service-card" id="btn-inks" onclick="Nav.go('inks')">
                     <div class="service-icon">🎨</div>
-                    <p class="service-title" data-i18n="inks_nav">الحبر</p>
+                    <p class="service-title">الحبر</p>
                 </div>
-                <div class="service-card" onclick="openModal('loginModal')">
+                <div class="service-card" id="btn-settings" onclick="openModal('loginModal')">
                     <div class="service-icon">⚙️</div>
-                    <p class="service-title" data-i18n="settings_nav">الاعدادات</p>
+                    <p class="service-title">الاعدادات</p>
                 </div>
             </div>
         </main>
@@ -145,21 +141,21 @@
 
     <!-- Bottom Navigation -->
     <nav class="bottom-nav">
-        <button class="nav-btn" onclick="navigateTo('dashboard')">
+        <button class="nav-btn" id="nav-home" onclick="navigateTo('dashboard')">
             <i class="fas fa-home"></i>
-            <span data-i18n="home">الرئيسية</span>
+            <span>الرئيسية</span>
         </button>
-        <button class="nav-btn" onclick="navigateTo('wallet')">
+        <button class="nav-btn" id="nav-wallet" onclick="navigateTo('wallet')">
             <i class="fas fa-wallet"></i>
-            <span data-i18n="wallet_btn">المحفظة</span>
+            <span>المحفظة</span>
         </button>
-        <button class="nav-btn" onclick="navigateTo('library')">
+        <button class="nav-btn" id="nav-library" onclick="navigateTo('library')">
             <i class="fas fa-book"></i>
-            <span data-i18n="library_btn">المكتبة</span>
+            <span>المكتبة</span>
         </button>
-        <button class="nav-btn" onclick="navigateTo('orders')">
+        <button class="nav-btn" id="nav-orders" onclick="navigateTo('orders')">
             <i class="fas fa-box"></i>
-            <span data-i18n="orders_btn">طلباتي</span>
+            <span>طلباتي</span>
         </button>
     </nav>
 
@@ -167,11 +163,11 @@
     <div id="loginModal" class="modal" style="display:none;">
         <div class="modal-box">
             <button class="modal-close" onclick="closeModal('loginModal')"><i class="fas fa-times"></i></button>
-            <h2 data-i18n="login_title">تسجيل الدخول</h2>
+            <h2>تسجيل الدخول</h2>
             <form id="loginForm" onsubmit="return Auth.login(this.email.value, this.password.value)">
                 <input type="email" name="email" class="input-field" placeholder="البريد الالكتروني" required>
                 <input type="password" name="password" class="input-field" placeholder="كلمة المرور" required>
-                <button type="submit" class="btn-gold" data-i18n="login_btn">دخول</button>
+                <button type="submit" class="btn-gold">دخول</button>
             </form>
             <p style="text-align:center;margin-top:15px;color:#D4AF37;cursor:pointer;" onclick="toggleRegister()">إنشاء حساب جديد</p>
         </div>
@@ -199,7 +195,7 @@
                 <input type="password" name="password" class="input-field" placeholder="كلمة المرور" required>
                 <button type="submit" class="btn-gold">تسجيل</button>
             </form>
-            <p style="text-align:center;margin-top:15px;color:#D4AF37;cursor:pointer;" onclick="toggleRegister()">لديك حساب؟ تسجيل الدخول</p>
+            <p style="text-align:center;margin-top:15px;color:#D4AF37;cursor:pointer;" onclick="toggleRegister()">لديك حساب؟</p>
         </div>
     </div>
 

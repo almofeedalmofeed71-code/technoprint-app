@@ -1,5 +1,5 @@
 /* TECHOPRINT 2026 - GATES & PORTALS */
-/* Clean Premium Gate Cards */
+/* FORCE ACTIVE BUTTONS */
 
 .gates-section {
     padding: 20px;
@@ -19,54 +19,17 @@
     border-radius: 20px;
     overflow: hidden;
     cursor: pointer;
-    border: 2px solid var(--border-gold);
+    border: 2px solid rgba(212, 175, 55, 0.3);
     transition: all 0.3s ease;
-    z-index: 100;
+    z-index: 9999 !important;
 }
 
 .gate-card:hover {
     transform: translateY(-5px);
-    box-shadow: var(--shadow-gold);
-    border-color: var(--gold-royal);
+    border-color: #D4AF37;
 }
 
-.gate-bg {
-    position: absolute;
-    inset: 0;
-    opacity: 0.8;
-}
-
-.gate-content {
-    position: relative;
-    z-index: 10;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    padding: 20px;
-    text-align: center;
-}
-
-.gate-icon {
-    font-size: 3rem;
-    margin-bottom: 15px;
-}
-
-.gate-title {
-    font-family: 'Amiri', serif;
-    font-size: 1.4rem;
-    color: var(--gold-royal);
-    margin: 0 0 8px 0;
-}
-
-.gate-desc {
-    font-size: 0.9rem;
-    color: var(--text-secondary);
-    margin: 0;
-}
-
-/* Dashboard Section */
+/* Dashboard */
 .dashboard-section {
     padding: 20px;
     max-width: 1200px;
@@ -86,21 +49,20 @@
 }
 
 .service-card {
-    background: var(--bg-card);
-    border: 1px solid var(--border-gold);
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(212, 175, 55, 0.3);
     border-radius: 15px;
     padding: 25px 15px;
     text-align: center;
     cursor: pointer;
     transition: all 0.3s ease;
-    z-index: 100;
+    z-index: 9999 !important;
     position: relative;
 }
 
 .service-card:hover {
-    background: var(--gold-dark);
+    background: rgba(212, 175, 55, 0.2);
     transform: translateY(-3px);
-    box-shadow: var(--shadow-gold);
 }
 
 .service-icon {
@@ -111,32 +73,11 @@
 .service-title {
     font-size: 0.95rem;
     font-weight: 600;
-    color: var(--text-primary);
+    color: #ffffff;
     margin: 0;
 }
 
-/* Back Button */
-.back-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 10px 20px;
-    background: transparent;
-    border: 2px solid var(--gold-royal);
-    border-radius: 25px;
-    color: var(--gold-royal);
-    cursor: pointer;
-    transition: all 0.3s ease;
-    margin-bottom: 20px;
-    z-index: 100;
-}
-
-.back-btn:hover {
-    background: var(--gold-royal);
-    color: var(--bg-cosmic);
-}
-
-/* Bottom Navigation */
+/* Bottom Navigation - FORCE */
 .bottom-nav {
     position: fixed;
     bottom: 0;
@@ -145,9 +86,9 @@
     display: flex;
     justify-content: space-around;
     padding: 10px;
-    background: var(--bg-dark);
-    border-top: 1px solid var(--border-gold);
-    z-index: 1000;
+    background: #0a0a0f;
+    border-top: 2px solid #D4AF37;
+    z-index: 9999 !important;
 }
 
 .nav-btn {
@@ -158,14 +99,14 @@
     padding: 8px 15px;
     background: transparent;
     border: none;
-    color: var(--text-secondary);
+    color: rgba(255,255,255,0.7);
     cursor: pointer;
     transition: all 0.3s ease;
-    z-index: 100;
+    z-index: 9999 !important;
 }
 
 .nav-btn:hover, .nav-btn.active {
-    color: var(--gold-royal);
+    color: #D4AF37;
 }
 
 .nav-btn i {

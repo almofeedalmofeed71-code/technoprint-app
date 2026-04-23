@@ -1,56 +1,63 @@
 /* TECHOPRINT 2026 - ENG NAVIGATION */
-/* Working button events with Coming Soon popups */
+/* FORCE ALERT ON EVERY BUTTON CLICK */
 
 const Nav = {
     current: 'dashboard',
-    screens: ['dashboard', 'wallet', 'library', 'orders', 'tracking', 'printing', 'support', 'teacher', 'inks'],
-    
     init() {
         console.log('[NAV] Navigation ready');
     },
-    
     go(page) {
-        if (!this.screens.includes(page)) {
-            console.log('[NAV] Unknown page:', page);
-            return;
-        }
         this.current = page;
-        this.showComingSoon(page);
-    },
-    
-    showComingSoon(page) {
-        const pageNames = {
-            wallet: 'Wallet',
-            library: 'Library',
-            orders: 'My Orders',
-            tracking: 'Order Tracking',
-            printing: 'Printing Service',
-            support: 'Support Center',
-            teacher: 'Teacher Portal',
-            inks: 'Inks & Supplies',
-            settings: 'Settings'
+        const alerts = {
+            orders: '📦 My Orders - Coming Soon!',
+            wallet: '💰 Wallet - Coming Soon!',
+            library: '📚 Library - Coming Soon!',
+            tracking: '📍 Order Tracking - Coming Soon!',
+            printing: '🖨️ Printing Service - Coming Soon!',
+            support: '🔧 Support Center - Coming Soon!',
+            teacher: '👨‍🏫 Teacher Portal - Coming Soon!',
+            inks: '🎨 Inks & Supplies - Coming Soon!',
+            settings: '⚙️ Settings - Coming Soon!',
+            dashboard: '🏠 Dashboard'
         };
-        alert('Coming Soon: ' + (pageNames[page] || page));
+        window.alert(alerts[page] || page + ' - Coming Soon!');
     }
 };
 
 window.Nav = Nav;
-window.navigateTo = (p) => Nav.go(p);
-window.showNotification = () => alert('You have 3 new notifications');
+window.navigateTo = function(p) { Nav.go(p); };
 
-// Coming Soon Modal function
-window.showComingSoon = function(feature) {
-    const modal = document.createElement('div');
-    modal.className = 'modal';
-    modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.9);display:flex;align-items:center;justify-content:center;z-index:99999;';
-    modal.innerHTML = `
-        <div style="background:#12121a;border:2px solid #D4AF37;border-radius:20px;padding:40px;text-align:center;max-width:350px;">
-            <div style="font-size:3rem;margin-bottom:15px;">⏳</div>
-            <h2 style="color:#D4AF37;font-family:'Amiri';margin:0 0 10px 0;">Coming Soon</h2>
-            <p style="color:#fff;margin:0 0 20px 0;">${feature} is under development</p>
-            <button onclick="this.closest('.modal').remove()" style="background:#D4AF37;color:#0a0a0f;border:none;padding:10px 30px;border-radius:25px;cursor:pointer;font-weight:600;">Close</button>
-        </div>
-    `;
-    modal.onclick = (e) => { if (e.target === modal) modal.remove(); };
-    document.body.appendChild(modal);
+// DIRECT onClick handlers for ALL buttons
+window.showNotification = function() {
+    window.alert('🔔 You have 3 new notifications!\n\n• New order received\n• Payment confirmed\n• Print job completed');
+};
+
+window.openModal = function(id) {
+    var modal = document.getElementById(id);
+    if (modal) modal.style.display = 'flex';
+};
+
+window.closeModal = function(id) {
+    var modal = document.getElementById(id);
+    if (modal) modal.style.display = 'none';
+};
+
+window.toggleRegister = function() {
+    var login = document.getElementById('loginModal');
+    var reg = document.getElementById('registerModal');
+    if (login) login.style.display = login.style.display === 'flex' ? 'none' : 'flex';
+    if (reg) reg.style.display = reg.style.display === 'flex' ? 'none' : 'flex';
+};
+
+window.handleRegister = function(form) {
+    window.alert('Registration form submitted!');
+    return false;
+};
+
+window.showMainDashboard = function() {
+    window.alert('🎓 Welcome to Student Portal!');
+    var portal = document.getElementById('masterPortal');
+    var app = document.getElementById('app');
+    if (portal) portal.style.display = 'none';
+    if (app) app.style.display = 'block';
 };
