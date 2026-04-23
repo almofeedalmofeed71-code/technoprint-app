@@ -1,69 +1,15 @@
-/* TECHOPRINT 2026 - UI CARDS */
-/* Ad Cards & Portal Cards - Under 100 Lines */
-
-/* Portal Card */
-.portal-card {
-    flex: 0 0 280px;
-    height: 380px;
-    border-radius: var(--radius-lg);
-    overflow: hidden;
-    position: relative;
-    cursor: pointer;
-    transition: transform var(--transition-normal);
-}
-
-.portal-card:hover {
-    transform: translateY(-10px);
-}
-
-.portal-bg {
-    position: absolute;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background-size: cover;
-    background-position: center;
-    filter: brightness(0.6);
-}
-
-.portal-card:hover .portal-bg { filter: brightness(0.7); }
-
-.portal-overlay {
-    position: absolute;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: linear-gradient(180deg, transparent 40%, rgba(10,10,11,0.95) 100%);
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    padding: 25px;
-}
-
-.portal-icon { font-size: 3.5rem; margin-bottom: 15px; }
-.portal-title { font-family: 'Amiri'; font-size: 1.6rem; font-weight: 700; color: var(--gold-royal); }
-.portal-desc { font-size: 0.85rem; opacity: 0.8; line-height: 1.5; }
-
-/* Ad Card */
-.ad-card {
-    border-radius: var(--radius-md);
-    overflow: hidden;
-    position: relative;
-    cursor: pointer;
-    transition: transform var(--transition-normal);
-}
-
-.ad-card:hover { transform: scale(1.02); }
-.ad-card img { width: 100%; height: 100%; object-fit: cover; }
-
-.ad-overlay {
-    position: absolute;
-    bottom: 0; left: 0; right: 0;
-    padding: 10px 8px 8px;
-    background: linear-gradient(transparent, rgba(0,0,0,0.9));
-}
-
-.ad-title { font-size: 0.8rem; font-weight: 600; margin: 0; }
-.ad-subtitle { font-size: 0.65rem; opacity: 0.8; margin: 2px 0 0; }
-
-@media (max-width: 768px) {
-    .portal-card { flex: 0 0 240px; height: 320px; }
-    .portal-icon { font-size: 2.5rem; }
-    .portal-title { font-size: 1.3rem; }
-}
+/* TECHOPRINT 2026 - CARDS */
+/* Glassmorphism + Portal Cards */
+.glass-card { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(15px); border: 1px solid rgba(212, 175, 55, 0.3); border-radius: 15px; padding: 15px; color: #fff; }
+.service-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; padding: 10px; }
+.portals-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; padding: 10px; }
+.portal-card { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(15px); border: 1px solid rgba(212, 175, 55, 0.3); border-radius: 15px; padding: 15px; text-align: center; cursor: pointer; transition: transform 0.3s; position: relative; }
+.portal-card:hover { transform: scale(1.05); border-color: #D4AF37; }
+.portal-card.construction { opacity: 0.7; }
+.portal-icon { font-size: 2.5rem; margin-bottom: 5px; }
+.portal-card h3 { color: #D4AF37; font-size: 0.9rem; margin: 5px 0; }
+.portal-card p { color: #ccc; font-size: 0.75rem; margin: 0; }
+.construction-badge { position: absolute; top: 5px; right: 5px; background: #D4AF37; color: #000; font-size: 0.6rem; padding: 2px 6px; border-radius: 10px; font-weight: bold; }
+.utility-row { display: flex; justify-content: center; gap: 10px; padding: 10px; flex-wrap: wrap; }
+.utility-btn { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(212, 175, 55, 0.3); color: #D4AF37; padding: 8px 15px; border-radius: 20px; cursor: pointer; font-size: 0.8rem; }
+.utility-btn:hover { background: rgba(212, 175, 55, 0.2); }

@@ -2,23 +2,17 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>TECHOPRINT 2026</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/ui-colors.css?v=2026">
     <link rel="stylesheet" href="css/ui-glass.css?v=2026">
     <link rel="stylesheet" href="css/ui-ads-slider.css?v=2026">
-    <link rel="stylesheet" href="css/ui-vertical-lang.css?v=2026">
-    <link rel="stylesheet" href="css/ui-header.css?v=2026">
-    <link rel="stylesheet" href="css/ui-buttons.css?v=2026">
     <link rel="stylesheet" href="css/ui-cards.css?v=2026">
-    <link rel="stylesheet" href="css/ui-inputs.css?v=2026">
-    <link rel="stylesheet" href="css/ui-modals.css?v=2026">
-    <link rel="stylesheet" href="css/slider-ui.css?v=2026">
-    <link rel="stylesheet" href="css/student-portal.css?v=2026">
+    <link rel="stylesheet" href="css/ui-buttons.css?v=2026">
+    <link rel="stylesheet" href="css/ui-header.css?v=2026">
     <link rel="stylesheet" href="css/animations.css?v=2026">
-    <link rel="stylesheet" href="css/responsive-core.css?v=2026">
 </head>
 <body>
     <div id="splash" class="splash">
@@ -28,12 +22,13 @@
 
     <header class="app-header">
         <div class="brand">
-            <div class="brand-logo"></div>
-            <span class="brand-name">TECHOPRINT</span>
+            <div class="brand-logo">T</div>
+            <span class="brand-name">تكنوبرنت</span>
         </div>
+        <button class="btn-gold register-btn" onclick="openModal('loginModal')">تسجيل الدخول</button>
         <div class="header-actions">
             <div class="header-notif" onclick="showNotification()"><i class="fas fa-bell"></i></div>
-            <div class="header-wallet" onclick="Nav.go('wallet')"><i class="fas fa-wallet"></i><span>0 IQD</span></div>
+            <div class="header-wallet" onclick="Nav.go('wallet')"><i class="fas fa-wallet"></i></div>
         </div>
     </header>
 
@@ -41,19 +36,13 @@
         <div class="slider-frame">
             <div class="slider-container">
                 <div class="slide" style="display:grid;">
-                    <div class="slide-block"><img src="https://picsum.photos/400/300?random=1"></div>
-                    <div class="slide-block"><img src="https://picsum.photos/400/300?random=2"></div>
-                    <div class="slide-block"><img src="https://picsum.photos/400/300?random=3"></div>
+                    <div class="slide-block" style="grid-column:span 3;"><img src="https://picsum.photos/1200/600?random=1"></div>
                 </div>
                 <div class="slide">
-                    <div class="slide-block"><img src="https://picsum.photos/400/300?random=4"></div>
-                    <div class="slide-block"><img src="https://picsum.photos/400/300?random=5"></div>
-                    <div class="slide-block"><img src="https://picsum.photos/400/300?random=6"></div>
+                    <div class="slide-block" style="grid-column:span 3;"><img src="https://picsum.photos/1200/600?random=2"></div>
                 </div>
                 <div class="slide">
-                    <div class="slide-block"><img src="https://picsum.photos/400/300?random=7"></div>
-                    <div class="slide-block"><img src="https://picsum.photos/400/300?random=8"></div>
-                    <div class="slide-block"><img src="https://picsum.photos/400/300?random=9"></div>
+                    <div class="slide-block" style="grid-column:span 3;"><img src="https://picsum.photos/1200/600?random=3"></div>
                 </div>
             </div>
         </div>
@@ -65,18 +54,141 @@
     </section>
 
     <section id="dashboardSection" class="dashboard-section">
-        <h2 class="section-title">لوحة التحكم</h2>
-        <div class="service-grid">
-            <div class="service-card" onclick="Nav.go('orders')"><div class="service-icon">📦</div><p>طلباتي</p></div>
-            <div class="service-card" onclick="Nav.go('wallet')"><div class="service-icon">💰</div><p>المحفظة</p></div>
-            <div class="service-card" onclick="Nav.go('library')"><div class="service-icon">📚</div><p>المكتبة</p></div>
-            <div class="service-card" onclick="Nav.go('tracking')"><div class="service-icon">📍</div><p>التتبع</p></div>
-            <div class="service-card" onclick="Nav.go('printing')"><div class="service-icon">🖨️</div><p>الطباعة</p></div>
-            <div class="service-card" onclick="Nav.go('support')"><div class="service-icon">🔧</div><p>الدعم</p></div>
-            <div class="service-card" onclick="Nav.go('teacher')"><div class="service-icon">👨‍🏫</div><p>المعلم</p></div>
-            <div class="service-card" onclick="Nav.go('settings')"><div class="service-icon">⚙️</div><p>الإعدادات</p></div>
-            <div class="service-card" onclick="Nav.go('dashboard')"><div class="service-icon">🏠</div><p>الرئيسية</p></div>
+        <h2 class="section-title">الخدمات الرئيسية</h2>
+        <div class="portals-grid">
+            <div class="portal-card" onclick="Nav.go('student')">
+                <div class="portal-icon">🎓</div>
+                <h3>فضاء النجاح</h3>
+                <p>مركز الطالب</p>
+            </div>
+            <div class="portal-card" onclick="Nav.go('teacher')">
+                <div class="portal-icon">👨‍🏫</div>
+                <h3>منبر الأساتذة</h3>
+                <p>ديوان التدريسيين</p>
+            </div>
+            <div class="portal-card" onclick="Nav.go('design')">
+                <div class="portal-icon">🎨</div>
+                <h3>بصمة المبدعين</h3>
+                <p>استوديو التصميم</p>
+            </div>
+            <div class="portal-card" onclick="Nav.go('library')">
+                <div class="portal-icon">📚</div>
+                <h3>كنوز المعرفة</h3>
+                <p>المكتبة الرقمية</p>
+            </div>
+            <div class="portal-card" onclick="Nav.go('ai')">
+                <div class="portal-icon">🤖</div>
+                <h3>العقل الرقمي</h3>
+                <p>مساعد AI الذكي</p>
+            </div>
+            <div class="portal-card construction" onclick="Nav.go('academy')">
+                <div class="portal-icon">🏫</div>
+                <h3>أكاديمية تكنو</h3>
+                <p>المعهد والدورات</p>
+                <span class="construction-badge">قريباً</span>
+            </div>
         </div>
+
+        <div class="utility-row">
+            <button class="utility-btn" onclick="Nav.go('about')">من نحن</button>
+            <button class="utility-btn" onclick="Nav.go('settings')">الإعدادات</button>
+            <button class="utility-btn" onclick="Nav.go('support')">الدعم الفني</button>
+            <button class="utility-btn" onclick="Nav.go('tracking')">التتبع</button>
+        </div>
+    </section>
+
+    <section id="studentSection" class="dashboard-section" style="display:none;">
+        <h2 class="section-title">فضاء النجاح - مركز الطالب</h2>
+        <div class="service-grid">
+            <div class="glass-card"><p>📦 طلباتي</p></div>
+            <div class="glass-card"><p>💰 محفظتي</p></div>
+            <div class="glass-card"><p>📚 المكتبة</p></div>
+            <div class="glass-card"><p>🖨️ الطباعة</p></div>
+            <div class="glass-card"><p>📍 التتبع</p></div>
+            <div class="glass-card"><p>📅 جدولي</p></div>
+            <div class="glass-card"><p>📊 نتائج</p></div>
+            <div class="glass-card"><p>💬 رسائل</p></div>
+            <div class="glass-card"><p>⚙️ الإعدادات</p></div>
+        </div>
+        <button class="btn-gold" onclick="Nav.go('dashboard')">العودة</button>
+    </section>
+
+    <section id="teacherSection" class="dashboard-section" style="display:none;">
+        <h2 class="section-title">منبر الأساتذة - ديوان التدريسيين</h2>
+        <div class="service-grid">
+            <div class="glass-card"><p>📝 الواجبات</p></div>
+            <div class="glass-card"><p>📊 النتائج</p></div>
+            <div class="glass-card"><p>📅 الجدول</p></div>
+            <div class="glass-card"><p>💬 التواصل</p></div>
+            <div class="glass-card"><p>📚 المواد</p></div>
+            <div class="glass-card"><p>📹 الحصص</p></div>
+            <div class="glass-card"><p>📋 التقارير</p></div>
+            <div class="glass-card"><p>👥 الطلاب</p></div>
+            <div class="glass-card"><p>⚙️ الإعدادات</p></div>
+        </div>
+        <button class="btn-gold" onclick="Nav.go('dashboard')">العودة</button>
+    </section>
+
+    <section id="designSection" class="dashboard-section" style="display:none;">
+        <h2 class="section-title">بصمة المبدعين - استوديو التصميم</h2>
+        <div class="service-grid">
+            <div class="glass-card"><p>🎨 تصميم شعار</p></div>
+            <div class="glass-card"><p>📄 تصميم كارت</p></div>
+            <div class="glass-card"><p>🖼️ تصميم بوستر</p></div>
+            <div class="glass-card"><p>📱 تصميم تطبيق</p></div>
+            <div class="glass-card"><p>🌐 تصميم موقع</p></div>
+            <div class="glass-card"><p>📦 تغليف</p></div>
+            <div class="glass-card"><p>🎭 هوية بصرية</p></div>
+            <div class="glass-card"><p>📸 تصوير</p></div>
+            <div class="glass-card"><p>🎬 مونتاج</p></div>
+        </div>
+        <button class="btn-gold" onclick="Nav.go('dashboard')">العودة</button>
+    </section>
+
+    <section id="librarySection" class="dashboard-section" style="display:none;">
+        <h2 class="section-title">كنوز المعرفة - المكتبة الرقمية</h2>
+        <div class="service-grid">
+            <div class="glass-card"><p>📖 كتب</p></div>
+            <div class="glass-card"><p>📝 مقالات</p></div>
+            <div class="glass-card"><p>🎥 فيديوهات</p></div>
+            <div class="glass-card"><p>🎧 بودكاست</p></div>
+            <div class="glass-card"><p>📜 أبحاث</p></div>
+            <div class="glass-card"><p>💡 شروحات</p></div>
+            <div class="glass-card"><p>🧮 رياضيات</p></div>
+            <div class="glass-card"><p>🔬 علوم</p></div>
+            <div class="glass-card"><p>🌍 لغات</p></div>
+        </div>
+        <button class="btn-gold" onclick="Nav.go('dashboard')">العودة</button>
+    </section>
+
+    <section id="aiSection" class="dashboard-section" style="display:none;">
+        <h2 class="section-title">العقل الرقمي - مساعد AI</h2>
+        <div class="glass-card" style="padding:30px;max-width:600px;margin:20px auto;text-align:center;">
+            <p style="color:#D4AF37;font-size:1.5rem;">🤖</p>
+            <p style="color:#fff;">اكتب سؤالك هنا...</p>
+            <textarea class="input-field" rows="4" style="resize:none;"></textarea>
+            <button class="btn-gold">إرسال</button>
+        </div>
+        <button class="btn-gold" onclick="Nav.go('dashboard')">العودة</button>
+    </section>
+
+    <section id="academySection" class="dashboard-section" style="display:none;">
+        <h2 class="section-title">أكاديمية تكنو - المعهد والدورات</h2>
+        <div class="glass-card" style="padding:40px;text-align:center;max-width:400px;margin:20px auto;">
+            <p style="font-size:4rem;">🏫</p>
+            <h3 style="color:#D4AF37;">قريباً</h3>
+            <p style="color:#fff;">نحن نعمل على إطلاق الأكاديمية</p>
+        </div>
+        <button class="btn-gold" onclick="Nav.go('dashboard')">العودة</button>
+    </section>
+
+    <section id="walletSection" class="dashboard-section" style="display:none;">
+        <h2 class="section-title">رصيدي</h2>
+        <div class="glass-card" style="padding:40px;text-align:center;max-width:400px;margin:20px auto;">
+            <p style="font-size:4rem;">💰</p>
+            <p style="font-size:2.5rem;color:#D4AF37;font-weight:bold;">0 IQD</p>
+        </div>
+        <button class="btn-gold" onclick="Nav.go('dashboard')">العودة</button>
     </section>
 
     <section id="ordersSection" class="dashboard-section" style="display:none;">
@@ -95,98 +207,10 @@
         <button class="btn-gold" onclick="Nav.go('dashboard')">العودة</button>
     </section>
 
-    <section id="walletSection" class="dashboard-section" style="display:none;">
-        <h2 class="section-title">المحفظة</h2>
-        <div class="service-grid">
-            <div class="glass-card"><p>💰 الرصيد: 0 IQD</p></div>
-            <div class="glass-card"><p>💳 شحن</p></div>
-            <div class="glass-card"><p>📤 سحب</p></div>
-            <div class="glass-card"><p>📊 المعاملات</p></div>
-            <div class="glass-card"><p>💳 البطاقات</p></div>
-            <div class="glass-card"><p>📋 الفواتير</p></div>
-            <div class="glass-card"><p>🎁 المكافآت</p></div>
-            <div class="glass-card"><p>📈 الاستثمار</p></div>
-            <div class="glass-card"><p>🔒 الأمان</p></div>
-        </div>
-        <button class="btn-gold" onclick="Nav.go('dashboard')">العودة</button>
-    </section>
-
-    <section id="librarySection" class="dashboard-section" style="display:none;">
-        <h2 class="section-title">المكتبة</h2>
-        <div class="service-grid">
-            <div class="glass-card"><p>📖 كتاب 1</p></div>
-            <div class="glass-card"><p>📗 كتاب 2</p></div>
-            <div class="glass-card"><p>📘 كتاب 3</p></div>
-            <div class="glass-card"><p>📕 كتاب 4</p></div>
-            <div class="glass-card"><p>📓 كتاب 5</p></div>
-            <div class="glass-card"><p>📔 كتاب 6</p></div>
-            <div class="glass-card"><p>📒 كتاب 7</p></div>
-            <div class="glass-card"><p>📑 كتاب 8</p></div>
-            <div class="glass-card"><p>📃 كتاب 9</p></div>
-        </div>
-        <button class="btn-gold" onclick="Nav.go('dashboard')">العودة</button>
-    </section>
-
     <section id="trackingSection" class="dashboard-section" style="display:none;">
         <h2 class="section-title">تتبع الطلب</h2>
-        <div class="service-grid">
-            <div class="glass-card"><p>🚚 قيد التوصيل</p></div>
-            <div class="glass-card"><p>✅ تم التوصيل</p></div>
-            <div class="glass-card"><p>⏳ قيد المراجعة</p></div>
-            <div class="glass-card"><p>📦 جاهز</p></div>
-            <div class="glass-card"><p>🔄 جاري التحضير</p></div>
-            <div class="glass-card"><p>❌ ملغي</p></div>
-            <div class="glass-card"><p>📍 الموقع</p></div>
-            <div class="glass-card"><p>📞 التواصل</p></div>
-            <div class="glass-card"><p>📝 التفاصيل</p></div>
-        </div>
-        <button class="btn-gold" onclick="Nav.go('dashboard')">العودة</button>
-    </section>
-
-    <section id="printingSection" class="dashboard-section" style="display:none;">
-        <h2 class="section-title">خدمة الطباعة</h2>
-        <div class="service-grid">
-            <div class="glass-card"><p>🖨️ طباعة سوداء</p></div>
-            <div class="glass-card"><p>🖨️ طباعة ملونة</p></div>
-            <div class="glass-card"><p>📄 نسخ</p></div>
-            <div class="glass-card"><p>📁 سكانر</p></div>
-            <div class="glass-card"><p>📅 حجز موعد</p></div>
-            <div class="glass-card"><p>💰 الأسعار</p></div>
-            <div class="glass-card"><p>📐 أحجام</p></div>
-            <div class="glass-card"><p>📎 ملفات</p></div>
-            <div class="glass-card"><p>📨 التوصيل</p></div>
-        </div>
-        <button class="btn-gold" onclick="Nav.go('dashboard')">العودة</button>
-    </section>
-
-    <section id="supportSection" class="dashboard-section" style="display:none;">
-        <h2 class="section-title">مركز الدعم</h2>
-        <div class="service-grid">
-            <div class="glass-card"><p>💬 محادثة</p></div>
-            <div class="glass-card"><p>📞 اتصال</p></div>
-            <div class="glass-card"><p>📧 بريد</p></div>
-            <div class="glass-card"><p>❓ أسئلة</p></div>
-            <div class="glass-card"><p>📖 مساعدة</p></div>
-            <div class="glass-card"><p>🐛 الإبلاغ</p></div>
-            <div class="glass-card"><p>💡 اقتراحات</p></div>
-            <div class="glass-card"><p>⭐ تقييم</p></div>
-            <div class="glass-card"><p>📜 الشروط</p></div>
-        </div>
-        <button class="btn-gold" onclick="Nav.go('dashboard')">العودة</button>
-    </section>
-
-    <section id="teacherSection" class="dashboard-section" style="display:none;">
-        <h2 class="section-title">بوابة المعلم</h2>
-        <div class="service-grid">
-            <div class="glass-card"><p>👨‍🏫 الملف الشخصي</p></div>
-            <div class="glass-card"><p>📚 مواد تعليمية</p></div>
-            <div class="glass-card"><p>📝 الواجبات</p></div>
-            <div class="glass-card"><p>📊 النتائج</p></div>
-            <div class="glass-card"><p>📅 الجدول</p></div>
-            <div class="glass-card"><p>💬 التواصل</p></div>
-            <div class="glass-card"><p>📹 الحصص</p></div>
-            <div class="glass-card"><p>📋 التقارير</p></div>
-            <div class="glass-card"><p>⚙️ الإعدادات</p></div>
+        <div class="glass-card" style="padding:30px;text-align:center;max-width:400px;margin:20px auto;">
+            <input type="text" class="input-field" placeholder="رقم الطلب" style="max-width:300px;">
         </div>
         <button class="btn-gold" onclick="Nav.go('dashboard')">العودة</button>
     </section>
@@ -198,7 +222,7 @@
             <div class="glass-card"><p>🎨 المظهر</p></div>
             <div class="glass-card"><p>🔔 الإشعارات</p></div>
             <div class="glass-card"><p>🔒 الخصوصية</p></div>
-            <div class="glass-card"><p>👤 الحساب</p></div>
+            <div class="glass-card"><p>👤 حسابي</p></div>
             <div class="glass-card"><p>🔐 الأمان</p></div>
             <div class="glass-card"><p>📱 الأجهزة</p></div>
             <div class="glass-card"><p>🗑️ البيانات</p></div>
@@ -213,11 +237,31 @@
         <button class="btn-gold" onclick="Nav.go('dashboard')">العودة</button>
     </section>
 
+    <section id="supportSection" class="dashboard-section" style="display:none;">
+        <h2 class="section-title">الدعم الفني</h2>
+        <div class="glass-card" style="padding:30px;text-align:center;max-width:500px;margin:20px auto;">
+            <p style="color:#fff;">كيف يمكننا مساعدتك؟</p>
+            <textarea class="input-field" rows="4" style="resize:none;"></textarea>
+            <button class="btn-gold">إرسال</button>
+        </div>
+        <button class="btn-gold" onclick="Nav.go('dashboard')">العودة</button>
+    </section>
+
+    <section id="aboutSection" class="dashboard-section" style="display:none;">
+        <h2 class="section-title">من نحن</h2>
+        <div class="glass-card" style="padding:30px;max-width:600px;margin:20px auto;text-align:center;">
+            <p style="color:#D4AF37;font-size:3rem;">T</p>
+            <h3>TECHOPRINT 2026</h3>
+            <p style="color:#fff;">منصتك الرقمية الشاملة للطباعة والتعليم والتصميم</p>
+        </div>
+        <button class="btn-gold" onclick="Nav.go('dashboard')">العودة</button>
+    </section>
+
     <nav class="bottom-nav">
         <button class="nav-btn active" onclick="Nav.go('dashboard')"><i class="fas fa-home"></i><span>الرئيسية</span></button>
-        <button class="nav-btn" onclick="Nav.go('wallet')"><i class="fas fa-wallet"></i><span>المحفظة</span></button>
-        <button class="nav-btn" onclick="Nav.go('library')"><i class="fas fa-book"></i><span>المكتبة</span></button>
         <button class="nav-btn" onclick="Nav.go('orders')"><i class="fas fa-box"></i><span>طلباتي</span></button>
+        <button class="nav-btn" onclick="Nav.go('wallet')"><i class="fas fa-coins"></i><span>رصيدي</span></button>
+        <button class="nav-btn" onclick="openModal('loginModal')"><i class="fas fa-user"></i><span>حسابي</span></button>
     </nav>
 
     <div id="loginModal" class="modal" style="display:none;">
@@ -250,7 +294,6 @@
     </div>
 
     <script src="js/eng-main.js?v=2026"></script>
-    <script src="js/eng-i18n.js?v=2026"></script>
     <script src="js/eng-navigation.js?v=2026"></script>
     <script src="js/eng-slider.js?v=2026"></script>
     <script src="js/eng-auth.js?v=2026"></script>

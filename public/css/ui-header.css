@@ -1,115 +1,14 @@
 /* TECHOPRINT 2026 - HEADER */
-/* Clean Brand Header with T Logo */
-
-.app-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 12px 20px;
-    background: #0a0a0f;
-    border-bottom: 2px solid #D4AF37;
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-}
-
-.brand {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-
-.brand-logo {
-    width: 42px;
-    height: 42px;
-    background: #D4AF37;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 4px;
-}
-
-.brand-logo::before {
-    content: 'T';
-    font-family: Arial, sans-serif;
-    font-size: 26px;
-    font-weight: bold;
-    color: #0a0a0f;
-}
-
-.brand-name {
-    font-family: Arial, sans-serif;
-    font-size: 1.1rem;
-    color: #D4AF37;
-    font-weight: 600;
-    letter-spacing: 1px;
-}
-
-.header-actions {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-}
-
-.header-notif {
-    position: relative;
-    padding: 8px;
-    cursor: pointer;
-    transition: transform 0.2s ease;
-}
-
-.header-notif:hover {
-    transform: scale(1.1);
-}
-
-.header-notif i {
-    font-size: 1.2rem;
-    color: #D4AF37;
-}
-
-.notif-badge {
-    position: absolute;
-    top: 2px;
-    right: 2px;
-    background: #e74c3c;
-    color: white;
-    font-size: 0.65rem;
-    font-weight: bold;
-    width: 16px;
-    height: 16px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.header-wallet {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 8px 16px;
-    background: rgba(255,255,255,0.05);
-    border: 1px solid #D4AF37;
-    border-radius: 20px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.header-wallet:hover {
-    background: #D4AF37;
-}
-
-.header-wallet i {
-    color: #D4AF37;
-    font-size: 1rem;
-}
-
-.header-wallet:hover i {
-    color: #0a0a0f;
-}
-
-.header-wallet span {
-    color: #ffffff;
-    font-weight: 600;
-    font-size: 0.9rem;
-}
+.app-header { background: rgba(0, 0, 0, 0.95); border-bottom: 2px solid #D4AF37; padding: 10px 15px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
+.brand { display: flex; align-items: center; gap: 8px; }
+.brand-logo { width: 35px; height: 35px; background: #D4AF37; color: #000; font-size: 1.5rem; font-weight: bold; border-radius: 8px; display: flex; align-items: center; justify-content: center; }
+.brand-name { color: #D4AF37; font-size: 1rem; font-weight: bold; }
+.register-btn { background: transparent; border: 1px solid #D4AF37; color: #D4AF37; padding: 5px 12px; border-radius: 20px; font-size: 0.8rem; cursor: pointer; }
+.register-btn:hover { background: #D4AF37; color: #000; }
+.header-actions { display: flex; gap: 15px; }
+.header-notif, .header-wallet { color: #D4AF37; font-size: 1.2rem; cursor: pointer; }
+.bottom-nav { background: rgba(0, 0, 0, 0.95); border-top: 2px solid #D4AF37; padding: 10px; display: flex; justify-content: space-around; position: fixed; bottom: 0; left: 0; right: 0; z-index: 100; }
+.nav-btn { background: transparent; border: none; color: #666; display: flex; flex-direction: column; align-items: center; gap: 3px; cursor: pointer; font-size: 0.7rem; }
+.nav-btn i { font-size: 1.3rem; }
+.nav-btn.active { color: #D4AF37; }
+.nav-btn span { color: inherit; }
