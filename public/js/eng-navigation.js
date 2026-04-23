@@ -1,6 +1,6 @@
 /* TECHOPRINT 2026 - NAVIGATION */
 const Nav = {
-    sections: ['dashboard', 'student', 'teacher', 'design', 'library', 'ai', 'academy', 'wallet', 'orders', 'tracking', 'settings', 'support', 'about'],
+    sections: ['dashboard', 'student', 'teacher', 'design', 'library', 'ai', 'card', 'wallet', 'orders', 'tracking', 'settings', 'support', 'about'],
     
     go(page) {
         this.sections.forEach(function(s) {
