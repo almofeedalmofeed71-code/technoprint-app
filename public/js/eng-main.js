@@ -1,16 +1,13 @@
 /* TECHOPRINT 2026 - ENG MAIN */
-/* Splash: 2 seconds, then dashboard */
+/* Splash: 2 seconds exactly */
 
 window.addEventListener('DOMContentLoaded', function() {
-    // Show splash for 2 seconds
+    // 2 SECOND TIMER - exact
     setTimeout(function() {
-        var splash = document.getElementById('splashScreen');
-        if (splash) splash.style.display = 'none';
-        
-        var dashboard = document.getElementById('dashboardSection');
-        if (dashboard) dashboard.style.display = 'block';
+        document.getElementById('splash').style.display = 'none';
+        document.getElementById('dashboard').style.display = 'block';
     }, 2000);
     
-    // Init I18n
+    // Init
     if (window.I18n && I18n.init) I18n.init();
 });

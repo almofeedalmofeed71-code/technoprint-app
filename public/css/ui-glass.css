@@ -1,35 +1,11 @@
 /* TECHOPRINT 2026 - GLASS */
-/* Gold/Black Glassmorphism */
+/* Gold/Black - Force Black */
 
 body { background-color: #000000 !important; }
 
-.glass-card {
-    background: rgba(255, 255, 255, 0.05) !important;
-    backdrop-filter: blur(15px);
-    -webkit-backdrop-filter: blur(15px);
-    border: 1px solid rgba(212, 175, 55, 0.3) !important;
-    border-radius: 15px;
-}
-
-.app-header {
-    background: rgba(0, 0, 0, 0.95) !important;
-    border-bottom: 2px solid #D4AF37;
-}
-
-.bottom-nav {
-    background: rgba(0, 0, 0, 0.95) !important;
-    border-top: 2px solid #D4AF37;
-}
-
+.glass-card { background: rgba(255, 255, 255, 0.05) !important; backdrop-filter: blur(15px); border: 1px solid rgba(212, 175, 55, 0.3) !important; border-radius: 15px; }
+.app-header { background: rgba(0, 0, 0, 0.95) !important; border-bottom: 2px solid #D4AF37; }
+.bottom-nav { background: rgba(0, 0, 0, 0.95) !important; border-top: 2px solid #D4AF37; }
 .dashboard-section { background: #000000 !important; }
-
-.input-field {
-    background: rgba(255, 255, 255, 0.05) !important;
-    border: 1px solid rgba(212, 175, 55, 0.3) !important;
-    color: #ffffff;
-}
-
-.language-bar {
-    background: rgba(0, 0, 0, 0.8) !important;
-    border-radius: 10px;
-}
+.input-field { background: rgba(255, 255, 255, 0.05) !important; border: 1px solid rgba(212, 175, 55, 0.3) !important; color: #ffffff; }
+.language-bar { background: rgba(0, 0, 0, 0.8) !important; border-radius: 10px; }
