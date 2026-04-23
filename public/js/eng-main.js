@@ -14,8 +14,22 @@ const Main = {
         if (window.Slider) { Slider.init(); console.log('[MAIN] ✓ Slider Engine'); }
         if (window.Events) { Events.init(); console.log('[MAIN] ✓ Events Engine'); }
         
-        // Phase 2: Splash Flow
+        // Phase 2: Vertical Languages
+        this.initVerticalLanguages();
+        
+        // Phase 3: Splash Flow
         this.initSplash();
+    },
+    
+    initVerticalLanguages() {
+        document.querySelectorAll('.lang-btn[data-lang], .vert-lang-btn[data-lang]').forEach(btn => {
+            btn.style.cursor = 'pointer';
+            btn.onclick = () => {
+                const lang = btn.dataset.lang;
+                if (window.I18n) I18n.set(lang);
+            };
+        });
+        console.log('[MAIN] ✓ Vertical Languages Initialized');
     },
     
     initSplash() {
@@ -84,6 +98,6 @@ window.showMainDashboard = () => Main.showDashboard();
 window.closeModal = (id) => { const m = document.getElementById(id); if (m) m.style.display = 'none'; };
 window.openModal = (id) => { const m = document.getElementById(id); if (m) m.style.display = 'flex'; };
 
-// Start
+// Start - Immediately after DOM ready
 document.addEventListener('DOMContentLoaded', () => Main.init());
 if (document.readyState !== 'loading') setTimeout(() => Main.init(), 10);

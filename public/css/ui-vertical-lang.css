@@ -1,21 +1,57 @@
 /* TECHOPRINT 2026 - UI VERTICAL LANG */
-/* Far Right Language Sidebar */
+/* Language Bar Fixed on Right */
 
-.vertical-lang-sidebar {
-    position: fixed;
-    right: 15px;
+#language-bar {
+    position: absolute;
+    right: 10px;
     top: 50%;
     transform: translateY(-50%);
-    z-index: 9999;
     display: flex;
     flex-direction: column;
     gap: 10px;
-    padding: 12px 10px;
-    background: rgba(10, 10, 11, 0.9);
-    border-radius: 25px;
-    border: 1px solid rgba(212, 175, 55, 0.3);
+    z-index: 9999;
 }
 
-html[dir="ltr"] .vertical-lang-sidebar { right: auto; left: 15px; }
+html[dir="ltr"] #language-bar { right: auto; left: 10px; }
 
-.vert-lang-btn { cursor: pointer; }
+.lang-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(212, 175, 55, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 1.2rem;
+}
+
+.lang-btn:hover {
+    background: rgba(212, 175, 55, 0.3);
+    border-color: var(--gold-royal);
+}
+
+.lang-btn.active {
+    background: var(--gold-royal);
+    border-color: var(--gold-light);
+    box-shadow: 0 0 15px rgba(212, 175, 55, 0.5);
+}
+
+/* Fallback for vert-lang-btn */
+.vert-lang-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(212, 175, 55, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 1.2rem;
+}
