@@ -1,0 +1,87 @@
+/* TECHOPRINT 2026 - RESPONSIVE CORE CSS */
+/* Device-specific scaling and mobile breakpoints */
+
+/* ==================== MOBILE RESPONSIVE ==================== */
+@media (max-width: 768px) {
+    .header { grid-template-columns: auto 1fr auto; padding: 12px 16px; gap: 12px; }
+    .page-title { font-size: 1.2rem; }
+    .menu-toggle { display: block; }
+    .balance-display { padding: 8px 12px; }
+    .balance-label { display: none; }
+    
+    .sidebar { transform: translateX(100%); transition: var(--transition-normal); }
+    html[dir="ltr"] .sidebar { transform: translateX(-100%); }
+    .sidebar.open { transform: translateX(0); }
+    
+    .main-content { margin-right: 0 !important; margin-left: 0 !important; padding-bottom: 80px; }
+    .bottom-nav { display: flex; }
+    .lang-btn .lang-name { display: none; }
+    
+    .portals-grid.horizontal-scroll-section { display: flex !important; flex-direction: row !important; overflow-x: auto !important; scroll-snap-type: x mandatory !important; gap: 16px !important; padding: 16px !important; -webkit-overflow-scrolling: touch; }
+    .portals-grid.horizontal-scroll-section .portal-card { flex: 0 0 300px !important; scroll-snap-align: start !important; }
+    html[dir="rtl"] .portals-grid.horizontal-scroll-section { flex-direction: row-reverse !important; }
+    
+    .portal-hero h1 { font-size: 2rem; }
+    .portal-card { padding: 24px 20px; }
+    .portal-icon { font-size: 3rem; }
+    
+    .premium-slider-container { max-width: calc(100% - 32px); margin: 0 auto 24px; }
+    .slider-slide { padding: 30px 20px; }
+    .slide-content { flex-direction: column; gap: 16px; }
+    .slide-icon { font-size: 3rem; }
+    .slide-text h3 { font-size: 1.5rem; }
+    .slide-btn { padding: 10px 24px; font-size: 0.9rem; }
+    
+    .advertising-slider { width: 92%; margin: 12px auto; }
+    .ad-slide { padding: 25px 15px; }
+    .ad-content h3 { font-size: 1.3rem; }
+    .ad-content p { font-size: 0.9rem; }
+}
+
+@media (max-width: 480px) {
+    .slider-slide { padding: 24px 16px; }
+    .slide-icon { font-size: 2.5rem; }
+    .slide-text h3 { font-size: 1.3rem; }
+    .slide-text p { font-size: 0.9rem; }
+}
+
+/* ==================== DEVICE-SPECIFIC SCALING ==================== */
+/* iPhone SE / Small phones */
+@media (max-width: 374px) {
+    html { font-size: 14px; }
+    .portal-card { padding: 20px 16px; }
+    .portal-icon { font-size: 3rem; }
+}
+
+/* iPhone 12/13/14 series */
+@media (min-width: 375px) and (max-width: 428px) {
+    html { font-size: 15px; }
+}
+
+/* Large phones / iPhone Plus series */
+@media (min-width: 429px) and (max-width: 767px) {
+    html { font-size: 16px; }
+}
+
+/* iPad Mini / Small tablets */
+@media (min-width: 768px) and (max-width: 1024px) {
+    html { font-size: 16px; }
+}
+
+/* iPad Pro / Large tablets */
+@media (min-width: 1025px) and (max-width: 1366px) {
+    html { font-size: 17px; }
+}
+
+/* 4K / Large Desktop */
+@media (min-width: 1921px) {
+    html { font-size: 20px; }
+    .sidebar { width: 320px; }
+    .main-content { margin-right: 320px; }
+    html[dir="ltr"] .main-content { margin-right: 0; margin-left: 320px; }
+}
+
+/* ==================== PORTALS GRID RESPONSIVE ==================== */
+@media (max-width: 768px) {
+    .portals-grid { grid-template-columns: 1fr; gap: 16px; }
+}
