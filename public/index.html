@@ -618,42 +618,53 @@
         <div class="premium-slider-container">
             <div class="slider-wrapper">
                 <div class="slider-track" id="sliderTrack">
-                    <div class="slider-slide slide-1">
+                    <div class="slider-slide slide-blue">
                         <div class="slide-content">
                             <span class="slide-icon">📚</span>
                             <div class="slide-text">
                                 <h3>الكتب الحصرية</h3>
                                 <p>خصم 30% على جميع الكتب التعليمية</p>
                             </div>
-                            <button class="slide-btn">تسوق الآن</button>
+                            <button class="slide-btn btn-blue">تسوق الآن</button>
                         </div>
                     </div>
-                    <div class="slider-slide slide-2">
+                    <div class="slider-slide slide-green">
                         <div class="slide-content">
                             <span class="slide-icon">🖨️</span>
                             <div class="slide-text">
                                 <h3>عروض الطباعة</h3>
                                 <p>طباعة اقتصادية بأفضل جودة</p>
                             </div>
-                            <button class="slide-btn">اطلب الآن</button>
+                            <button class="slide-btn btn-green">اطلب الآن</button>
                         </div>
                     </div>
-                    <div class="slider-slide slide-3">
+                    <div class="slider-slide slide-orange">
                         <div class="slide-content">
                             <span class="slide-icon">🚚</span>
                             <div class="slide-text">
                                 <h3>توصيل مجاني</h3>
                                 <p>لجميع الطلبات فوق 50,000 IQD</p>
                             </div>
-                            <button class="slide-btn">اكتشف المزيد</button>
+                            <button class="slide-btn btn-orange">اكتشف المزيد</button>
+                        </div>
+                    </div>
+                    <div class="slider-slide slide-purple">
+                        <div class="slide-content">
+                            <span class="slide-icon">💎</span>
+                            <div class="slide-text">
+                                <h3>اشتراك مميز</h3>
+                                <p>احصل على عضوية VIP سنوية</p>
+                            </div>
+                            <button class="slide-btn btn-purple">اشترك الآن</button>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="slider-dots" id="sliderDots">
-                <span class="dot active" data-slide="0"></span>
-                <span class="dot" data-slide="1"></span>
-                <span class="dot" data-slide="2"></span>
+                <span class="dot dot-blue active" data-slide="0"></span>
+                <span class="dot dot-green" data-slide="1"></span>
+                <span class="dot dot-orange" data-slide="2"></span>
+                <span class="dot dot-purple" data-slide="3"></span>
             </div>
         </div>
         
@@ -969,7 +980,7 @@
     <script src="i18n.js"></script>
     
     <!-- App Scripts - Modular -->
-    <script src="app.js"></script>
-    <script src="js/modules/StudentPortal.js"></script>
+    <script src="app.js" defer></script>
+    <script src="js/modules/StudentPortal.js" defer></script>
 </body>
 </html>

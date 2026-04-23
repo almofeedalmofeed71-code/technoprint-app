@@ -998,16 +998,16 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 3000);
     
     // ==================== PREMIUM BANNER SLIDER ====================
-    // Auto-slide every 5 seconds
+    // Auto-slide every 5 seconds with 4 colored slides
     let currentSlide = 0;
-    const totalSlides = 3;
+    const totalSlides = 4;
     const sliderTrack = document.getElementById('sliderTrack');
     const dots = document.querySelectorAll('.dot');
     
     function goToSlide(index) {
         currentSlide = index;
         if (sliderTrack) {
-            sliderTrack.style.transform = `translateX(${currentSlide * -33.3333}%)`;
+            sliderTrack.style.transform = `translateX(${currentSlide * -25}%)`;
         }
         dots.forEach((dot, i) => {
             dot.classList.toggle('active', i === currentSlide);
@@ -1020,7 +1020,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     // Auto-slide every 5 seconds
-    const sliderInterval = setInterval(nextSlide, 5000);
+    let sliderInterval = setInterval(nextSlide, 5000);
     
     // Click handlers for dots
     dots.forEach((dot, i) => {
@@ -1028,7 +1028,7 @@ document.addEventListener('DOMContentLoaded', () => {
             clearInterval(sliderInterval);
             goToSlide(i);
             // Restart auto-slide
-            setInterval(nextSlide, 5000);
+            sliderInterval = setInterval(nextSlide, 5000);
         });
     });
     
