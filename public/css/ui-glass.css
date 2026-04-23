@@ -1,5 +1,5 @@
 /* TECHOPRINT 2026 - UI GLASS */
-/* Glassmorphism: Blur 10px, Transparency 0.2 */
+/* Glassmorphism & Gold Theme */
 
 .glass-panel {
     background: rgba(20, 20, 20, 0.2);
@@ -9,6 +9,27 @@
     border-radius: var(--radius-lg);
 }
 
+/* Card Elements - Glassmorphism Upgrade */
+.card {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid rgba(212, 175, 55, 0.4);
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+/* Slider Element - Glassmorphism Upgrade */
+#slider {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid rgba(212, 175, 55, 0.4);
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+/* Modal Base */
 .modal {
     position: fixed;
     top: 0; left: 0; right: 0; bottom: 0;
