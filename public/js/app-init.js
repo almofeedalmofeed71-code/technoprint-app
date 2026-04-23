@@ -1,10 +1,10 @@
 /**
  * TECHOPRINT 2026 - APP INITIALIZATION
- * Global State, API Helper, Router
+ * Global State, API Helper, Router, Startup
  */
 
 // ==================== GLOBAL STATE ====================
-const APP_STATE = {
+window.APP_STATE = {
     currentLang: localStorage.getItem('techoprint_lang') || 'ar',
     user: JSON.parse(localStorage.getItem('techoprint_user') || 'null'),
     token: localStorage.getItem('techoprint_token') || null,
@@ -13,28 +13,29 @@ const APP_STATE = {
 };
 
 // ==================== API HELPER ====================
-async function apiCall(endpoint, method = 'GET', body = null) {
+window.apiCall = async function(endpoint, method = 'GET', body = null) {
     try {
         const options = {
             method,
             headers: {
                 'Content-Type': 'application/json',
-                'x-user-id': APP_STATE.user?.id || ''
+                'x-user-id': window.APP_STATE.user?.id || ''
             }
         };
         if (body) options.body = JSON.stringify(body);
-        return await fetch(`/api/${endpoint}`, options).then(r => r.json());
+        const res = await fetch(`/api/${endpoint}`, options);
+        return await res.json();
     } catch (err) {
         console.error('API Error:', err);
         return { error: err.message };
     }
-}
+};
 
 // ==================== ROUTER ====================
-const Router = {
+window.Router = {
     routes: {
         'dashboard': () => loadDashboard(),
-        'student': () => StudentPortal.render(),
+        'student': () => { if(window.StudentDashboard) window.StudentDashboard.render(); },
         'library': () => loadLibrary(),
         'orders': () => loadOrders(),
         'wallet': () => loadWallet(),
@@ -42,9 +43,9 @@ const Router = {
         'transfer': () => loadTransfer(),
         'support': () => loadSupport(),
         'designer': () => loadDesigner(),
-        'admin-dashboard': () => AdminPortal.renderDashboard(),
-        'admin-users': () => AdminPortal.renderUsers(),
-        'admin-delivery': () => AdminPortal.renderDelivery()
+        'admin-dashboard': () => AdminPortal?.renderDashboard?.(),
+        'admin-users': () => AdminPortal?.renderUsers?.(),
+        'admin-delivery': () => AdminPortal?.renderDelivery?.()
     },
     
     navigate(page) {
@@ -53,18 +54,18 @@ const Router = {
         if (activeNav) activeNav.classList.add('active');
         
         const titles = {
-            'dashboard': '🏛️ ' + window.i18n.t('nav.dashboard'),
-            'student': '🎓 ' + window.i18n.t('portal.studentTitle'),
-            'library': '📚 ' + window.i18n.t('nav.library'),
-            'orders': '📦 ' + window.i18n.t('nav.orders'),
-            'wallet': '💰 ' + window.i18n.t('nav.wallet'),
-            'tracking': '📍 ' + window.i18n.t('nav.tracking'),
-            'transfer': '🔄 ' + window.i18n.t('nav.transfer'),
-            'support': '🎫 ' + window.i18n.t('nav.support'),
-            'designer': '🎨 ' + window.i18n.t('nav.designer'),
-            'admin-dashboard': '👑 ' + window.i18n.t('nav.adminDashboard'),
-            'admin-users': '👥 ' + window.i18n.t('nav.adminUsers'),
-            'admin-delivery': '🚚 ' + window.i18n.t('nav.adminDelivery')
+            'dashboard': '🏛️ ' + window.i18n?.t('nav.dashboard'),
+            'student': '🎓 ' + window.i18n?.t('portal.studentTitle'),
+            'library': '📚 ' + window.i18n?.t('nav.library'),
+            'orders': '📦 ' + window.i18n?.t('nav.orders'),
+            'wallet': '💰 ' + window.i18n?.t('nav.wallet'),
+            'tracking': '📍 ' + window.i18n?.t('nav.tracking'),
+            'transfer': '🔄 ' + window.i18n?.t('nav.transfer'),
+            'support': '🎫 ' + window.i18n?.t('nav.support'),
+            'designer': '🎨 ' + window.i18n?.t('nav.designer'),
+            'admin-dashboard': '👑 ' + window.i18n?.t('nav.adminDashboard'),
+            'admin-users': '👥 ' + window.i18n?.t('nav.adminUsers'),
+            'admin-delivery': '🚚 ' + window.i18n?.t('nav.adminDelivery')
         };
         
         const pageTitle = document.getElementById('pageTitle');
@@ -72,9 +73,40 @@ const Router = {
         
         const handler = this.routes[page];
         if (handler) handler();
-        else loadDashboard();
+        else loadDashboard?.();
     }
 };
 
-window.navigateTo = (page) => Router.navigate(page);
-window.navigate = (page) => Router.navigate(page);
+// Aliases
+window.navigateTo = (page) => window.Router?.navigate(page);
+window.navigate = (page) => window.Router?.navigate(page);
+
+// ==================== STARTUP SEQUENCE ====================
+window.showMainDashboard = function() {
+    const splash = document.getElementById('splashScreen');
+    const preloader = document.getElementById('preloader');
+    const masterPortal = document.getElementById('masterPortal');
+    
+    if (splash) {
+        splash.style.animation = 'splashFadeOut 0.8s ease-in-out forwards';
+        setTimeout(() => splash.style.display = 'none', 800);
+    }
+    
+    if (preloader) {
+        preloader.style.opacity = '0';
+        setTimeout(() => preloader.style.display = 'none', 300);
+    }
+    
+    if (masterPortal) {
+        masterPortal.style.display = 'flex';
+    }
+    
+    // Apply language
+    if (window.i18n?.applyLanguage) {
+        window.i18n.applyLanguage(window.APP_STATE.currentLang);
+    }
+};
+
+window.triggerStartup = function() {
+    setTimeout(() => window.showMainDashboard(), 2500);
+};
