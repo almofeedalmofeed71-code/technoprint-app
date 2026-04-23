@@ -1620,6 +1620,137 @@ html[dir="rtl"] .toast-container {
 .toast.warning { border-color: var(--warning); }
 .toast.info { border-color: var(--info); }
 
+/* ==================== ADVERTISING SLIDER (MASTER PORTAL) ==================== */
+.advertising-slider {
+    width: 95%;
+    margin: 15px auto;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 0 15px rgba(212, 175, 55, 0.5);
+    position: relative;
+}
+
+.ad-track {
+    display: flex;
+    transition: transform 0.5s ease-in-out;
+    width: 300%;
+}
+
+.ad-slide {
+    width: 33.3333%;
+    min-width: 100%;
+    padding: 35px 25px;
+    text-align: center;
+    border-radius: 20px;
+}
+
+.ad-exam {
+    background: linear-gradient(135deg, #1a472a 0%, #27ae60 50%, #2ecc71 100%);
+    border: 2px solid #2ecc71;
+}
+
+.ad-printing {
+    background: linear-gradient(135deg, #1e3a5f 0%, #2980b9 50%, #3498db 100%);
+    border: 2px solid #3498db;
+}
+
+.ad-delivery {
+    background: linear-gradient(135deg, #4a235a 0%, #8e44ad 50%, #9b59b6 100%);
+    border: 2px solid #9b59b6;
+}
+
+.ad-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.ad-badge {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #fff;
+}
+
+.ad-content h3 {
+    font-family: 'Amiri', serif;
+    font-size: 1.6rem;
+    color: #fff;
+    margin: 5px 0;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.ad-content p {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 1rem;
+    margin: 0;
+}
+
+.ad-btn {
+    margin-top: 10px;
+    padding: 10px 24px;
+    background: linear-gradient(135deg, #D4AF37, #FFD700);
+    color: #000;
+    border: none;
+    border-radius: 20px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.ad-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 15px rgba(212, 175, 55, 0.5);
+}
+
+.ad-dots {
+    position: absolute;
+    bottom: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 8px;
+}
+
+.ad-dot {
+    width: 10px;
+    height: 10px;
+    background: rgba(255, 255, 255, 0.4);
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.ad-dot.active {
+    background: #D4AF37;
+    transform: scale(1.3);
+    box-shadow: 0 0 10px rgba(212, 175, 55, 0.8);
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .advertising-slider {
+        width: 92%;
+        margin: 12px auto;
+    }
+    
+    .ad-slide {
+        padding: 25px 15px;
+    }
+    
+    .ad-content h3 {
+        font-size: 1.3rem;
+    }
+    
+    .ad-content p {
+        font-size: 0.9rem;
+    }
+}
+
 /* ==================== MASTER GATEWAY PORTAL ==================== */
 .master-portal {
     position: fixed;

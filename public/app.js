@@ -1000,5 +1000,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initialize Premium Slider from components module
     PremiumSlider.init();
     
+    // Initialize Advertising Slider (Master Portal)
+    AdSlider.init();
+    
     console.log('🚀 TECHOPRINT 2026 v2.1 - FULLY LOADED!');
 });

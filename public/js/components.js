@@ -158,8 +158,57 @@ const Modal = {
 };
 window.closeModal = id => Modal.hide(id);
 
+// ==================== ADVERTISING SLIDER (MASTER PORTAL) ====================
+const AdSlider = {
+    currentAd: 0,
+    totalAds: 3,
+    interval: null,
+    
+    init() {
+        const adTrack = document.getElementById('adTrack');
+        const adDots = document.querySelectorAll('.ad-dot');
+        if (!adTrack || !adDots.length) return;
+        
+        this.goToAd(0);
+        this.startAutoSlide();
+        
+        adDots.forEach((dot, i) => {
+            dot.addEventListener('click', () => {
+                this.stopAutoSlide();
+                this.goToAd(i);
+                this.startAutoSlide();
+            });
+        });
+    },
+    
+    goToAd(index) {
+        this.currentAd = index;
+        const adTrack = document.getElementById('adTrack');
+        if (adTrack) {
+            adTrack.style.transform = `translateX(${index * -33.3333}%)`;
+        }
+        document.querySelectorAll('.ad-dot').forEach((dot, i) => {
+            dot.classList.toggle('active', i === index);
+        });
+    },
+    
+    nextAd() {
+        this.currentAd = (this.currentAd + 1) % this.totalAds;
+        this.goToAd(this.currentAd);
+    },
+    
+    startAutoSlide() {
+        this.interval = setInterval(() => this.nextAd(), 4000);
+    },
+    
+    stopAutoSlide() {
+        if (this.interval) clearInterval(this.interval);
+    }
+};
+
 // ==================== EXPORT ====================
 window.PremiumSlider = PremiumSlider;
+window.AdSlider = AdSlider;
 window.PortalCards = PortalCards;
 window.Toast = Toast;
 window.GlassPanel = GlassPanel;
