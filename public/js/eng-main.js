@@ -17,7 +17,10 @@ const Main = {
         // Phase 2: Vertical Languages
         this.initVerticalLanguages();
         
-        // Phase 3: Splash Flow
+        // Phase 3: Gate Bindings
+        this.initGates();
+        
+        // Phase 4: Splash Flow
         this.initSplash();
     },
     
@@ -30,6 +33,15 @@ const Main = {
             };
         });
         console.log('[MAIN] ✓ Vertical Languages Initialized');
+    },
+    
+    initGates() {
+        const gate = document.getElementById('gate-student');
+        if (gate) {
+            gate.style.cursor = 'pointer';
+            gate.onclick = function() { showStudentDashboard(); };
+        }
+        console.log('[MAIN] ✓ Gates Bound');
     },
     
     initSplash() {
@@ -78,7 +90,7 @@ const Main = {
     showPortal() {
         const mp = document.getElementById('masterPortal');
         const app = document.getElementById('app');
-        if (mp) mp.style.display = 'block';
+        if (mp) { mp.style.display = 'flex'; mp.classList.add('entrance'); }
         if (app) app.style.display = 'none';
     },
     
@@ -86,7 +98,7 @@ const Main = {
         const mp = document.getElementById('masterPortal');
         const app = document.getElementById('app');
         if (mp) mp.style.display = 'none';
-        if (app) app.style.display = 'flex';
+        if (app) { app.style.display = 'flex'; app.classList.add('entrance'); }
         if (window.Nav) Nav.go('dashboard');
     }
 };
@@ -95,6 +107,7 @@ const Main = {
 window.Main = Main;
 window.showPortal = () => Main.showPortal();
 window.showMainDashboard = () => Main.showDashboard();
+window.showStudentDashboard = () => Main.showDashboard();
 window.closeModal = (id) => { const m = document.getElementById(id); if (m) m.style.display = 'none'; };
 window.openModal = (id) => { const m = document.getElementById(id); if (m) m.style.display = 'flex'; };
 
