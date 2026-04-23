@@ -393,7 +393,7 @@ input, textarea, select {
     }
 }
 
-/* ==================== ROLE SWITCHER PORTAL (9 Gates) ==================== */
+/* ==================== ROLE SWITCHER PORTAL (9 GATES) - Premium Glass Cards ==================== */
 .role-portal {
     position: fixed;
     top: 0;
@@ -2422,17 +2422,103 @@ html[dir="rtl"] .toast-container {
     }
 }
 
+/* ==================== PREMIUM FLOATING GLASS CARDS (4 Main Gates) ==================== */
 .portal-card {
-    background: var(--glass-bg);
-    backdrop-filter: var(--glass-blur);
-    border: 1px solid var(--glass-border);
-    border-radius: var(--radius-xl);
+    /* Glassmorphism Base */
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid rgba(212, 175, 55, 0.3);
+    border-radius: 25px;
     padding: 40px 30px;
     text-align: center;
     cursor: pointer;
     transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     position: relative;
     overflow: hidden;
+}
+
+/* Student Gate - Blue Glow */
+.portal-card.student-portal {
+    box-shadow: 0 10px 30px rgba(0, 71, 171, 0.3);
+}
+.portal-card.student-portal:hover {
+    box-shadow: 0 15px 50px rgba(0, 71, 171, 0.5), 0 0 30px rgba(0, 71, 171, 0.3);
+    border-color: rgba(0, 71, 171, 0.6);
+}
+
+/* Teacher Gate - Emerald Glow */
+.portal-card.teacher-portal {
+    box-shadow: 0 10px 30px rgba(0, 128, 128, 0.3);
+}
+.portal-card.teacher-portal:hover {
+    box-shadow: 0 15px 50px rgba(0, 128, 128, 0.5), 0 0 30px rgba(0, 128, 128, 0.3);
+    border-color: rgba(0, 128, 128, 0.6);
+}
+
+/* Designer Gate - Orange Glow */
+.portal-card.designer-portal {
+    box-shadow: 0 10px 30px rgba(255, 69, 0, 0.3);
+}
+.portal-card.designer-portal:hover {
+    box-shadow: 0 15px 50px rgba(255, 69, 0, 0.5), 0 0 30px rgba(255, 69, 0, 0.3);
+    border-color: rgba(255, 69, 0, 0.6);
+}
+
+/* Publisher Gate - Purple Glow */
+.portal-card.publisher-portal {
+    box-shadow: 0 10px 30px rgba(75, 0, 130, 0.3);
+}
+.portal-card.publisher-portal:hover {
+    box-shadow: 0 15px 50px rgba(75, 0, 130, 0.5), 0 0 30px rgba(75, 0, 130, 0.3);
+    border-color: rgba(75, 0, 130, 0.6);
+}
+
+/* Library Gate - Teal Glow */
+.portal-card.library-portal {
+    box-shadow: 0 10px 30px rgba(20, 184, 166, 0.3);
+}
+.portal-card.library-portal:hover {
+    box-shadow: 0 15px 50px rgba(20, 184, 166, 0.5), 0 0 30px rgba(20, 184, 166, 0.3);
+    border-color: rgba(20, 184, 166, 0.6);
+}
+
+/* AI Gate - Cyan Glow */
+.portal-card.ai-portal {
+    box-shadow: 0 10px 30px rgba(6, 182, 212, 0.3);
+}
+.portal-card.ai-portal:hover {
+    box-shadow: 0 15px 50px rgba(6, 182, 212, 0.5), 0 0 30px rgba(6, 182, 212, 0.3);
+    border-color: rgba(6, 182, 212, 0.6);
+}
+
+/* Delivery Gate - Yellow Glow */
+.portal-card.delivery-portal {
+    box-shadow: 0 10px 30px rgba(234, 179, 8, 0.3);
+}
+.portal-card.delivery-portal:hover {
+    box-shadow: 0 15px 50px rgba(234, 179, 8, 0.5), 0 0 30px rgba(234, 179, 8, 0.3);
+    border-color: rgba(234, 179, 8, 0.6);
+}
+
+/* Admin Gate - Golden Glow (Premium) */
+.portal-card.admin-portal {
+    background: linear-gradient(135deg, rgba(212, 175, 55, 0.2), rgba(168, 139, 48, 0.1));
+    border: 2px solid rgba(212, 175, 55, 0.5);
+    box-shadow: 0 10px 30px rgba(212, 175, 55, 0.4);
+}
+.portal-card.admin-portal:hover {
+    background: linear-gradient(135deg, rgba(212, 175, 55, 0.3), rgba(168, 139, 48, 0.2));
+    box-shadow: 0 0 80px rgba(212, 175, 55, 0.5), 0 25px 60px rgba(212, 175, 55, 0.3);
+}
+
+/* Guest Gate - Muted Glass */
+.portal-card.guest-portal {
+    box-shadow: 0 10px 30px rgba(100, 116, 139, 0.2);
+}
+.portal-card.guest-portal:hover {
+    box-shadow: 0 15px 50px rgba(100, 116, 139, 0.4), 0 0 30px rgba(100, 116, 139, 0.2);
+    border-color: rgba(100, 116, 139, 0.5);
 }
 
 .portal-card::before {
