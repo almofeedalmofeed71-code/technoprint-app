@@ -864,6 +864,61 @@ window.showToast = function(message, type = 'info') {
     setTimeout(() => toast.remove(), 5000);
 };
 
+// ==================== HORIZONTAL SCROLL INITIALIZER ====================
+function initHorizontalScroll() {
+    document.querySelectorAll('.horizontal-scroll-section').forEach(section => {
+        let startX = 0, scrollLeft = 0, isDown = false;
+        
+        section.addEventListener('mousedown', (e) => {
+            isDown = true;
+            startX = e.pageX - section.offsetLeft;
+            scrollLeft = section.scrollLeft;
+            section.style.cursor = 'grabbing';
+        });
+        
+        section.addEventListener('mouseleave', () => {
+            isDown = false;
+            section.style.cursor = 'grab';
+        });
+        
+        section.addEventListener('mouseup', () => {
+            isDown = false;
+            section.style.cursor = 'grab';
+        });
+        
+        section.addEventListener('mousemove', (e) => {
+            if (!isDown) return;
+            e.preventDefault();
+            section.scrollLeft = scrollLeft - (e.pageX - startX) * 2;
+        });
+        
+        section.addEventListener('touchstart', (e) => {
+            startX = e.touches[0].pageX;
+            scrollLeft = section.scrollLeft;
+        });
+        
+        section.addEventListener('touchmove', (e) => {
+            section.scrollLeft = scrollLeft + (startX - e.touches[0].pageX) * 1.5;
+        });
+    });
+}
+
+// ==================== UPDATE NOTIFIER ====================
+const UpdateNotifier = {
+    currentVersion: '2.1',
+    check() {
+        const lastVersion = localStorage.getItem('techoprint_version');
+        if (lastVersion !== this.currentVersion) {
+            const toast = document.createElement('div');
+            toast.className = 'update-toast';
+            toast.innerHTML = `<div><strong>🚀 Update ${this.currentVersion}</strong><p>New features! Swipe to explore.</p></div><button onclick="this.parentElement.remove()">×</button>`;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 8000);
+            localStorage.setItem('techoprint_version', this.currentVersion);
+        }
+    }
+};
+
 // ==================== INITIALIZATION ====================
 document.addEventListener('DOMContentLoaded', () => {
     const loader = document.getElementById('preloader');
@@ -887,5 +942,11 @@ document.addEventListener('DOMContentLoaded', () => {
         window.i18n.init();
     }
     
-    console.log('🚀 TECHOPRINT 2026 v2.0 - FULLY LOADED!');
+    // Initialize Horizontal Scroll
+    initHorizontalScroll();
+    
+    // Check for updates
+    UpdateNotifier.check();
+    
+    console.log('🚀 TECHOPRINT 2026 v2.1 - FULLY LOADED!');
 });
