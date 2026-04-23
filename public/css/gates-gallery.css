@@ -1,0 +1,199 @@
+/* TECHOPRINT 2026 - GATES GALLERY CSS */
+/* Portal Cards and Horizontal Scroll Styles */
+
+/* ==================== HORIZONTAL SCROLL ==================== */
+.horizontal-scroll-section {
+    display: flex;
+    flex-direction: row;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    gap: 16px;
+    padding: 16px 0;
+    cursor: grab;
+}
+
+.horizontal-scroll-section::-webkit-scrollbar { display: none; }
+.horizontal-scroll-section:active { cursor: grabbing; }
+.scroll-item { flex: 0 0 auto; scroll-snap-align: start; scroll-snap-stop: always; }
+
+html[dir="rtl"] .horizontal-scroll-section { flex-direction: row-reverse; }
+
+/* Mobile Horizontal Swipe */
+@media (max-width: 768px) {
+    .portals-grid.horizontal-scroll-section {
+        display: flex !important;
+        flex-direction: row !important;
+        overflow-x: auto !important;
+        scroll-snap-type: x mandatory !important;
+        gap: 16px !important;
+        padding: 16px !important;
+        -webkit-overflow-scrolling: touch;
+    }
+    .portals-grid.horizontal-scroll-section .portal-card {
+        flex: 0 0 300px !important;
+        scroll-snap-align: start !important;
+    }
+    html[dir="rtl"] .portals-grid.horizontal-scroll-section { flex-direction: row-reverse !important; }
+}
+
+/* ==================== MASTER GATEWAY PORTAL ==================== */
+.master-portal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--bg-cosmic);
+    background-image: radial-gradient(ellipse at top, rgba(212, 175, 55, 0.15) 0%, transparent 50%), radial-gradient(ellipse at bottom, rgba(212, 175, 55, 0.08) 0%, transparent 50%);
+    z-index: 3000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px 20px;
+    overflow-y: auto;
+}
+
+.portal-hero { text-align: center; margin-bottom: 50px; }
+.portal-hero h1 { font-family: var(--font-title); font-size: 3.5rem; color: var(--gold-royal); text-shadow: 0 0 30px rgba(212, 175, 55, 0.5); margin: 20px 0 10px; }
+.portal-hero .tagline { font-size: 1.3rem; color: var(--gold-light); margin-bottom: 5px; }
+.portal-hero .subtitle { font-size: 1.1rem; color: var(--text-secondary); }
+
+.hero-logo {
+    width: 150px;
+    height: 150px;
+    background: linear-gradient(135deg, var(--gold-dark), var(--gold-royal), var(--gold-light));
+    border-radius: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: var(--font-title);
+    font-size: 5rem;
+    font-weight: 700;
+    color: var(--bg-cosmic);
+    margin: 0 auto 30px;
+    box-shadow: 0 0 80px rgba(212, 175, 55, 0.6), inset 0 0 40px rgba(255, 255, 255, 0.3);
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.hero-logo.small { width: 50px; height: 50px; font-size: 1.5rem; margin: 0; }
+
+/* Portal Language Switcher */
+.portal-lang-switcher {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 40px;
+    padding: 12px 20px;
+    border-radius: 16px;
+}
+
+.portal-lang-switcher .lang-btn {
+    padding: 10px 20px;
+    background: transparent;
+    border: 1px solid var(--glass-border);
+    border-radius: 10px;
+    color: var(--text-secondary);
+    font-weight: 500;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.portal-lang-switcher .lang-btn:hover { background: rgba(212, 175, 55, 0.1); color: var(--text-primary); }
+.portal-lang-switcher .lang-btn.active { background: linear-gradient(135deg, var(--gold-dark), var(--gold-royal)); color: var(--bg-cosmic); border-color: var(--gold-royal); }
+
+/* ==================== PORTAL GRID ==================== */
+.portals-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 24px;
+    max-width: 1400px;
+    width: 100%;
+}
+
+@media (max-width: 768px) {
+    .portals-grid { grid-template-columns: 1fr; gap: 16px; }
+}
+
+/* ==================== PORTAL CARDS (Premium Glass Cards) ==================== */
+.portal-card {
+    padding: 40px 30px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    position: relative;
+    overflow: hidden;
+}
+
+.portal-card:hover {
+    transform: translateY(-12px) scale(1.03);
+    border-color: var(--gold-royal);
+    box-shadow: 0 25px 60px rgba(212, 175, 55, 0.25), 0 0 50px rgba(212, 175, 55, 0.15);
+}
+
+/* Individual Color Identity */
+.portal-card.student-portal { box-shadow: 0 10px 30px rgba(0, 71, 171, 0.3); }
+.portal-card.student-portal:hover { box-shadow: 0 15px 50px rgba(0, 71, 171, 0.5), 0 0 30px rgba(0, 71, 171, 0.3); border-color: rgba(0, 71, 171, 0.6); }
+
+.portal-card.teacher-portal { box-shadow: 0 10px 30px rgba(0, 128, 128, 0.3); }
+.portal-card.teacher-portal:hover { box-shadow: 0 15px 50px rgba(0, 128, 128, 0.5), 0 0 30px rgba(0, 128, 128, 0.3); border-color: rgba(0, 128, 128, 0.6); }
+
+.portal-card.designer-portal { box-shadow: 0 10px 30px rgba(255, 69, 0, 0.3); }
+.portal-card.designer-portal:hover { box-shadow: 0 15px 50px rgba(255, 69, 0, 0.5), 0 0 30px rgba(255, 69, 0, 0.3); border-color: rgba(255, 69, 0, 0.6); }
+
+.portal-card.publisher-portal { box-shadow: 0 10px 30px rgba(75, 0, 130, 0.3); }
+.portal-card.publisher-portal:hover { box-shadow: 0 15px 50px rgba(75, 0, 130, 0.5), 0 0 30px rgba(75, 0, 130, 0.3); border-color: rgba(75, 0, 130, 0.6); }
+
+.portal-card.library-portal { box-shadow: 0 10px 30px rgba(20, 184, 166, 0.3); }
+.portal-card.ai-portal { box-shadow: 0 10px 30px rgba(6, 182, 212, 0.3); }
+.portal-card.delivery-portal { box-shadow: 0 10px 30px rgba(234, 179, 8, 0.3); }
+
+.portal-card.admin-portal {
+    background: linear-gradient(135deg, rgba(212, 175, 55, 0.2), rgba(168, 139, 48, 0.1));
+    border: 2px solid var(--gold-royal);
+    box-shadow: 0 10px 30px rgba(212, 175, 55, 0.4);
+}
+.portal-card.admin-portal:hover {
+    background: linear-gradient(135deg, rgba(212, 175, 55, 0.3), rgba(168, 139, 48, 0.2));
+    box-shadow: 0 0 80px rgba(212, 175, 55, 0.5), 0 25px 60px rgba(212, 175, 55, 0.3);
+}
+
+.portal-card.guest-portal { box-shadow: 0 10px 30px rgba(100, 116, 139, 0.2); }
+
+/* Portal Card Elements */
+.portal-icon { font-size: 4rem; margin-bottom: 20px; display: block; filter: drop-shadow(0 0 20px rgba(212, 175, 55, 0.5)); }
+.portal-card h2 { font-family: var(--font-title); font-size: 1.5rem; color: var(--text-primary); margin-bottom: 12px; }
+.portal-card p { color: var(--text-secondary); font-size: 0.95rem; margin-bottom: 20px; line-height: 1.6; }
+
+/* Features Tags */
+.portal-features { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-bottom: 20px; }
+.feature-tag { padding: 6px 12px; background: rgba(212, 175, 55, 0.1); border: 1px solid rgba(212, 175, 55, 0.3); border-radius: 20px; color: var(--gold-royal); font-size: 0.8rem; font-weight: 500; }
+.portal-card:hover .feature-tag { background: rgba(212, 175, 55, 0.2); border-color: var(--gold-royal); }
+
+/* Portal Button */
+.portal-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 30px;
+    background: linear-gradient(135deg, var(--gold-dark), var(--gold-royal));
+    color: var(--bg-cosmic);
+    border-radius: var(--radius-lg);
+    font-weight: 700;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+}
+
+.portal-btn:hover { transform: scale(1.08); box-shadow: 0 8px 25px rgba(212, 175, 55, 0.4); }
+.portal-btn.gold { background: linear-gradient(135deg, var(--gold-royal), var(--gold-light)); animation: goldPulse 2s ease-in-out infinite; }
+
+@media (max-width: 768px) {
+    .portal-hero h1 { font-size: 2rem; }
+    .portal-card { padding: 24px 20px; }
+    .portal-icon { font-size: 3rem; }
+}
