@@ -1,0 +1,48 @@
+/* TECHOPRINT 2026 - UI FONTS */
+/* Font Declarations & Text Sizes ONLY */
+
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Amiri:wght@400;700&display=swap');
+
+/* Arabic Font */
+.arabic-text { font-family: 'Amiri', serif; }
+.arabic-title { font-family: 'Amiri', serif; font-weight: 700; }
+
+/* Base Font Sizes */
+html { font-size: 16px; }
+
+h1 { font-size: 2rem; font-weight: 700; }
+h2 { font-size: 1.5rem; font-weight: 700; }
+h3 { font-size: 1.25rem; font-weight: 600; }
+h4 { font-size: 1.1rem; font-weight: 600; }
+h5 { font-size: 1rem; font-weight: 600; }
+h6 { font-size: 0.9rem; font-weight: 600; }
+
+p { font-size: 1rem; line-height: 1.6; }
+
+small { font-size: 0.875rem; }
+.text-sm { font-size: 0.875rem; }
+.text-xs { font-size: 0.75rem; }
+.text-lg { font-size: 1.125rem; }
+.text-xl { font-size: 1.25rem; }
+
+/* Font Weights */
+.font-normal { font-weight: 400; }
+.font-medium { font-weight: 500; }
+.font-semibold { font-weight: 600; }
+.font-bold { font-weight: 700; }
+
+/* Colors */
+.text-gold { color: var(--gold-royal); }
+.text-white { color: var(--text-primary); }
+.text-muted { color: var(--text-muted); }
+.text-success { color: var(--success); }
+.text-danger { color: var(--danger); }
+
+/* Alignment */
+.text-center { text-align: center; }
+.text-right { text-align: right; }
+.text-left { text-align: left; }
+
+/* Decoration */
+.text-decoration-none { text-decoration: none; }
+.uppercase { text-transform: uppercase; }

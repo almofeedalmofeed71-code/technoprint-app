@@ -1,0 +1,48 @@
+/* TECHOPRINT 2026 - UI ICONS */
+/* SVG Icons and Image Placeholders ONLY */
+
+.icon { display: inline-flex; align-items: center; justify-content: center; }
+.icon-sm { font-size: 1rem; }
+.icon-md { font-size: 1.5rem; }
+.icon-lg { font-size: 2rem; }
+.icon-xl { font-size: 3rem; }
+
+/* Font Awesome Icons */
+.fas { font-weight: 900; }
+.far { font-weight: 400; }
+.fal { font-weight: 300; }
+.fab { font-weight: 400; }
+
+/* Common Icons */
+.icon-home::before { content: "\f015"; font-family: "Font Awesome 6 Free"; }
+.icon-wallet::before { content: "\f2bd"; font-family: "Font Awesome 6 Free"; }
+.icon-book::before { content: "\f02d"; font-family: "Font Awesome 6 Free"; }
+.icon-box::before { content: "\f466"; font-family: "Font Awesome 6 Free"; }
+.icon-user::before { content: "\f007"; font-family: "Font Awesome 6 Free"; }
+.icon-signin::before { content: "\f2f6"; font-family: "Font Awesome 6 Free"; }
+.icon-signout::before { content: "\f2f5"; font-family: "Font Awesome 6 Free"; }
+.icon-settings::before { content: "\f013"; font-family: "Font Awesome 6 Free"; }
+.icon-plus::before { content: "\f067"; font-family: "Font Awesome 6 Free"; }
+.icon-minus::before { content: "\f068"; font-family: "Font Awesome 6 Free"; }
+.icon-close::before { content: "\f00d"; font-family: "Font Awesome 6 Free"; }
+.icon-arrow::before { content: "\f061"; font-family: "Font Awesome 6 Free"; }
+.icon-arrow-left::before { content: "\f060"; font-family: "Font Awesome 6 Free"; }
+
+/* Image Placeholder */
+.img-placeholder {
+    width: 100%;
+    height: 100%;
+    background: var(--bg-medium);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-muted);
+}
+
+/* Logo Icon (Text Based) */
+.logo-icon-text {
+    font-family: 'Amiri';
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--bg-cosmic);
+}
