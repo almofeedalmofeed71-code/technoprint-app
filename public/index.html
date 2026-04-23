@@ -21,6 +21,8 @@
     <link rel="stylesheet" href="css/ui-ads-slider.css">
     <link rel="stylesheet" href="css/ui-gates.css">
     <link rel="stylesheet" href="css/ui-responsive.css">
+    <link rel="stylesheet" href="css/student-portal.css">
+    <link rel="stylesheet" href="css/animations.css">
 </head>
 <body>
     <!-- Splash Screen -->
@@ -98,7 +100,22 @@
             </div>
         </header>
 
-        <main id="pageContent" class="main-content" style="flex:1; padding:20px;"></main>
+        <main id="pageContent" class="main-content" style="flex:1; padding:20px;">
+            <div class="student-portal">
+                <div class="portal-header"><h2>لوحة الطالب</h2></div>
+                <div class="service-grid">
+                    <div class="service-card" onclick="Nav.go('orders')"><div class="service-icon">📦</div><p class="service-title">طلباتي</p></div>
+                    <div class="service-card" onclick="Nav.go('wallet')"><div class="service-icon">💰</div><p class="service-title">المحفظة</p></div>
+                    <div class="service-card" onclick="Nav.go('library')"><div class="service-icon">📚</div><p class="service-title">المكتبة</p></div>
+                    <div class="service-card" onclick="Nav.go('tracking')"><div class="service-icon">📍</div><p class="service-title">التتبع</p></div>
+                    <div class="service-card" onclick="Nav.go('printing')"><div class="service-icon">🖨️</div><p class="service-title">الطباعة</p></div>
+                    <div class="service-card" onclick="Nav.go('maintenance')"><div class="service-icon">🔧</div><p class="service-title">الدعم</p></div>
+                    <div class="service-card" onclick="Nav.go('teacher')"><div class="service-icon">👨‍🏫</div><p class="service-title">المعلم</p></div>
+                    <div class="service-card" onclick="Nav.go('inks')"><div class="service-icon">🎨</div><p class="service-title">الحبر</p></div>
+                    <div class="service-card" onclick="openModal('loginModal')"><div class="service-icon">⚙️</div><p class="service-title">الاعدادات</p></div>
+                </div>
+            </div>
+        </main>
 
         <!-- 3x3 Ads Grid with Golden Frame -->
         <section class="ads-container">
