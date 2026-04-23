@@ -1,7 +1,7 @@
-/* TECHOPRINT 2026 - ADS SLIDER (COMPRESSED) */
-/* 30vh Height for Mobile - Single Large Ad Per Slide */
+/* TECHOPRINT 2026 - ADS SLIDER (COMPRESSED 5%) */
+/* 25vh Height for Mobile - Single Large Ad Per Slide */
 .slider-section { padding: 5px; }
-.slider-frame { position: relative; background: #000000; border: 2px solid #D4AF37; border-radius: 10px; overflow: hidden; height: 30vh; }
+.slider-frame { position: relative; background: #000000; border: 2px solid #D4AF37; border-radius: 10px; overflow: hidden; height: 25vh; }
 .slider-frame::before { content: ''; position: absolute; inset: -2px; border-radius: 10px; background: linear-gradient(45deg, #D4AF37, #F4E4BA, #D4AF37, #F4E4BA); animation: spin 4s linear infinite; z-index: 1; pointer-events: none; }
 .slider-container { width: 100%; height: 100%; background: #000000; overflow: hidden; }
 .slide { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; background: #000000; height: 100%; }

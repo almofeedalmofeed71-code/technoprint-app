@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="css/ui-cards.css?v=2026">
     <link rel="stylesheet" href="css/ui-buttons.css?v=2026">
     <link rel="stylesheet" href="css/ui-header.css?v=2026">
+    <link rel="stylesheet" href="css/ui-modals.css?v=2026">
     <link rel="stylesheet" href="css/animations.css?v=2026">
 </head>
 <body>
@@ -25,10 +26,10 @@
             <div class="brand-logo">T</div>
             <span class="brand-name">TECHOPRINT</span>
         </div>
-        <button class="btn-gold register-btn" onclick="openModal('registerModal')">تسجيل الدخول</button>
+        <button class="btn-gold register-btn" onclick="openModal('registerModal')">تسجيل</button>
         <div class="header-actions">
             <div class="header-notif" onclick="showNotification()"><i class="fas fa-bell"></i></div>
-            <div class="header-wallet" onclick="Nav.go('wallet')"><i class="fas fa-wallet"></i></div>
+            <div class="header-wallet" onclick="openWallet()"><i class="fas fa-wallet"></i><span class="balance">0 IQD</span></div>
         </div>
     </header>
 
@@ -46,7 +47,7 @@
                 </div>
             </div>
         </div>
-        <div class="slide-nav" style="margin-top:5px;">
+        <div class="slide-nav" style="margin-top:4px;">
             <div class="slider-dot active"></div>
             <div class="slider-dot"></div>
             <div class="slider-dot"></div>
@@ -68,10 +69,10 @@
                     <h3>منبر الأساتذة</h3>
                     <p>ديوان التدريسيين</p>
                 </div>
-                <div class="portal-card" onclick="Nav.go('design')">
+                <div class="portal-card" onclick="Nav.go('general')">
                     <div class="portal-icon">🎨</div>
-                    <h3>بصمة المبدعين</h3>
-                    <p>استوديو التصميم</p>
+                    <h3>بصمة الإبداع</h3>
+                    <p>الخدمات العامة</p>
                 </div>
                 <div class="portal-card" onclick="Nav.go('library')">
                     <div class="portal-icon">📚</div>
@@ -132,18 +133,18 @@
         <button class="btn-gold" onclick="Nav.go('dashboard')">العودة</button>
     </section>
 
-    <section id="designSection" class="dashboard-section" style="display:none;">
-        <h2 class="section-title">بصمة المبدعين</h2>
+    <section id="generalSection" class="dashboard-section" style="display:none;">
+        <h2 class="section-title">بصمة الإبداع - الخدمات العامة</h2>
         <div class="service-grid">
-            <div class="glass-card"><p>🎨 شعار</p></div>
-            <div class="glass-card"><p>📄 كارت</p></div>
-            <div class="glass-card"><p>🖼️ بوستر</p></div>
-            <div class="glass-card"><p>📱 تطبيق</p></div>
-            <div class="glass-card"><p>🌐 موقع</p></div>
+            <div class="glass-card"><p>🖨️ طباعة عامة</p></div>
+            <div class="glass-card"><p>📄 نسخ</p></div>
+            <div class="glass-card"><p>📁 سكانر</p></div>
+            <div class="glass-card"><p>🎨 تصميم</p></div>
             <div class="glass-card"><p>📦 تغليف</p></div>
-            <div class="glass-card"><p>🎭 هوية</p></div>
+            <div class="glass-card"><p>💳 كارت</p></div>
+            <div class="glass-card"><p>🖼️ بوستر</p></div>
             <div class="glass-card"><p>📸 تصوير</p></div>
-            <div class="glass-card"><p>🎬 مونتاج</p></div>
+            <div class="glass-card"><p>📨 توصيل</p></div>
         </div>
         <button class="btn-gold" onclick="Nav.go('dashboard')">العودة</button>
     </section>
@@ -191,10 +192,14 @@
     </section>
 
     <section id="walletSection" class="dashboard-section" style="display:none;">
-        <h2 class="section-title">رصيدي</h2>
-        <div class="glass-card" style="padding:40px;text-align:center;max-width:400px;margin:20px auto;">
+        <h2 class="section-title">المحفظة</h2>
+        <div class="glass-card" style="padding:30px;text-align:center;max-width:400px;margin:20px auto;">
             <p style="font-size:4rem;">💰</p>
-            <p style="font-size:2.5rem;color:#D4AF37;font-weight:bold;">0 IQD</p>
+            <p style="font-size:2rem;color:#D4AF37;font-weight:bold;">0 IQD</p>
+            <div style="display:flex;gap:10px;justify-content:center;margin-top:20px;">
+                <button class="btn-gold" onclick="alert('إيداع')">إيداع</button>
+                <button class="btn-gold" onclick="alert('سحب')">سحب</button>
+            </div>
         </div>
         <button class="btn-gold" onclick="Nav.go('dashboard')">العودة</button>
     </section>
@@ -272,6 +277,25 @@
         <button class="nav-btn" onclick="openModal('loginModal')"><i class="fas fa-user"></i><span>حسابي</span></button>
     </nav>
 
+    <div id="walletModal" class="modal" style="display:none;">
+        <div class="modal-box" style="max-width:450px;">
+            <button class="modal-close" onclick="closeModal('walletModal')"><i class="fas fa-times"></i></button>
+            <h2>💰 المحفظة</h2>
+            <div class="glass-card" style="text-align:center;padding:20px;margin:15px 0;">
+                <p style="font-size:3rem;">💰</p>
+                <p style="font-size:2rem;color:#D4AF37;font-weight:bold;">0 IQD</p>
+            </div>
+            <div style="display:flex;gap:10px;">
+                <button class="btn-gold" style="flex:1;" onclick="alert('إيداع')">إيداع 💰</button>
+                <button class="btn-gold" style="flex:1;" onclick="alert('سحب')">سحب 💸</button>
+            </div>
+            <div class="glass-card" style="margin-top:15px;padding:15px;">
+                <p style="color:#D4AF37;text-align:center;">📊 المعاملات الأخيرة</p>
+                <p style="color:#888;text-align:center;">لا توجد معاملات</p>
+            </div>
+        </div>
+    </div>
+
     <div id="loginModal" class="modal" style="display:none;">
         <div class="modal-box">
             <button class="modal-close" onclick="closeModal('loginModal')"><i class="fas fa-times"></i></button>
@@ -286,24 +310,59 @@
     </div>
 
     <div id="registerModal" class="modal" style="display:none;">
-        <div class="modal-box">
+        <div class="modal-box" style="width:90%;max-width:500px;">
             <button class="modal-close" onclick="closeModal('registerModal')"><i class="fas fa-times"></i></button>
-            <h2>إنشاء حساب</h2>
+            <h2>إنشاء حساب جديد</h2>
             <form onsubmit="return handleRegister(this)">
-                <input type="text" name="fullName" class="input-field" placeholder="الاسم (عربي)" required>
-                <input type="text" name="username" class="input-field" placeholder="Username (English)" required>
-                <input type="password" name="password" class="input-field" placeholder="Password" required>
-                <input type="tel" name="phone" class="input-field" placeholder="رقم الهاتف" required>
-                <input type="text" name="address" class="input-field" placeholder="العنوان" required>
-                <select name="governorate" class="input-field" required>
-                    <option value="">المحافظة</option>
-                    <option value="baghdad">بغداد</option>
-                    <option value="basra">البصرة</option>
-                    <option value="erbil">أربيل</option>
-                    <option value="duhok">دهوك</option>
-                    <option value="sulaymaniyah">السليمانية</option>
-                </select>
-                <button type="submit" class="btn-gold">تسجيل</button>
+                <div class="input-group">
+                    <label>الاسم (عربي)</label>
+                    <input type="text" name="fullName" class="input-field" placeholder="محمد أحمد" required>
+                </div>
+                <div class="input-group">
+                    <label>اسم المستخدم</label>
+                    <input type="text" name="username" class="input-field" placeholder="Username" required>
+                    <span id="username-error" class="error-msg" style="display:none;color:#ff4444;">اسم المستخدم موجود مسبقاً</span>
+                </div>
+                <div class="input-group">
+                    <label>كلمة المرور</label>
+                    <input type="password" name="password" class="input-field" placeholder="••••••••" required>
+                </div>
+                <div class="input-group">
+                    <label>رقم الهاتف 🇮🇶</label>
+                    <div class="phone-input">
+                        <span class="phone-code">+964</span>
+                        <input type="tel" name="phone" class="input-field" placeholder="771 123 4567" required>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label>العنوان</label>
+                    <input type="text" name="address" class="input-field" placeholder="المنطقة/الشارع" required>
+                </div>
+                <div class="input-group">
+                    <label>المحافظة</label>
+                    <select name="governorate" class="input-field" required>
+                        <option value="">اختر المحافظة</option>
+                        <option value="baghdad">بغداد</option>
+                        <option value="basra">البصرة</option>
+                        <option value="erbil">أربيل</option>
+                        <option value="duhok">دهوك</option>
+                        <option value="sulaymaniyah">السليمانية</option>
+                        <option value="kirkuk">كركوك</option>
+                        <option value="anbar">الأنبار</option>
+                        <option value="babylon">بابل</option>
+                        <option value="babil">ديالى</option>
+                        <option value="dohuk">واسط</option>
+                        <option value="salahuddin">صلاح الدين</option>
+                        <option value="nineveh">نينوى</option>
+                        <option value="diyala">ذي قار</option>
+                        <option value="muthanna">المثنى</option>
+                        <option value="qadisiyah">القادسية</option>
+                        <option value="najaf">النجف</option>
+                        <option value="karbala">كربلاء</option>
+                        <option value="wasit">بابل</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn-gold" style="width:100%;margin-top:10px;">تسجيل</button>
             </form>
             <p style="text-align:center;margin-top:15px;color:#D4AF37;cursor:pointer;" onclick="toggleRegister()">لديك حساب؟</p>
         </div>

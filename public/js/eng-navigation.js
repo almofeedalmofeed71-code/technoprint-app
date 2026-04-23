@@ -1,6 +1,6 @@
 /* TECHOPRINT 2026 - NAVIGATION */
 const Nav = {
-    sections: ['dashboard', 'student', 'teacher', 'design', 'library', 'ai', 'card', 'wallet', 'orders', 'tracking', 'settings', 'support', 'about'],
+    sections: ['dashboard', 'student', 'teacher', 'general', 'library', 'ai', 'academy', 'wallet', 'orders', 'tracking', 'settings', 'support', 'about'],
     
     go(page) {
         this.sections.forEach(function(s) {
@@ -10,13 +10,12 @@ const Nav = {
         var target = document.getElementById(page + 'Section');
         if (target) target.style.display = 'block';
         document.querySelectorAll('.nav-btn').forEach(function(b) { b.classList.remove('active'); });
-        var btn = document.getElementById('nav-' + page);
-        if (btn) btn.classList.add('active');
     }
 };
 window.Nav = Nav;
 window.openModal = function(id) { var m = document.getElementById(id); if (m) m.style.display = 'flex'; };
 window.closeModal = function(id) { var m = document.getElementById(id); if (m) m.style.display = 'none'; };
+window.openWallet = function() { openModal('walletModal'); };
 window.toggleRegister = function() {
     var login = document.getElementById('loginModal');
     var reg = document.getElementById('registerModal');
