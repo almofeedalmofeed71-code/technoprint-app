@@ -823,8 +823,16 @@
                     <input type="text" id="regFullName" placeholder="أدخل اسمك الكامل" required>
                 </div>
                 <div class="form-group">
-                    <label><i class="fas fa-envelope gold-icon"></i> <span data-i18n="auth.emailField">البريد الإلكتروني</span></label>
-                    <input type="email" id="regEmail" placeholder="example@email.com" required>
+                    <label><i class="fas fa-at gold-icon"></i> <span data-i18n="auth.username">اسم المستخدم</span></label>
+                    <input type="text" id="regUsername" placeholder="اختر اسم مستخدم فريد" required>
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-lock gold-icon"></i> <span data-i18n="auth.password">كلمة المرور</span></label>
+                    <input type="password" id="regPassword" placeholder="••••••••" minlength="6" required>
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-lock gold-icon"></i> <span data-i18n="auth.confirmPassword">تأكيد كلمة المرور</span></label>
+                    <input type="password" id="regConfirmPassword" placeholder="••••••••" minlength="6" required>
                 </div>
                 <div class="form-group">
                     <label><i class="fas fa-phone gold-icon"></i> <span data-i18n="auth.phone">رقم الهاتف</span></label>
@@ -835,12 +843,8 @@
                     <small class="phone-hint" data-i18n="auth.phoneHint">ابدأ من الرقم 7 - مثال: 7701234567</small>
                 </div>
                 <div class="form-group">
-                    <label><i class="fas fa-lock gold-icon"></i> <span data-i18n="auth.password">كلمة المرور</span></label>
-                    <input type="password" id="regPassword" placeholder="••••••••" minlength="6" required>
-                </div>
-                <div class="form-group">
-                    <label><i class="fas fa-lock gold-icon"></i> <span data-i18n="auth.confirmPassword">تأكيد كلمة المرور</span></label>
-                    <input type="password" id="regConfirmPassword" placeholder="••••••••" minlength="6" required>
+                    <label><i class="fas fa-map-marker-alt gold-icon"></i> <span data-i18n="auth.address">العنوان</span></label>
+                    <input type="text" id="regAddress" placeholder="أدخل عنوانك (مدينة، حي)" required>
                 </div>
                 <div class="form-group">
                     <label><i class="fas fa-user-tag gold-icon"></i> <span data-i18n="auth.role">الدور</span></label>

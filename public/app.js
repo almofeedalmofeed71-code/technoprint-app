@@ -176,6 +176,47 @@ window.showLoginModal = () => {
     window.i18n.reload();
 };
 
+// ==================== HEADER BUTTON HANDLERS ====================
+// Wallet Icon - Opens wallet page
+window.openWallet = () => {
+    Router.navigate('wallet');
+};
+
+// Profile/User Button - Shows login if guest, profile if logged in
+window.openProfile = () => {
+    if (APP_STATE.user) {
+        // Show profile dropdown or navigate to profile
+        showToast(window.i18n.t('messages.profileOpened') || 'مرحباً ' + APP_STATE.user.full_name, 'info');
+    } else {
+        showLoginModal();
+    }
+};
+
+// Notifications Button
+window.openNotifications = () => {
+    showToast(window.i18n.t('messages.noNotifications') || 'لا توجد إشعارات جديدة', 'info');
+};
+
+// Deposit Modal
+window.showDepositModal = () => {
+    if (!APP_STATE.user) {
+        showLoginModal();
+        showToast(window.i18n.t('auth.loginRequired') || 'يرجى تسجيل الدخول أولاً', 'warning');
+        return;
+    }
+    document.getElementById('depositModal').style.display = 'flex';
+};
+
+// Withdraw Modal
+window.showWithdrawModal = () => {
+    if (!APP_STATE.user) {
+        showLoginModal();
+        showToast(window.i18n.t('auth.loginRequired') || 'يرجى تسجيل الدخول أولاً', 'warning');
+        return;
+    }
+    document.getElementById('withdrawModal').style.display = 'flex';
+};
+
 window.closeModal = (modalId) => {
     document.getElementById(modalId).style.display = 'none';
 };
@@ -186,13 +227,20 @@ window.handleRegister = async (e) => {
     errorEl.style.display = 'none';
     
     const fullName = document.getElementById('regFullName').value.trim();
-    const email = document.getElementById('regEmail').value.trim();
+    const username = document.getElementById('regUsername').value.trim();
     const phone = document.getElementById('regPhone').value.trim();
     const password = document.getElementById('regPassword').value;
     const confirmPassword = document.getElementById('regConfirmPassword').value;
+    const address = document.getElementById('regAddress').value.trim();
     const role = document.getElementById('regRole').value;
     
     // Validation
+    if (!username || username.length < 3) {
+        errorEl.textContent = '⚠️ اسم المستخدم يجب أن يكون 3 أحرف على الأقل';
+        errorEl.style.display = 'block';
+        return;
+    }
+    
     if (password !== confirmPassword) {
         errorEl.textContent = '⚠️ كلمة المرور غير متطابقة!';
         errorEl.style.display = 'block';
@@ -206,7 +254,14 @@ window.handleRegister = async (e) => {
     }
     
     try {
-        const res = await apiCall('auth/signup', 'POST', { email, password, full_name: fullName, phone: '+964' + phone, role });
+        const res = await apiCall('auth/signup', 'POST', { 
+            username, 
+            password, 
+            full_name: fullName, 
+            phone: '+964' + phone, 
+            address,
+            role 
+        });
         
         if (res.error) {
             errorEl.textContent = '⚠️ ' + res.error;
