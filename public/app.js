@@ -997,40 +997,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }, 3000);
     
-    // ==================== PREMIUM BANNER SLIDER ====================
-    // Auto-slide every 5 seconds with 4 colored slides
-    let currentSlide = 0;
-    const totalSlides = 4;
-    const sliderTrack = document.getElementById('sliderTrack');
-    const dots = document.querySelectorAll('.dot');
-    
-    function goToSlide(index) {
-        currentSlide = index;
-        if (sliderTrack) {
-            sliderTrack.style.transform = `translateX(${currentSlide * -25}%)`;
-        }
-        dots.forEach((dot, i) => {
-            dot.classList.toggle('active', i === currentSlide);
-        });
-    }
-    
-    function nextSlide() {
-        currentSlide = (currentSlide + 1) % totalSlides;
-        goToSlide(currentSlide);
-    }
-    
-    // Auto-slide every 5 seconds
-    let sliderInterval = setInterval(nextSlide, 5000);
-    
-    // Click handlers for dots
-    dots.forEach((dot, i) => {
-        dot.addEventListener('click', () => {
-            clearInterval(sliderInterval);
-            goToSlide(i);
-            // Restart auto-slide
-            sliderInterval = setInterval(nextSlide, 5000);
-        });
-    });
+    // Initialize Premium Slider from components module
+    PremiumSlider.init();
     
     console.log('🚀 TECHOPRINT 2026 v2.1 - FULLY LOADED!');
 });
