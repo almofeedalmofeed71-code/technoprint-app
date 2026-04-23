@@ -1,33 +1,78 @@
-/* TECHOPRINT 2026 - GLASS BASE */
-/* Global Styles & Body */
+/* TECHOPRINT 2026 - GLASS */
+/* Deep Black + Golden Glassmorphism */
 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-html, body {
-    width: 100%;
-    min-height: 100vh;
-    font-family: 'Tajawal', 'Segoe UI', sans-serif;
-    background: var(--bg-cosmic);
-    color: var(--text-primary);
-    overflow-x: hidden;
+:root {
+    --gold: #D4AF37;
+    --gold-light: #F4E4BA;
+    --gold-dark: #8B6914;
+    --black: #000000;
+    --dark: #0a0a0f;
+    --dark-light: #12121a;
 }
 
 body {
-    padding-bottom: 80px;
+    background: var(--black) !important;
+    color: #ffffff;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Arial, sans-serif;
 }
 
-a { text-decoration: none; color: inherit; }
-button { font-family: inherit; }
-input, textarea { font-family: inherit; }
-
-img {
-    max-width: 100%;
-    display: block;
+/* Glass Effect Cards */
+.glass-card {
+    background: rgba(255, 255, 255, 0.05) !important;
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid rgba(212, 175, 55, 0.3) !important;
+    border-radius: 15px;
 }
 
-/* Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Tajawal:wght@400;500;700&display=swap');
+/* Header Glass */
+.app-header {
+    background: rgba(0, 0, 0, 0.9) !important;
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border-bottom: 2px solid var(--gold);
+}
+
+/* Modal Glass */
+.modal-box {
+    background: rgba(18, 18, 26, 0.95) !important;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 2px solid var(--gold) !important;
+}
+
+/* Input Glass */
+.input-field {
+    background: rgba(255, 255, 255, 0.05) !important;
+    border: 1px solid rgba(212, 175, 55, 0.3) !important;
+    color: #ffffff;
+}
+
+.input-field:focus {
+    border-color: var(--gold) !important;
+    outline: none;
+}
+
+/* Bottom Nav Glass */
+.bottom-nav {
+    background: rgba(0, 0, 0, 0.95) !important;
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border-top: 2px solid var(--gold);
+}
+
+/* Section Background */
+.dashboard-section {
+    background: var(--black) !important;
+    min-height: 100vh;
+}
+
+/* Language Bar Glass */
+.language-bar {
+    background: rgba(0, 0, 0, 0.8) !important;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: 10px;
+}

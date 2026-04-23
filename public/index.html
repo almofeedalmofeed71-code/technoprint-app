@@ -6,9 +6,11 @@
     <title>TECHOPRINT 2026</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="css/ui-fonts.css">
+    <!-- CORE CSS - Must be at top -->
     <link rel="stylesheet" href="css/ui-colors.css">
     <link rel="stylesheet" href="css/ui-glass.css">
+    <link rel="stylesheet" href="css/ui-fonts.css">
+    <!-- COMPONENT CSS -->
     <link rel="stylesheet" href="css/ui-header.css">
     <link rel="stylesheet" href="css/ui-buttons.css">
     <link rel="stylesheet" href="css/ui-cards.css">
@@ -122,7 +124,7 @@
     <section id="walletSection" class="dashboard-section" style="display:none;">
         <div style="text-align:center;padding:30px;">
             <h2 style="color:#D4AF37;">المحفظة</h2>
-            <div style="background:linear-gradient(135deg,#1a1a2e,#16213e);border:2px solid #D4AF37;border-radius:20px;padding:40px;max-width:400px;margin:20px auto;">
+            <div class="glass-card" style="padding:40px;max-width:400px;margin:20px auto;">
                 <i class="fas fa-wallet" style="font-size:4rem;color:#D4AF37;margin-bottom:20px;"></i>
                 <h3 style="color:#fff;margin:10px 0;">الرصيد الحالي</h3>
                 <p style="font-size:2.5rem;color:#D4AF37;font-weight:bold;margin:10px 0;">0 IQD</p>
@@ -137,22 +139,10 @@
         <div style="text-align:center;padding:30px;">
             <h2 style="color:#D4AF37;">المكتبة</h2>
             <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:20px;max-width:800px;margin:20px auto;">
-                <div class="service-card" style="cursor:default;">
-                    <div class="service-icon">📖</div>
-                    <p class="service-title">كتاب 1</p>
-                </div>
-                <div class="service-card" style="cursor:default;">
-                    <div class="service-icon">📗</div>
-                    <p class="service-title">كتاب 2</p>
-                </div>
-                <div class="service-card" style="cursor:default;">
-                    <div class="service-icon">📘</div>
-                    <p class="service-title">كتاب 3</p>
-                </div>
-                <div class="service-card" style="cursor:default;">
-                    <div class="service-icon">📕</div>
-                    <p class="service-title">كتاب 4</p>
-                </div>
+                <div class="service-card" style="cursor:default;"><div class="service-icon">📖</div><p class="service-title">كتاب 1</p></div>
+                <div class="service-card" style="cursor:default;"><div class="service-icon">📗</div><p class="service-title">كتاب 2</p></div>
+                <div class="service-card" style="cursor:default;"><div class="service-icon">📘</div><p class="service-title">كتاب 3</p></div>
+                <div class="service-card" style="cursor:default;"><div class="service-icon">📕</div><p class="service-title">كتاب 4</p></div>
             </div>
             <button class="btn-gold" onclick="navigateTo('dashboard')" style="margin-top:20px;">العودة للرئيسية</button>
         </div>
@@ -162,7 +152,7 @@
     <section id="ordersSection" class="dashboard-section" style="display:none;">
         <div style="text-align:center;padding:30px;">
             <h2 style="color:#D4AF37;">طلباتي</h2>
-            <div style="background:rgba(255,255,255,0.05);border:1px solid rgba(212,175,55,0.3);border-radius:15px;padding:30px;max-width:600px;margin:20px auto;">
+            <div class="glass-card" style="padding:30px;max-width:600px;margin:20px auto;">
                 <p style="color:#fff;">📦 لا توجد طلبات حالياً</p>
                 <button class="btn-gold" style="margin-top:20px;">إنشاء طلب جديد</button>
             </div>
@@ -174,7 +164,7 @@
     <section id="trackingSection" class="dashboard-section" style="display:none;">
         <div style="text-align:center;padding:30px;">
             <h2 style="color:#D4AF37;">تتبع الطلب</h2>
-            <div style="background:rgba(255,255,255,0.05);border:1px solid rgba(212,175,55,0.3);border-radius:15px;padding:30px;max-width:600px;margin:20px auto;">
+            <div class="glass-card" style="padding:30px;max-width:600px;margin:20px auto;">
                 <p style="color:#fff;">📍 أدخل رقم التتبع</p>
                 <input type="text" class="input-field" placeholder="رقم الطلب" style="max-width:300px;">
                 <button class="btn-gold" style="margin-top:15px;">تتبع</button>
@@ -187,7 +177,7 @@
     <section id="printingSection" class="dashboard-section" style="display:none;">
         <div style="text-align:center;padding:30px;">
             <h2 style="color:#D4AF37;">خدمة الطباعة</h2>
-            <div style="background:rgba(255,255,255,0.05);border:1px solid rgba(212,175,55,0.3);border-radius:15px;padding:30px;max-width:600px;margin:20px auto;">
+            <div class="glass-card" style="padding:30px;max-width:600px;margin:20px auto;">
                 <p style="color:#fff;">🖨️ ارفع ملفك للطباعة</p>
                 <input type="file" class="input-field" style="max-width:300px;">
                 <button class="btn-gold" style="margin-top:15px;">طباعة</button>
@@ -200,7 +190,7 @@
     <section id="supportSection" class="dashboard-section" style="display:none;">
         <div style="text-align:center;padding:30px;">
             <h2 style="color:#D4AF37;">مركز الدعم</h2>
-            <div style="background:rgba(255,255,255,0.05);border:1px solid rgba(212,175,55,0.3);border-radius:15px;padding:30px;max-width:600px;margin:20px auto;">
+            <div class="glass-card" style="padding:30px;max-width:600px;margin:20px auto;">
                 <p style="color:#fff;">🔧 كيف يمكننا مساعدتك؟</p>
                 <textarea class="input-field" rows="4" placeholder="اكتب رسالتك هنا..." style="max-width:400px;resize:none;"></textarea>
                 <button class="btn-gold" style="margin-top:15px;">إرسال</button>
@@ -213,7 +203,7 @@
     <section id="teacherSection" class="dashboard-section" style="display:none;">
         <div style="text-align:center;padding:30px;">
             <h2 style="color:#D4AF37;">بوابة المعلم</h2>
-            <div style="background:rgba(255,255,255,0.05);border:1px solid rgba(212,175,55,0.3);border-radius:15px;padding:30px;max-width:600px;margin:20px auto;">
+            <div class="glass-card" style="padding:30px;max-width:600px;margin:20px auto;">
                 <p style="color:#fff;">👨‍🏫 لوحة تحكم المعلم</p>
                 <div style="display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:20px;">
                     <button class="btn-gold">إدارة الكتب</button>
@@ -230,22 +220,10 @@
         <div style="text-align:center;padding:30px;">
             <h2 style="color:#D4AF37;">الحبر والمستلزمات</h2>
             <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:20px;max-width:800px;margin:20px auto;">
-                <div class="service-card" style="cursor:default;">
-                    <div class="service-icon">🖤</div>
-                    <p class="service-title">حبر أسود</p>
-                </div>
-                <div class="service-card" style="cursor:default;">
-                    <div class="service-icon">🔵</div>
-                    <p class="service-title">حبر أزرق</p>
-                </div>
-                <div class="service-card" style="cursor:default;">
-                    <div class="service-icon">🔴</div>
-                    <p class="service-title">حبر أحمر</p>
-                </div>
-                <div class="service-card" style="cursor:default;">
-                    <div class="service-icon">🟢</div>
-                    <p class="service-title">حبر أخضر</p>
-                </div>
+                <div class="service-card" style="cursor:default;"><div class="service-icon">🖤</div><p class="service-title">حبر أسود</p></div>
+                <div class="service-card" style="cursor:default;"><div class="service-icon">🔵</div><p class="service-title">حبر أزرق</p></div>
+                <div class="service-card" style="cursor:default;"><div class="service-icon">🔴</div><p class="service-title">حبر أحمر</p></div>
+                <div class="service-card" style="cursor:default;"><div class="service-icon">🟢</div><p class="service-title">حبر أخضر</p></div>
             </div>
             <button class="btn-gold" onclick="navigateTo('dashboard')" style="margin-top:20px;">العودة للرئيسية</button>
         </div>

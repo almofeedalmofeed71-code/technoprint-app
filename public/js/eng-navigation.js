@@ -1,9 +1,9 @@
 /* TECHOPRINT 2026 - ENG NAVIGATION */
-/* REAL SCREEN NAVIGATION - NO ALERTS */
+/* REAL SCREEN NAVIGATION - GOLD/BLACK Empire */
 
 const Nav = {
     current: 'dashboard',
-    screens: ['dashboard', 'wallet', 'library', 'orders', 'tracking', 'printing', 'support', 'teacher', 'inks'],
+    screens: ['dashboard', 'wallet', 'library', 'orders', 'tracking', 'printings', 'support', 'teacher', 'inks'],
     
     init() {
         console.log('[NAV] Navigation ready');
@@ -18,7 +18,7 @@ const Nav = {
     
     show(page) {
         // Hide all sections
-        const sections = ['dashboard', 'wallet', 'library', 'orders', 'tracking', 'printing', 'support', 'teacher', 'inks'];
+        const sections = ['dashboard', 'wallet', 'library', 'orders', 'tracking', 'printings', 'support', 'teacher', 'inks'];
         sections.forEach(s => {
             const el = document.getElementById(s + 'Section');
             if (el) el.style.display = 'none';
@@ -61,7 +61,7 @@ window.showNotification = function() {
     var modal = document.createElement('div');
     modal.className = 'modal';
     modal.innerHTML = `
-        <div class="modal-box" style="max-width:350px;">
+        <div class="modal-box">
             <button class="modal-close" onclick="this.closest('.modal').remove()"><i class="fas fa-times"></i></button>
             <h2>🔔 Notifications</h2>
             <div style="text-align:right;margin-top:15px;">
