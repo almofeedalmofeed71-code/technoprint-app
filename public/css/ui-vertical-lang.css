@@ -1,8 +1,8 @@
-/* TECHOPRINT 2026 - UI VERTICAL LANG */
-/* Language Bar Fixed on Right */
+/* TECHOPRINT 2026 - VERTICAL LANG BAR */
+/* Language Buttons on Right Side */
 
 #language-bar {
-    position: absolute;
+    position: fixed;
     right: 10px;
     top: 50%;
     transform: translateY(-50%);
@@ -10,48 +10,43 @@
     flex-direction: column;
     gap: 10px;
     z-index: 9999;
+    padding: 15px 10px;
+    background: var(--glass-bg);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--border-gold);
+    border-radius: 25px;
 }
 
-html[dir="ltr"] #language-bar { right: auto; left: 10px; }
+html[dir="ltr"] #language-bar {
+    right: auto;
+    left: 10px;
+}
 
 .lang-btn {
-    width: 40px;
-    height: 40px;
+    width: 45px;
+    height: 45px;
     border-radius: 50%;
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(15px);
-    border: 1px solid rgba(212, 175, 55, 0.4);
+    background: var(--bg-card);
+    border: 2px solid var(--border-gold);
+    color: var(--text-primary);
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
     display: flex;
     align-items: center;
     justify-content: center;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    font-size: 1.2rem;
 }
 
 .lang-btn:hover {
-    background: rgba(212, 175, 55, 0.3);
+    background: var(--gold-dark);
     border-color: var(--gold-royal);
+    transform: scale(1.05);
 }
 
 .lang-btn.active {
     background: var(--gold-royal);
     border-color: var(--gold-light);
-    box-shadow: 0 0 15px rgba(212, 175, 55, 0.5);
-}
-
-/* Fallback for vert-lang-btn */
-.vert-lang-btn {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(15px);
-    border: 1px solid rgba(212, 175, 55, 0.4);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    font-size: 1.2rem;
+    color: var(--bg-cosmic);
+    box-shadow: var(--shadow-gold);
 }

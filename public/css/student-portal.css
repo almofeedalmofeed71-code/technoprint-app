@@ -1,12 +1,121 @@
-/* TECHOPRINT 2026 - STUDENT PORTAL */
-/* 3x3 Grid Dashboard */
+/* TECHOPRINT 2026 - GATES & PORTALS */
+/* Clean Premium Gate Cards */
 
-.student-portal {
+.gates-section {
     padding: 20px;
-    min-height: 100vh;
+    max-width: 1200px;
+    margin: 0 auto;
 }
 
-/* Back Arrow */
+.gate-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+.gate-card {
+    position: relative;
+    height: 200px;
+    border-radius: 20px;
+    overflow: hidden;
+    cursor: pointer;
+    border: 2px solid var(--border-gold);
+    transition: all 0.3s ease;
+    z-index: 100;
+}
+
+.gate-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-gold);
+    border-color: var(--gold-royal);
+}
+
+.gate-bg {
+    position: absolute;
+    inset: 0;
+    opacity: 0.8;
+}
+
+.gate-content {
+    position: relative;
+    z-index: 10;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    text-align: center;
+}
+
+.gate-icon {
+    font-size: 3rem;
+    margin-bottom: 15px;
+}
+
+.gate-title {
+    font-family: 'Amiri', serif;
+    font-size: 1.4rem;
+    color: var(--gold-royal);
+    margin: 0 0 8px 0;
+}
+
+.gate-desc {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    margin: 0;
+}
+
+/* Dashboard Section */
+.dashboard-section {
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.page-content {
+    min-height: 60vh;
+}
+
+/* 3x3 Service Grid */
+.service-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.service-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-gold);
+    border-radius: 15px;
+    padding: 25px 15px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    z-index: 100;
+    position: relative;
+}
+
+.service-card:hover {
+    background: var(--gold-dark);
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-gold);
+}
+
+.service-icon {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+}
+
+.service-title {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0;
+}
+
+/* Back Button */
 .back-btn {
     display: inline-flex;
     align-items: center;
@@ -19,6 +128,7 @@
     cursor: pointer;
     transition: all 0.3s ease;
     margin-bottom: 20px;
+    z-index: 100;
 }
 
 .back-btn:hover {
@@ -26,60 +136,44 @@
     color: var(--bg-cosmic);
 }
 
-.back-btn i {
-    font-size: 1.1rem;
+/* Bottom Navigation */
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: space-around;
+    padding: 10px;
+    background: var(--bg-dark);
+    border-top: 1px solid var(--border-gold);
+    z-index: 1000;
 }
 
-/* Portal Title */
-.portal-header {
-    margin-bottom: 25px;
+.nav-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 8px 15px;
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    z-index: 100;
 }
 
-.portal-header h2 {
-    font-family: 'Amiri';
-    font-size: 1.8rem;
+.nav-btn:hover, .nav-btn.active {
     color: var(--gold-royal);
 }
 
-/* 3x3 Service Grid */
-.service-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 15px;
+.nav-btn i {
+    font-size: 1.2rem;
 }
 
-.service-card {
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 15px;
-    padding: 20px;
-    text-align: center;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    border: 1px solid rgba(212, 175, 55, 0.2);
-}
-
-.service-card:hover {
-    background: rgba(255, 255, 255, 0.1);
-    border-color: var(--gold-royal);
-    transform: translateY(-3px);
-}
-
-.service-icon {
-    font-size: 2.5rem;
-    margin-bottom: 12px;
-}
-
-.service-title {
-    font-size: 1rem;
-    font-weight: 600;
-    color: var(--text-primary);
-    margin: 0;
-}
-
-.service-desc {
-    font-size: 0.8rem;
-    color: var(--text-secondary);
-    margin-top: 5px;
+.nav-btn span {
+    font-size: 0.75rem;
 }
 
 /* Responsive */
@@ -88,10 +182,9 @@
         grid-template-columns: repeat(3, 1fr);
         gap: 10px;
     }
-    
-    .service-card { padding: 15px; }
+    .service-card { padding: 15px 10px; }
     .service-icon { font-size: 2rem; }
-    .service-title { font-size: 0.85rem; }
+    .service-title { font-size: 0.8rem; }
 }
 
 @media (max-width: 480px) {
