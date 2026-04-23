@@ -25,7 +25,7 @@
             <div class="brand-logo">T</div>
             <span class="brand-name">TECHOPRINT</span>
         </div>
-        <button class="btn-gold register-btn" onclick="openModal('loginModal')">تسجيل الدخول</button>
+        <button class="btn-gold register-btn" onclick="openModal('registerModal')">تسجيل الدخول</button>
         <div class="header-actions">
             <div class="header-notif" onclick="showNotification()"><i class="fas fa-bell"></i></div>
             <div class="header-wallet" onclick="Nav.go('wallet')"><i class="fas fa-wallet"></i></div>
@@ -55,47 +55,50 @@
 
     <div class="ad-text">📢 مساحة إعلانية - أعلن هنا</div>
 
-    <section id="dashboardSection" class="dashboard-section">
-        <div class="portals-grid">
-            <div class="portal-card" onclick="Nav.go('student')">
-                <div class="portal-icon">🎓</div>
-                <h3>فضاء النجاح</h3>
-                <p>مركز الطالب</p>
+    <main class="main-container">
+        <section id="dashboardSection" class="dashboard-section">
+            <div class="portals-grid">
+                <div class="portal-card" onclick="Nav.go('student')">
+                    <div class="portal-icon">🎓</div>
+                    <h3>فضاء النجاح</h3>
+                    <p>مركز الطالب</p>
+                </div>
+                <div class="portal-card" onclick="Nav.go('teacher')">
+                    <div class="portal-icon">👨‍🏫</div>
+                    <h3>منبر الأساتذة</h3>
+                    <p>ديوان التدريسيين</p>
+                </div>
+                <div class="portal-card" onclick="Nav.go('design')">
+                    <div class="portal-icon">🎨</div>
+                    <h3>بصمة المبدعين</h3>
+                    <p>استوديو التصميم</p>
+                </div>
+                <div class="portal-card" onclick="Nav.go('library')">
+                    <div class="portal-icon">📚</div>
+                    <h3>كنوز المعرفة</h3>
+                    <p>المكتبة الرقمية</p>
+                </div>
+                <div class="portal-card" onclick="Nav.go('ai')">
+                    <div class="portal-icon">🤖</div>
+                    <h3>العقل الرقمي</h3>
+                    <p>مساعد AI الذكي</p>
+                </div>
+                <div class="portal-card construction" onclick="Nav.go('academy')">
+                    <div class="portal-icon">🏫</div>
+                    <h3>أكاديمية تكنو</h3>
+                    <p>المعهد والدورات</p>
+                    <span class="construction-badge">قريباً</span>
+                </div>
             </div>
-            <div class="portal-card" onclick="Nav.go('teacher')">
-                <div class="portal-icon">👨‍🏫</div>
-                <h3>منبر الأساتذة</h3>
-                <p>ديوان التدريسيين</p>
-            </div>
-            <div class="portal-card" onclick="Nav.go('design')">
-                <div class="portal-icon">🎨</div>
-                <h3>بصمة المبدعين</h3>
-                <p>استوديو التصميم</p>
-            </div>
-            <div class="portal-card" onclick="Nav.go('library')">
-                <div class="portal-icon">📚</div>
-                <h3>كنوز المعرفة</h3>
-                <p>المكتبة الرقمية</p>
-            </div>
-            <div class="portal-card" onclick="Nav.go('ai')">
-                <div class="portal-icon">🤖</div>
-                <h3>العقل الرقمي</h3>
-                <p>مساعد AI الذكي</p>
-            </div>
-            <div class="portal-card" onclick="Nav.go('card')">
-                <div class="portal-icon">💳</div>
-                <h3>بطاقة الأعمال</h3>
-                <p>Business Card</p>
-            </div>
-        </div>
 
-        <div class="utility-row">
-            <button class="utility-btn" onclick="Nav.go('about')">من نحن</button>
-            <button class="utility-btn" onclick="Nav.go('settings')">الإعدادات</button>
-            <button class="utility-btn" onclick="Nav.go('support')">الدعم الفني</button>
-            <button class="utility-btn" onclick="Nav.go('tracking')">التتبع</button>
-        </div>
-    </section>
+            <div class="utility-row">
+                <button class="utility-btn" onclick="Nav.go('about')">من نحن</button>
+                <button class="utility-btn" onclick="Nav.go('settings')">الإعدادات</button>
+                <button class="utility-btn" onclick="Nav.go('support')">الدعم الفني</button>
+                <button class="utility-btn" onclick="Nav.go('tracking')">التتبع</button>
+            </div>
+        </section>
+    </main>
 
     <section id="studentSection" class="dashboard-section" style="display:none;">
         <h2 class="section-title">فضاء النجاح</h2>
@@ -177,12 +180,12 @@
         <button class="btn-gold" onclick="Nav.go('dashboard')">العودة</button>
     </section>
 
-    <section id="cardSection" class="dashboard-section" style="display:none;">
-        <h2 class="section-title">بطاقة الأعمال</h2>
-        <div class="glass-card" style="padding:30px;max-width:500px;margin:20px auto;text-align:center;">
-            <p style="color:#D4AF37;font-size:3rem;">💳</p>
-            <p style="color:#fff;">صمم بطاقة العمل الخاصة بك</p>
-            <button class="btn-gold">ابدأ التصميم</button>
+    <section id="academySection" class="dashboard-section" style="display:none;">
+        <h2 class="section-title">أكاديمية تكنو</h2>
+        <div class="glass-card" style="padding:40px;text-align:center;max-width:400px;margin:20px auto;">
+            <p style="font-size:4rem;">🏫</p>
+            <h3 style="color:#D4AF37;">قريباً</h3>
+            <p style="color:#fff;">Coming Soon!</p>
         </div>
         <button class="btn-gold" onclick="Nav.go('dashboard')">العودة</button>
     </section>
