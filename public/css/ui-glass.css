@@ -1,24 +1,8 @@
 /* TECHOPRINT 2026 - GLASS */
-/* Deep Black + Golden Glassmorphism */
+/* Gold/Black Glassmorphism */
 
-:root {
-    --gold: #D4AF37;
-    --gold-light: #F4E4BA;
-    --gold-dark: #8B6914;
-    --black: #000000;
-    --dark: #0a0a0f;
-    --dark-light: #12121a;
-}
+body { background-color: #000000 !important; }
 
-body {
-    background: var(--black) !important;
-    color: #ffffff;
-    margin: 0;
-    padding: 0;
-    font-family: 'Segoe UI', Arial, sans-serif;
-}
-
-/* Glass Effect Cards */
 .glass-card {
     background: rgba(255, 255, 255, 0.05) !important;
     backdrop-filter: blur(15px);
@@ -27,52 +11,25 @@ body {
     border-radius: 15px;
 }
 
-/* Header Glass */
 .app-header {
-    background: rgba(0, 0, 0, 0.9) !important;
-    backdrop-filter: blur(15px);
-    -webkit-backdrop-filter: blur(15px);
-    border-bottom: 2px solid var(--gold);
+    background: rgba(0, 0, 0, 0.95) !important;
+    border-bottom: 2px solid #D4AF37;
 }
 
-/* Modal Glass */
-.modal-box {
-    background: rgba(18, 18, 26, 0.95) !important;
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 2px solid var(--gold) !important;
+.bottom-nav {
+    background: rgba(0, 0, 0, 0.95) !important;
+    border-top: 2px solid #D4AF37;
 }
 
-/* Input Glass */
+.dashboard-section { background: #000000 !important; }
+
 .input-field {
     background: rgba(255, 255, 255, 0.05) !important;
     border: 1px solid rgba(212, 175, 55, 0.3) !important;
     color: #ffffff;
 }
 
-.input-field:focus {
-    border-color: var(--gold) !important;
-    outline: none;
-}
-
-/* Bottom Nav Glass */
-.bottom-nav {
-    background: rgba(0, 0, 0, 0.95) !important;
-    backdrop-filter: blur(15px);
-    -webkit-backdrop-filter: blur(15px);
-    border-top: 2px solid var(--gold);
-}
-
-/* Section Background */
-.dashboard-section {
-    background: var(--black) !important;
-    min-height: 100vh;
-}
-
-/* Language Bar Glass */
 .language-bar {
     background: rgba(0, 0, 0, 0.8) !important;
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
     border-radius: 10px;
 }

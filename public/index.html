@@ -6,11 +6,10 @@
     <title>TECHOPRINT 2026</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- CORE CSS LINKING ORDER -->
+    <!-- CSS ORDER -->
     <link rel="stylesheet" href="css/ui-colors.css">
     <link rel="stylesheet" href="css/ui-glass.css">
     <link rel="stylesheet" href="css/ui-ads-slider.css">
-    <!-- COMPONENT CSS -->
     <link rel="stylesheet" href="css/ui-header.css">
     <link rel="stylesheet" href="css/ui-buttons.css">
     <link rel="stylesheet" href="css/ui-cards.css">
@@ -23,40 +22,36 @@
     <link rel="stylesheet" href="css/responsive-core.css">
 </head>
 <body>
-    <!-- Splash Screen -->
     <div id="splashScreen" class="splash">
         <div class="splash-logo">T</div>
         <p class="splash-text">TECHOPRINT 2026</p>
         <p class="splash-welcome">Welcome to Techoprint 2026</p>
     </div>
 
-    <!-- Header -->
     <header class="app-header">
         <div class="brand">
             <div class="brand-logo"></div>
             <span class="brand-name">TECHOPRINT</span>
         </div>
         <div class="header-actions">
-            <div class="header-notif" id="btn-notification" onclick="showNotification()">
+            <div class="header-notif" onclick="showNotification()">
                 <i class="fas fa-bell"></i>
                 <span class="notif-badge">3</span>
             </div>
-            <div class="header-wallet" id="btn-wallet" onclick="Nav.go('wallet')">
+            <div class="header-wallet" onclick="Nav.go('wallet')">
                 <i class="fas fa-wallet"></i>
                 <span id="headerBalance">0 IQD</span>
             </div>
         </div>
     </header>
 
-    <!-- Language Bar -->
     <nav id="language-bar" class="language-bar">
-        <button class="lang-btn active" data-lang="ar" onclick="I18n.set('ar')">عربي</button>
-        <button class="lang-btn" data-lang="ku" onclick="I18n.set('ku')">کوردی</button>
-        <button class="lang-btn" data-lang="en" onclick="I18n.set('en')">English</button>
+        <button class="lang-btn active" onclick="I18n.set('ar')">عربي</button>
+        <button class="lang-btn" onclick="I18n.set('ku')">کوردی</button>
+        <button class="lang-btn" onclick="I18n.set('en')">English</button>
     </nav>
 
-    <!-- Central Ad Slider - 3x3 Grid -->
-    <section id="slider" class="slider-section">
+    <section class="slider-section">
         <div class="slider-frame">
             <div class="slider-container">
                 <div class="slide">
@@ -79,19 +74,18 @@
         </div>
     </section>
 
-    <!-- ==================== DASHBOARD SECTION ==================== -->
     <section id="dashboardSection" class="dashboard-section">
-        <h2 style="color:#D4AF37;text-align:center;margin:20px 0;">لوحة التحكم</h2>
+        <h2 class="section-title">لوحة التحكم</h2>
         <div class="service-grid">
-            <div class="service-card" id="btn-orders" onclick="Nav.go('orders')">
+            <div class="service-card" onclick="Nav.go('orders')">
                 <div class="service-icon">📦</div>
                 <p class="service-title">طلباتي</p>
             </div>
-            <div class="service-card" id="btn-wallet" onclick="Nav.go('wallet')">
+            <div class="service-card" onclick="Nav.go('wallet')">
                 <div class="service-icon">💰</div>
                 <p class="service-title">المحفظة</p>
             </div>
-            <div class="service-card" id="btn-library" onclick="Nav.go('library')">
+            <div class="service-card" onclick="Nav.go('library')">
                 <div class="service-icon">📚</div>
                 <p class="service-title">المكتبة</p>
             </div>
@@ -122,157 +116,108 @@
         </div>
     </section>
 
-    <!-- ==================== WALLET SECTION ==================== -->
     <section id="walletSection" class="dashboard-section" style="display:none;">
-        <div class="text-center">
-            <h2 style="color:#D4AF37;">المحفظة</h2>
-            <div class="glass-card" style="padding:40px;max-width:400px;margin:20px auto;">
-                <i class="fas fa-wallet" style="font-size:4rem;color:#D4AF37;margin-bottom:20px;"></i>
-                <h3 style="color:#fff;margin:10px 0;">الرصيد الحالي</h3>
-                <p style="font-size:2.5rem;color:#D4AF37;font-weight:bold;margin:10px 0;">0 IQD</p>
-                <button class="btn-gold" onclick="Nav.go('dashboard')">العودة</button>
-            </div>
+        <h2 class="section-title">المحفظة</h2>
+        <div class="glass-card" style="padding:40px;max-width:400px;margin:20px auto;text-align:center;">
+            <i class="fas fa-wallet" style="font-size:4rem;color:#D4AF37;"></i>
+            <p style="font-size:2.5rem;color:#D4AF37;font-weight:bold;margin:20px 0;">0 IQD</p>
+            <button class="btn-gold" onclick="Nav.go('dashboard')">العودة</button>
         </div>
     </section>
 
-    <!-- ==================== LIBRARY SECTION ==================== -->
     <section id="librarySection" class="dashboard-section" style="display:none;">
-        <div class="text-center">
-            <h2 style="color:#D4AF37;">المكتبة</h2>
-            <div class="grid-4" style="max-width:800px;margin:20px auto;">
-                <div class="glass-card" style="padding:20px;text-align:center;"><div style="font-size:3rem;">📖</div><p>كتاب 1</p></div>
-                <div class="glass-card" style="padding:20px;text-align:center;"><div style="font-size:3rem;">📗</div><p>كتاب 2</p></div>
-                <div class="glass-card" style="padding:20px;text-align:center;"><div style="font-size:3rem;">📘</div><p>كتاب 3</p></div>
-                <div class="glass-card" style="padding:20px;text-align:center;"><div style="font-size:3rem;">📕</div><p>كتاب 4</p></div>
-            </div>
-            <button class="btn-gold" onclick="Nav.go('dashboard')">العودة</button>
+        <h2 class="section-title">المكتبة</h2>
+        <div class="grid-4" style="max-width:800px;margin:20px auto;">
+            <div class="glass-card" style="padding:20px;text-align:center;font-size:3rem;">📖</div>
+            <div class="glass-card" style="padding:20px;text-align:center;font-size:3rem;">📗</div>
+            <div class="glass-card" style="padding:20px;text-align:center;font-size:3rem;">📘</div>
+            <div class="glass-card" style="padding:20px;text-align:center;font-size:3rem;">📕</div>
         </div>
+        <button class="btn-gold" onclick="Nav.go('dashboard')" style="display:block;margin:20px auto;">العودة</button>
     </section>
 
-    <!-- ==================== ORDERS SECTION ==================== -->
     <section id="ordersSection" class="dashboard-section" style="display:none;">
-        <div class="text-center">
-            <h2 style="color:#D4AF37;">طلباتي</h2>
-            <div class="glass-card" style="padding:30px;max-width:600px;margin:20px auto;">
-                <p style="color:#fff;">📦 لا توجد طلبات حالياً</p>
-            </div>
-            <button class="btn-gold" onclick="Nav.go('dashboard')">العودة</button>
+        <h2 class="section-title">طلباتي</h2>
+        <div class="glass-card" style="padding:30px;max-width:600px;margin:20px auto;text-align:center;">
+            <p style="color:#fff;">📦 لا توجد طلبات حالياً</p>
         </div>
+        <button class="btn-gold" onclick="Nav.go('dashboard')" style="display:block;margin:20px auto;">العودة</button>
     </section>
 
-    <!-- ==================== TRACKING SECTION ==================== -->
     <section id="trackingSection" class="dashboard-section" style="display:none;">
-        <div class="text-center">
-            <h2 style="color:#D4AF37;">تتبع الطلب</h2>
-            <div class="glass-card" style="padding:30px;max-width:600px;margin:20px auto;">
-                <input type="text" class="input-field" placeholder="رقم الطلب" style="max-width:300px;">
-            </div>
-            <button class="btn-gold" onclick="Nav.go('dashboard')">العودة</button>
+        <h2 class="section-title">تتبع الطلب</h2>
+        <div class="glass-card" style="padding:30px;max-width:600px;margin:20px auto;text-align:center;">
+            <input type="text" class="input-field" placeholder="رقم الطلب" style="max-width:300px;">
         </div>
+        <button class="btn-gold" onclick="Nav.go('dashboard')" style="display:block;margin:20px auto;">العودة</button>
     </section>
 
-    <!-- ==================== PRINTING SECTION ==================== -->
     <section id="printingSection" class="dashboard-section" style="display:none;">
-        <div class="text-center">
-            <h2 style="color:#D4AF37;">خدمة الطباعة</h2>
-            <div class="glass-card" style="padding:30px;max-width:600px;margin:20px auto;">
-                <p style="color:#fff;">🖨️ ارفع ملفك</p>
-                <input type="file" class="input-field" style="max-width:300px;">
-            </div>
-            <button class="btn-gold" onclick="Nav.go('dashboard')">العودة</button>
+        <h2 class="section-title">خدمة الطباعة</h2>
+        <div class="glass-card" style="padding:30px;max-width:600px;margin:20px auto;text-align:center;">
+            <p style="color:#fff;">🖨️ ارفع ملفك</p>
+            <input type="file" class="input-field" style="max-width:300px;">
         </div>
+        <button class="btn-gold" onclick="Nav.go('dashboard')" style="display:block;margin:20px auto;">العودة</button>
     </section>
 
-    <!-- ==================== SUPPORT SECTION ==================== -->
     <section id="supportSection" class="dashboard-section" style="display:none;">
-        <div class="text-center">
-            <h2 style="color:#D4AF37;">مركز الدعم</h2>
-            <div class="glass-card" style="padding:30px;max-width:600px;margin:20px auto;">
-                <p style="color:#fff;">🔧 كيف يمكننا مساعدتك؟</p>
-                <textarea class="input-field" rows="4" style="max-width:400px;resize:none;"></textarea>
-            </div>
-            <button class="btn-gold" onclick="Nav.go('dashboard')">العودة</button>
+        <h2 class="section-title">مركز الدعم</h2>
+        <div class="glass-card" style="padding:30px;max-width:600px;margin:20px auto;text-align:center;">
+            <p style="color:#fff;">🔧 كيف يمكننا مساعدتك؟</p>
+            <textarea class="input-field" rows="4" style="max-width:400px;resize:none;"></textarea>
         </div>
+        <button class="btn-gold" onclick="Nav.go('dashboard')" style="display:block;margin:20px auto;">العودة</button>
     </section>
 
-    <!-- ==================== TEACHER SECTION ==================== -->
     <section id="teacherSection" class="dashboard-section" style="display:none;">
-        <div class="text-center">
-            <h2 style="color:#D4AF37;">بوابة المعلم</h2>
-            <div class="glass-card" style="padding:30px;max-width:600px;margin:20px auto;">
-                <p style="color:#fff;">👨‍🏫 لوحة تحكم المعلم</p>
-            </div>
-            <button class="btn-gold" onclick="Nav.go('dashboard')">العودة</button>
+        <h2 class="section-title">بوابة المعلم</h2>
+        <div class="glass-card" style="padding:30px;max-width:600px;margin:20px auto;text-align:center;">
+            <p style="color:#fff;">👨‍🏫 لوحة تحكم المعلم</p>
         </div>
+        <button class="btn-gold" onclick="Nav.go('dashboard')" style="display:block;margin:20px auto;">العودة</button>
     </section>
 
-    <!-- ==================== INKS SECTION ==================== -->
     <section id="inksSection" class="dashboard-section" style="display:none;">
-        <div class="text-center">
-            <h2 style="color:#D4AF37;">الحبر والمستلزمات</h2>
-            <div class="grid-4" style="max-width:800px;margin:20px auto;">
-                <div class="glass-card" style="padding:20px;text-align:center;"><div style="font-size:3rem;">🖤</div><p>حبر أسود</p></div>
-                <div class="glass-card" style="padding:20px;text-align:center;"><div style="font-size:3rem;">🔵</div><p>حبر أزرق</p></div>
-                <div class="glass-card" style="padding:20px;text-align:center;"><div style="font-size:3rem;">🔴</div><p>حبر أحمر</p></div>
-                <div class="glass-card" style="padding:20px;text-align:center;"><div style="font-size:3rem;">🟢</div><p>حبر أخضر</p></div>
-            </div>
-            <button class="btn-gold" onclick="Nav.go('dashboard')">العودة</button>
+        <h2 class="section-title">الحبر والمستلزمات</h2>
+        <div class="grid-4" style="max-width:800px;margin:20px auto;">
+            <div class="glass-card" style="padding:20px;text-align:center;font-size:3rem;">🖤</div>
+            <div class="glass-card" style="padding:20px;text-align:center;font-size:3rem;">🔵</div>
+            <div class="glass-card" style="padding:20px;text-align:center;font-size:3rem;">🔴</div>
+            <div class="glass-card" style="padding:20px;text-align:center;font-size:3rem;">🟢</div>
         </div>
+        <button class="btn-gold" onclick="Nav.go('dashboard')" style="display:block;margin:20px auto;">العودة</button>
     </section>
 
-    <!-- Bottom Navigation -->
     <nav class="bottom-nav">
-        <button class="nav-btn active" id="nav-dashboard" onclick="Nav.go('dashboard')">
-            <i class="fas fa-home"></i>
-            <span>الرئيسية</span>
-        </button>
-        <button class="nav-btn" id="nav-wallet" onclick="Nav.go('wallet')">
-            <i class="fas fa-wallet"></i>
-            <span>المحفظة</span>
-        </button>
-        <button class="nav-btn" id="nav-library" onclick="Nav.go('library')">
-            <i class="fas fa-book"></i>
-            <span>المكتبة</span>
-        </button>
-        <button class="nav-btn" id="nav-orders" onclick="Nav.go('orders')">
-            <i class="fas fa-box"></i>
-            <span>طلباتي</span>
-        </button>
+        <button class="nav-btn active" onclick="Nav.go('dashboard')"><i class="fas fa-home"></i><span>الرئيسية</span></button>
+        <button class="nav-btn" onclick="Nav.go('wallet')"><i class="fas fa-wallet"></i><span>المحفظة</span></button>
+        <button class="nav-btn" onclick="Nav.go('library')"><i class="fas fa-book"></i><span>المكتبة</span></button>
+        <button class="nav-btn" onclick="Nav.go('orders')"><i class="fas fa-box"></i><span>طلباتي</span></button>
     </nav>
 
-    <!-- Login Modal -->
     <div id="loginModal" class="modal" style="display:none;">
         <div class="modal-box">
             <button class="modal-close" onclick="closeModal('loginModal')"><i class="fas fa-times"></i></button>
             <h2>تسجيل الدخول</h2>
-            <form id="loginForm" onsubmit="return Auth.login(this.email.value, this.password.value)">
-                <input type="email" name="email" class="input-field" placeholder="البريد الالكتروني" required>
+            <form onsubmit="return Auth.login(this.email.value, this.password.value)">
+                <input type="email" name="email" class="input-field" placeholder="البريد" required>
                 <input type="password" name="password" class="input-field" placeholder="كلمة المرور" required>
                 <button type="submit" class="btn-gold">دخول</button>
             </form>
-            <p style="text-align:center;margin-top:15px;color:#D4AF37;cursor:pointer;" onclick="toggleRegister()">إنشاء حساب جديد</p>
+            <p style="text-align:center;margin-top:15px;color:#D4AF37;cursor:pointer;" onclick="toggleRegister()">إنشاء حساب</p>
         </div>
     </div>
 
-    <!-- Register Modal -->
     <div id="registerModal" class="modal" style="display:none;">
         <div class="modal-box">
             <button class="modal-close" onclick="closeModal('registerModal')"><i class="fas fa-times"></i></button>
             <h2>إنشاء حساب</h2>
-            <form id="registerForm" onsubmit="return handleRegister(this)">
-                <input type="text" name="fullName" class="input-field" placeholder="الاسم الكامل" required>
-                <input type="text" name="username" class="input-field" placeholder="اسم المستخدم" required>
-                <input type="email" name="email" class="input-field" placeholder="البريد الالكتروني" required>
-                <input type="tel" name="phone" class="input-field" placeholder="رقم الهاتف" required>
-                <select name="governorate" class="input-field" required>
-                    <option value="">اختر المحافظة</option>
-                    <option value="baghdad">بغداد</option>
-                    <option value="basra">البصرة</option>
-                    <option value="erbil">أربيل</option>
-                    <option value="duhok">دهوك</option>
-                    <option value="sulaymaniyah">السليمانية</option>
-                </select>
-                <input type="text" name="address" class="input-field" placeholder="العنوان">
+            <form onsubmit="return handleRegister(this)">
+                <input type="text" name="fullName" class="input-field" placeholder="الاسم" required>
+                <input type="text" name="username" class="input-field" placeholder="المستخدم" required>
+                <input type="email" name="email" class="input-field" placeholder="البريد" required>
+                <input type="tel" name="phone" class="input-field" placeholder="الهاتف" required>
                 <input type="password" name="password" class="input-field" placeholder="كلمة المرور" required>
                 <button type="submit" class="btn-gold">تسجيل</button>
             </form>
@@ -280,17 +225,9 @@
         </div>
     </div>
 
-    <!-- Preloader -->
-    <div id="preloader" class="preloader hidden">
-        <div class="loader-bar"><div class="loader-fill"></div></div>
-    </div>
-
-    <!-- Scripts -->
     <script src="js/eng-main.js"></script>
     <script src="js/eng-i18n.js"></script>
     <script src="js/eng-navigation.js"></script>
-    <script src="js/eng-slider.js"></script>
     <script src="js/eng-auth.js"></script>
-    <script src="js/app-init.js"></script>
 </body>
 </html>

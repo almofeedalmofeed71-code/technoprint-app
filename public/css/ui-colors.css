@@ -4,14 +4,12 @@
 :root {
     --gold: #D4AF37;
     --gold-light: #F4E4BA;
-    --gold-dark: #8B6914;
     --black: #000000;
     --dark: #0a0a0f;
-    --dark-light: #12121a;
 }
 
 body {
-    background: var(--black);
+    background-color: #000000 !important;
     color: #ffffff;
     margin: 0;
     padding: 0;
@@ -41,7 +39,6 @@ body {
     z-index: -1;
 }
 
-/* Modal */
 .modal {
     position: fixed;
     inset: 0;
@@ -53,7 +50,7 @@ body {
 }
 
 .modal-box {
-    background: var(--dark-light);
+    background: var(--dark);
     border: 2px solid var(--gold);
     border-radius: 20px;
     padding: 30px;
@@ -70,4 +67,10 @@ body {
     color: var(--gold);
     font-size: 1.5rem;
     cursor: pointer;
+}
+
+.section-title {
+    color: #D4AF37;
+    text-align: center;
+    margin: 20px 0;
 }
