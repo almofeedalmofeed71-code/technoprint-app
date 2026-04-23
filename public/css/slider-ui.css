@@ -1,0 +1,179 @@
+/* TECHOPRINT 2026 - BUSINESS AD MATRIX SLIDER */
+/* 3x3 Grid: 9 Company Ads, 4s Auto-Rotation */
+
+/* ==================== MEGA AD SLIDER CONTAINER ==================== */
+.mega-slider {
+    position: relative;
+    width: 100%;
+    max-width: 960px;
+    margin: 20px auto;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 0 40px rgba(212, 175, 55, 0.4), 0 0 80px rgba(212, 175, 55, 0.2);
+}
+
+.mega-track {
+    display: flex;
+    transition: transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    width: 300%;
+}
+
+.mega-slide {
+    width: 33.3333%;
+    min-width: 100%;
+    padding: 24px 16px;
+    background: linear-gradient(135deg, rgba(10, 10, 11, 0.97), rgba(25, 25, 30, 0.97));
+    border: 2px solid rgba(212, 175, 55, 0.3);
+    border-radius: 20px;
+}
+
+/* ==================== 3x3 AD GRID (PREMIUM SPOTS) ==================== */
+.mega-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    height: 100%;
+}
+
+/* Each Ad Block - Premium Spot with Golden Border */
+.mega-block {
+    position: relative;
+    padding: 16px 12px;
+    border-radius: 12px;
+    text-align: center;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(212, 175, 55, 0.4);
+}
+
+.mega-block:hover {
+    transform: translateY(-4px);
+    border-color: var(--gold-royal);
+    box-shadow: 0 8px 25px rgba(212, 175, 55, 0.3);
+}
+
+/* Ad Block Inner Content */
+.mega-block .block-logo { 
+    width: 50px; 
+    height: 50px; 
+    margin: 0 auto 8px; 
+    background: rgba(255,255,255,0.1); 
+    border-radius: 10px; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center;
+    font-size: 1.8rem;
+}
+
+.mega-block .block-icon { font-size: 2rem; margin-bottom: 6px; }
+
+.mega-block h4 { 
+    color: #fff; 
+    font-family: 'Amiri'; 
+    font-size: 0.9rem; 
+    margin-bottom: 4px;
+}
+
+.mega-block .block-service {
+    color: rgba(255,255,255,0.7);
+    font-size: 0.7rem;
+    margin-bottom: 8px;
+    line-height: 1.3;
+}
+
+.mega-block .block-btn {
+    padding: 6px 14px;
+    background: linear-gradient(135deg, var(--gold-dark), var(--gold-royal));
+    border: 1px solid var(--gold-light);
+    border-radius: 20px;
+    color: var(--bg-cosmic);
+    font-size: 0.7rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.mega-block .block-btn:hover {
+    background: var(--gold-light);
+    transform: scale(1.05);
+}
+
+/* Block Colors */
+.block-math { background: linear-gradient(135deg, #1e3a5f, #2980b9); }
+.block-physics { background: linear-gradient(135deg, #1a472a, #27ae60); }
+.block-chemistry { background: linear-gradient(135deg, #8B4513, #e67e22); }
+.block-biology { background: linear-gradient(135deg, #4a235a, #8e44ad); }
+.block-arabic { background: linear-gradient(135deg, #2c3e50, #34495e); }
+.block-english { background: linear-gradient(135deg, #1abc9c, #16a085); }
+.block-design { background: linear-gradient(135deg, #e74c3c, #c0392b); }
+.block-print { background: linear-gradient(135deg, #3498db, #2980b9); }
+.block-delivery { background: linear-gradient(135deg, #f39c12, #d68910); }
+
+/* ==================== SLIDE DOTS ==================== */
+.mega-dots {
+    position: absolute;
+    bottom: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 10px;
+}
+
+.mega-dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: rgba(212, 175, 55, 0.3);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.mega-dot:hover { background: rgba(212, 175, 55, 0.6); }
+
+.mega-dot.active {
+    background: var(--gold-royal);
+    transform: scale(1.3);
+    box-shadow: 0 0 20px rgba(212, 175, 55, 0.7);
+}
+
+.mega-indicator {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    padding: 4px 14px;
+    background: rgba(212, 175, 55, 0.25);
+    border: 1px solid rgba(212, 175, 55, 0.4);
+    border-radius: 15px;
+    color: var(--gold-royal);
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+html[dir="ltr"] .mega-indicator { right: auto; left: 15px; }
+
+/* ==================== SLIDE BACKGROUNDS ==================== */
+.mega-slide.slide-academic { border-color: rgba(0, 71, 171, 0.5); }
+.mega-slide.slide-creative { border-color: rgba(139, 69, 19, 0.5); }
+.mega-slide.slide-services { border-color: rgba(75, 0, 130, 0.5); }
+
+/* ==================== RESPONSIVE ==================== */
+@media (max-width: 768px) {
+    .mega-slider { max-width: 94%; margin: 12px auto; }
+    .mega-slide { padding: 16px 10px; }
+    .mega-grid { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+    .mega-block { padding: 10px 6px; }
+    .mega-block .block-logo { width: 36px; height: 36px; font-size: 1.3rem; }
+    .mega-block .block-icon { font-size: 1.4rem; }
+    .mega-block h4 { font-size: 0.65rem; }
+    .mega-block .block-service { font-size: 0.55rem; }
+    .mega-block .block-btn { padding: 4px 10px; font-size: 0.6rem; }
+}
+
+@media (max-width: 480px) {
+    .mega-grid { gap: 6px; }
+    .mega-block { padding: 8px 4px; }
+    .mega-block .block-logo { width: 30px; height: 30px; font-size: 1.1rem; }
+    .mega-block h4 { font-size: 0.6rem; }
+    .mega-block .block-service { display: none; }
+}
