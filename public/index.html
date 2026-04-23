@@ -1,4 +1,3 @@
-<!-- TECHOPRINT 2026 - Master Dashboard - Royal Galaxy Glassmorphism -->
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -138,7 +137,7 @@
                 </div>
                 <div class="header-left">
                     <button class="back-home-btn" onclick="showPortal()">
-                        <i class="fas fa-home"></i> <span class="back-text">رجوع للرئيسية</span>
+                        <i class="fas fa-home"></i> <span class="back-text" data-i18n="common.back">رجوع للرئيسية</span>
                     </button>
                     <div class="notifications-btn" id="notificationsBtn">
                         <span class="notification-icon">🔔</span>
@@ -427,6 +426,14 @@
                             </div>
                         </div>
                         
+                        <!-- Pending Withdrawals with Proof Upload -->
+                        <div class="pending-section glass-panel">
+                            <h3>💸 <span data-i18n="admin.pendingWithdrawals">طلبات السحب المعلقة</span></h3>
+                            <div id="pendingWithdrawals">
+                                <!-- Pending withdrawals will be shown here -->
+                            </div>
+                        </div>
+                        
                         <!-- Server Health -->
                         <div class="server-health glass-panel">
                             <h3>🖥️ <span data-i18n="admin.serverHealth">حالة الخادم</span></h3>
@@ -461,25 +468,25 @@
                     </div>
                 </section>
 
-        <!-- Admin Delivery Management -->
-        <section class="page" id="admin-deliveryPage">
-            <div class="admin-container">
-                <h2 class="gold-text">🚚 <span data-i18n="admin.deliveryManagement">إدارة التوصيل</span></h2>
-                
-                <!-- Live Map -->
-                <div class="delivery-map glass-panel">
-                    <div id="deliveryMapContainer" style="height: 500px; border-radius: 12px;"></div>
-                </div>
-                
-                <!-- Active Deliveries -->
-                <div class="active-deliveries glass-panel">
-                    <h3 data-i18n="admin.activeDeliveries">التوصيلات النشطة</h3>
-                    <div id="activeDeliveriesList">
-                        <!-- Active deliveries will be shown here -->
+                <!-- Admin Delivery Management -->
+                <section class="page" id="admin-deliveryPage">
+                    <div class="admin-container">
+                        <h2 class="gold-text">🚚 <span data-i18n="admin.deliveryManagement">إدارة التوصيل</span></h2>
+                        
+                        <!-- Live Map -->
+                        <div class="delivery-map glass-panel">
+                            <div id="deliveryMapContainer" style="height: 500px; border-radius: 12px;"></div>
+                        </div>
+                        
+                        <!-- Active Deliveries -->
+                        <div class="active-deliveries glass-panel">
+                            <h3 data-i18n="admin.activeDeliveries">التوصيلات النشطة</h3>
+                            <div id="activeDeliveriesList">
+                                <!-- Active deliveries will be shown here -->
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </div>
-        </section>
+                </section>
 
             </div>
         </main>
@@ -502,7 +509,7 @@
         </div>
         
         <div class="portals-grid">
-            <!-- 🎓 STUDENT PORTAL - THE MAIN ONE -->
+            <!-- 🎓 STUDENT PORTAL -->
             <div class="portal-card student-portal" onclick="openPortal('student')">
                 <div class="portal-icon"><i class="fas fa-graduation-cap"></i></div>
                 <h2 data-i18n-portal="studentTitle">🎓 بوابة الطالب</h2>
@@ -704,6 +711,86 @@
         </div>
     </div>
 
+    <!-- ==================== REGISTRATION PAGE ==================== -->
+    <div id="registerPage" class="register-page" style="display: none;">
+        <div class="register-container glass-panel">
+            <span class="modal-close" onclick="closeRegisterPage()">&times;</span>
+            <div class="register-header">
+                <div class="hero-logo small">T</div>
+                <h2 data-i18n="auth.registerTitle">إنشاء حساب جديد</h2>
+                <p data-i18n="auth.joinEmpire">انضم إلى TECHOPRINT 2026</p>
+            </div>
+            <form id="registerForm" onsubmit="handleRegister(event)">
+                <div class="form-group">
+                    <label><i class="fas fa-user gold-icon"></i> <span data-i18n="auth.fullName">الاسم الكامل</span></label>
+                    <input type="text" id="regFullName" placeholder="أدخل اسمك الكامل" required>
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-envelope gold-icon"></i> <span data-i18n="auth.emailField">البريد الإلكتروني</span></label>
+                    <input type="email" id="regEmail" placeholder="example@email.com" required>
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-phone gold-icon"></i> <span data-i18n="auth.phone">رقم الهاتف</span></label>
+                    <div class="phone-input-wrapper">
+                        <span class="phone-prefix">+964</span>
+                        <input type="tel" id="regPhone" class="phone-input" placeholder="7XX XXX XXXX" pattern="^7[0-9]{9}$" maxlength="10" required>
+                    </div>
+                    <small class="phone-hint" data-i18n="auth.phoneHint">ابدأ من الرقم 7 - مثال: 7701234567</small>
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-lock gold-icon"></i> <span data-i18n="auth.password">كلمة المرور</span></label>
+                    <input type="password" id="regPassword" placeholder="••••••••" minlength="6" required>
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-lock gold-icon"></i> <span data-i18n="auth.confirmPassword">تأكيد كلمة المرور</span></label>
+                    <input type="password" id="regConfirmPassword" placeholder="••••••••" minlength="6" required>
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-user-tag gold-icon"></i> <span data-i18n="auth.role">الدور</span></label>
+                    <select id="regRole" required>
+                        <option value="student" data-i18n="roles.student">طالب</option>
+                        <option value="teacher" data-i18n="roles.teacher">معلم</option>
+                    </select>
+                </div>
+                <div id="registerError" class="error-message" style="display: none;"></div>
+                <button type="submit" class="submit-btn gold-btn">
+                    <i class="fas fa-user-plus"></i> <span data-i18n="auth.registerButton">إنشاء حساب</span>
+                </button>
+            </form>
+            <div class="register-footer">
+                <p><span data-i18n="auth.haveAccount">لديك حساب؟</span> <a href="#" onclick="closeRegisterPage(); showLoginModal(); return false;" data-i18n="auth.loginNow">تسجيل الدخول</a></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== LOGIN MODAL ==================== -->
+    <div id="loginModal" class="modal fullscreen-modal" style="display: none;">
+        <div class="modal-content modal-large glass-panel">
+            <span class="modal-close" onclick="closeModal('loginModal')">&times;</span>
+            <div class="register-header">
+                <div class="hero-logo small">T</div>
+                <h2 data-i18n="auth.loginTitle">تسجيل الدخول</h2>
+            </div>
+            <form id="loginForm" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label><i class="fas fa-envelope gold-icon"></i> <span data-i18n="auth.emailField">البريد الإلكتروني</span></label>
+                    <input type="email" id="loginEmail" placeholder="example@email.com" required>
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-lock gold-icon"></i> <span data-i18n="auth.password">كلمة المرور</span></label>
+                    <input type="password" id="loginPassword" placeholder="••••••••" required>
+                </div>
+                <div id="loginError" class="error-message" style="display: none;"></div>
+                <button type="submit" class="submit-btn gold-btn">
+                    <i class="fas fa-sign-in-alt"></i> <span data-i18n="auth.loginButton">دخول</span>
+                </button>
+            </form>
+            <div class="register-footer">
+                <p><span data-i18n="auth.noAccount">ليس لديك حساب؟</span> <a href="#" onclick="closeModal('loginModal'); openRegisterPage(); return false;" data-i18n="auth.registerNow">سجل الآن</a></p>
+            </div>
+        </div>
+    </div>
+
     <!-- ==================== MODALS ==================== -->
     
     <!-- Deposit Modal - Iraqi Market Financial Engine -->
@@ -714,11 +801,11 @@
             <form id="depositForm" onsubmit="handleDeposit(event)">
                 <div class="form-row">
                     <div class="form-group">
-                        <label><i class="fas fa-coins gold-icon"></i> المبلغ بالدينار العراقي (IQD)</label>
+                        <label><i class="fas fa-coins gold-icon"></i> <span data-i18n="deposit.amount">المبلغ بالدينار العراقي (IQD)</span></label>
                         <input type="number" id="depositAmount" placeholder="مثال: 50000" required>
                     </div>
                     <div class="form-group">
-                        <label><i class="fas fa-money-bill-wave gold-icon"></i> العملة</label>
+                        <label><i class="fas fa-money-bill-wave gold-icon"></i> <span data-i18n="deposit.currency">العملة</span></label>
                         <select id="depositCurrency">
                             <option value="IQD" selected>🇮🇶 IQD - الدينار العراقي</option>
                             <option value="USD">🇺🇸 USD - الدولار</option>
@@ -727,24 +814,25 @@
                 </div>
                 <div class="form-row">
                     <div class="form-group">
-                        <label><i class="fas fa-mobile-alt gold-icon"></i> رقم Zain Cash</label>
-                        <input type="text" id="zainNumber" placeholder="07XX XXX XXXX">
+                        <label><i class="fas fa-mobile-alt gold-icon"></i> <span data-i18n="deposit.phone">رقم Zain Cash</span></label>
+                        <div class="phone-input-wrapper">
+                            <span class="phone-prefix">+964</span>
+                            <input type="tel" id="zainNumber" class="phone-input" placeholder="7XX XXX XXXX" maxlength="10" required>
+                        </div>
                     </div>
                     <div class="form-group">
-                        <label><i class="fas fa-hashtag gold-icon"></i> رقم المعاملة / الحوالة</label>
-                        <input type="text" id="transactionRef" placeholder="رقم الحوالة أو المرجع">
+                        <label><i class="fas fa-hashtag gold-icon"></i> <span data-i18n="deposit.refNumber">رقم الحوالة</span></label>
+                        <input type="text" id="transactionRef" placeholder="رقم الحوالة أو المرجع" required onblur="checkDuplicateTransfer(this.value)">
+                        <small class="error-text" id="transferRefError" style="color: #FF4757; display: none;">
+                            <i class="fas fa-exclamation-triangle"></i> <span data-i18n="errors.duplicateTransfer">رقم الحوالة مستخدم مسبقاً! يرجى إدخال رقم مختلف</span>
+                        </small>
                     </div>
                 </div>
                 <div class="form-group">
-                    <label><i class="fas fa-image gold-icon"></i> صورة الإيصال / الوصل</label>
+                    <label><i class="fas fa-image gold-icon"></i> <span data-i18n="deposit.receipt">صورة الإيصال / الوصل</span></label>
                     <input type="file" id="receiptImage" accept="image/*,.pdf" required>
                 </div>
-                <div class="form-group">
-                    <label class="checkbox-label">
-                        <input type="checkbox" id="useOCR"> <i class="fas fa-scan gold-icon"></i> استخراج المرجع تلقائياً عبر OCR
-                    </label>
-                </div>
-                <button type="submit" class="submit-btn gold-btn"><i class="fas fa-paper-plane"></i> إرسال للإدارة</button>
+                <button type="submit" class="submit-btn gold-btn"><i class="fas fa-paper-plane"></i> <span data-i18n="deposit.submit">إرسال للإدارة</span></button>
             </form>
         </div>
     </div>
@@ -757,11 +845,11 @@
             <form id="withdrawForm" onsubmit="handleWithdraw(event)">
                 <div class="form-row">
                     <div class="form-group">
-                        <label><i class="fas fa-coins gold-icon"></i> المبلغ بالدينار العراقي (IQD)</label>
+                        <label><i class="fas fa-coins gold-icon"></i> <span data-i18n="withdraw.amount">المبلغ بالدينار العراقي (IQD)</span></label>
                         <input type="number" id="withdrawAmount" placeholder="مثال: 50000" required>
                     </div>
                     <div class="form-group">
-                        <label><i class="fas fa-money-bill-wave gold-icon"></i> العملة</label>
+                        <label><i class="fas fa-money-bill-wave gold-icon"></i> <span data-i18n="withdraw.currency">العملة</span></label>
                         <select id="withdrawCurrency">
                             <option value="IQD" selected>🇮🇶 IQD - الدينار العراقي</option>
                             <option value="USD">🇺🇸 USD - الدولار</option>
@@ -769,7 +857,7 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label><i class="fas fa-hand-holding-usd gold-icon"></i> طريقة الاستلام</label>
+                    <label><i class="fas fa-hand-holding-usd gold-icon"></i> <span data-i18n="withdraw.method">طريقة الاستلام</span></label>
                     <select id="withdrawMethod" required>
                         <option value="zain">📱 Zain Cash</option>
                         <option value="asiago">📱 Asia SDF</option>
@@ -780,15 +868,18 @@
                 </div>
                 <div class="form-row">
                     <div class="form-group">
-                        <label><i class="fas fa-phone-alt gold-icon"></i> رقم الهاتف</label>
-                        <input type="text" id="withdrawPhone" placeholder="07XX XXX XXXX" required>
+                        <label><i class="fas fa-phone-alt gold-icon"></i> <span data-i18n="withdraw.phone">رقم الهاتف</span></label>
+                        <div class="phone-input-wrapper">
+                            <span class="phone-prefix">+964</span>
+                            <input type="tel" id="withdrawPhone" class="phone-input" placeholder="7XX XXX XXXX" maxlength="10" required>
+                        </div>
                     </div>
                     <div class="form-group">
-                        <label><i class="fas fa-credit-card gold-icon"></i> رقم البطاقة / الحساب</label>
+                        <label><i class="fas fa-credit-card gold-icon"></i> <span data-i18n="withdraw.details">رقم البطاقة / الحساب</span></label>
                         <input type="text" id="withdrawDetails" placeholder="رقم البطاقة أو الحساب">
                     </div>
                 </div>
-                <button type="submit" class="submit-btn gold-btn"><i class="fas fa-paper-plane"></i> طلب السحب</button>
+                <button type="submit" class="submit-btn gold-btn"><i class="fas fa-paper-plane"></i> <span data-i18n="withdraw.submit">طلب السحب</span></button>
             </form>
         </div>
     </div>
@@ -800,23 +891,23 @@
     <nav class="bottom-nav" id="bottomNav">
         <button class="bottom-nav-item active" onclick="navigateTo('dashboard')">
             <i class="fas fa-home"></i>
-            <span>الرئيسية</span>
+            <span data-i18n="nav.home">الرئيسية</span>
         </button>
         <button class="bottom-nav-item" onclick="navigateTo('wallet')">
             <i class="fas fa-wallet"></i>
-            <span>المحفظة</span>
+            <span data-i18n="nav.wallet">المحفظة</span>
         </button>
         <button class="bottom-nav-item" onclick="navigateTo('library')">
             <i class="fas fa-book"></i>
-            <span>المكتبة</span>
+            <span data-i18n="nav.library">المكتبة</span>
         </button>
         <button class="bottom-nav-item" onclick="navigateTo('orders')">
             <i class="fas fa-box"></i>
-            <span>طلباتي</span>
+            <span data-i18n="nav.orders">طلباتي</span>
         </button>
         <button class="bottom-nav-item" onclick="showPortal()">
             <i class="fas fa-th"></i>
-            <span>المزيد</span>
+            <span data-i18n="common.more">المزيد</span>
         </button>
     </nav>
 

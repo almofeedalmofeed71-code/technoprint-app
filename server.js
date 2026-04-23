@@ -1,12 +1,15 @@
 /**
- * TECHOPRINT 2026 - Server with Supabase Integration
+ * TECHOPRINT 2026 - Server with Supabase Integration (v2.0)
  * Express + Supabase REST API
+ * Features: Auth, i18n, Duplicate Transfer Check, Proof Upload
  */
 
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
+const multer = require('multer');
+const fs = require('fs');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -15,10 +18,24 @@ const PORT = process.env.PORT || 3000;
 const SUPABASE_URL = process.env.SUPABASE_URL || 'https://avabozirwdefwtabywqo.supabase.co';
 const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF2YWJvemlyd2RlZnd0YWJ5d3FvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY4NjM1NDQsImV4cCI6MjA5MjQzOTU0NH0.boDU0pXR1MGYiJXF1Jos-w0uehKCCZHsKgxHP7nbQVY';
 
+// Multer config for file uploads
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        const uploadDir = path.join(__dirname, 'uploads');
+        if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
+        cb(null, uploadDir);
+    },
+    filename: (req, file, cb) => {
+        cb(null, `${Date.now()}-${file.originalname}`);
+    }
+});
+const upload = multer({ storage, limits: { fileSize: 10 * 1024 * 1024 } });
+
 // Middleware
 app.use(cors({ origin: true, credentials: true }));
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Supabase REST API Helper
 async function supabaseRequest(table, method = 'GET', body = null, headers = {}) {
@@ -126,9 +143,175 @@ app.post('/api/auth/login', async (req, res) => {
     }
 });
 
+// ==================== TRANSACTION ROUTES ====================
+
+// Check Duplicate Transfer Reference
+app.get('/api/transactions/check-ref/:ref', async (req, res) => {
+    try {
+        const ref = req.params.ref;
+        
+        const { data } = await supabaseRequest(
+            `transactions?reference_id=eq.${ref}&status=eq.completed&select=id`
+        );
+        
+        const exists = data && data.length > 0;
+        res.json({ exists, ref });
+    } catch (err) {
+        console.error('Check ref error:', err);
+        res.json({ exists: false });
+    }
+});
+
+// Create Transaction with File Upload
+app.post('/api/transactions/upload', upload.single('receipt'), async (req, res) => {
+    try {
+        const userId = req.headers['x-user-id'];
+        const { type, amount, currency, payment_method, payment_number, reference_id } = req.body;
+        
+        if (!amount || !reference_id) {
+            return res.status(400).json({ error: 'Amount and reference are required' });
+        }
+        
+        const receipt_url = req.file ? `/uploads/${req.file.filename}` : null;
+        
+        const transaction = {
+            user_id: userId || null,
+            type,
+            amount,
+            currency: currency || 'IQD',
+            payment_method,
+            payment_number,
+            reference_id,
+            receipt_url,
+            status: type === 'deposit' ? 'pending' : 'completed'
+        };
+        
+        const { data, error } = await supabaseRequest('transactions', 'POST', transaction);
+        
+        if (error) {
+            return res.status(400).json({ error });
+        }
+        
+        res.json({ success: true, transaction: data });
+    } catch (err) {
+        console.error('Upload transaction error:', err);
+        res.status(500).json({ error: 'Server error' });
+    }
+});
+
+// Get User Transactions
+app.get('/api/transactions', async (req, res) => {
+    try {
+        const userId = req.headers['x-user-id'];
+        const { type, status } = req.query;
+        
+        let query = 'select=*,profiles(full_name)&order=created_at.desc';
+        if (userId) query += `&user_id=eq.${userId}`;
+        if (type) query += `&type=eq.${type}`;
+        if (status) query += `&status=eq.${status}`;
+        
+        const { data, error } = await supabaseRequest(`transactions?${query}`);
+        
+        if (error) {
+            return res.status(500).json({ error });
+        }
+        
+        res.json(data || []);
+    } catch (err) {
+        console.error('Get transactions error:', err);
+        res.status(500).json({ error: 'Server error' });
+    }
+});
+
+// Create Transaction (no upload)
+app.post('/api/transactions', async (req, res) => {
+    try {
+        const userId = req.headers['x-user-id'];
+        const { type, amount, currency = 'IQD', payment_method, payment_number, description, reference_id } = req.body;
+        
+        const transaction = {
+            user_id: userId || null,
+            type,
+            amount,
+            currency,
+            payment_method,
+            payment_number,
+            description,
+            reference_id,
+            status: type === 'deposit' ? 'pending' : (type === 'withdraw' ? 'pending' : 'completed')
+        };
+        
+        const { data, error } = await supabaseRequest('transactions', 'POST', transaction);
+        
+        if (error) {
+            return res.status(400).json({ error });
+        }
+        
+        res.json({ success: true, transaction: data });
+    } catch (err) {
+        console.error('Create transaction error:', err);
+        res.status(500).json({ error: 'Server error' });
+    }
+});
+
+// Update Transaction
+app.patch('/api/transactions/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { status, admin_notes } = req.body;
+        
+        const updates = { updated_at: new Date().toISOString() };
+        if (status) updates.status = status;
+        if (admin_notes) updates.admin_notes = admin_notes;
+        if (status === 'completed') updates.processed_at = new Date().toISOString();
+        
+        const { data, error } = await supabaseRequest(
+            `transactions?id=eq.${id}`,
+            'PATCH',
+            updates
+        );
+        
+        if (error) {
+            return res.status(400).json({ error });
+        }
+        
+        res.json({ success: true, data });
+    } catch (err) {
+        console.error('Update transaction error:', err);
+        res.status(500).json({ error: 'Server error' });
+    }
+});
+
+// Upload Withdrawal Proof
+app.post('/api/transactions/:id/proof', upload.single('proof'), async (req, res) => {
+    try {
+        const { id } = req.params;
+        
+        if (!req.file) {
+            return res.status(400).json({ error: 'Proof file is required' });
+        }
+        
+        const proof_url = `/uploads/${req.file.filename}`;
+        
+        const { data, error } = await supabaseRequest(
+            `transactions?id=eq.${id}`,
+            'PATCH',
+            { proof_url }
+        );
+        
+        if (error) {
+            return res.status(400).json({ error });
+        }
+        
+        res.json({ success: true, proof_url });
+    } catch (err) {
+        console.error('Upload proof error:', err);
+        res.status(500).json({ error: 'Server error' });
+    }
+});
+
 // ==================== PROFILE ROUTES ====================
 
-// Get Profile
 app.get('/api/profile', async (req, res) => {
     try {
         const userId = req.headers['x-user-id'];
@@ -149,7 +332,6 @@ app.get('/api/profile', async (req, res) => {
     }
 });
 
-// Update Profile
 app.put('/api/profile', async (req, res) => {
     try {
         const userId = req.headers['x-user-id'];
@@ -179,7 +361,6 @@ app.put('/api/profile', async (req, res) => {
 
 // ==================== LIBRARY ROUTES ====================
 
-// Get All Books
 app.get('/api/library', async (req, res) => {
     try {
         const { subject, grade, search } = req.query;
@@ -194,7 +375,6 @@ app.get('/api/library', async (req, res) => {
             return res.status(500).json({ error });
         }
         
-        // Local search filter
         let results = data || [];
         if (search) {
             const s = search.toLowerCase();
@@ -211,7 +391,6 @@ app.get('/api/library', async (req, res) => {
     }
 });
 
-// Get Single Book
 app.get('/api/library/:id', async (req, res) => {
     try {
         const { data, error } = await supabaseRequest(`library?id=eq.${req.params.id}`);
@@ -229,7 +408,6 @@ app.get('/api/library/:id', async (req, res) => {
 
 // ==================== ORDER ROUTES ====================
 
-// Get User Orders
 app.get('/api/orders', async (req, res) => {
     try {
         const userId = req.headers['x-user-id'];
@@ -252,7 +430,6 @@ app.get('/api/orders', async (req, res) => {
     }
 });
 
-// Create Order
 app.post('/api/orders', async (req, res) => {
     try {
         const userId = req.headers['x-user-id'];
@@ -262,12 +439,10 @@ app.post('/api/orders', async (req, res) => {
             return res.status(400).json({ error: 'Order items required' });
         }
         
-        // Calculate totals
         const subtotal = items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
         const delivery_fee = delivery_governorate ? 2500 : 0;
         const total = subtotal + delivery_fee;
         
-        // Generate order number
         const orderNumber = `TP-${Date.now()}`;
         
         const order = {
@@ -297,64 +472,8 @@ app.post('/api/orders', async (req, res) => {
     }
 });
 
-// ==================== TRANSACTION ROUTES ====================
-
-// Get User Transactions
-app.get('/api/transactions', async (req, res) => {
-    try {
-        const userId = req.headers['x-user-id'];
-        
-        let query = 'select=*&order=created_at.desc';
-        if (userId) {
-            query += `&user_id=eq.${userId}`;
-        }
-        
-        const { data, error } = await supabaseRequest(`transactions?${query}`);
-        
-        if (error) {
-            return res.status(500).json({ error });
-        }
-        
-        res.json(data || []);
-    } catch (err) {
-        console.error('Get transactions error:', err);
-        res.status(500).json({ error: 'Server error' });
-    }
-});
-
-// Create Transaction (Deposit Request)
-app.post('/api/transactions', async (req, res) => {
-    try {
-        const userId = req.headers['x-user-id'];
-        const { type, amount, currency = 'IQD', payment_method, payment_number, description } = req.body;
-        
-        const transaction = {
-            user_id: userId || null,
-            type,
-            amount,
-            currency,
-            payment_method,
-            payment_number,
-            description,
-            status: type === 'deposit' ? 'pending' : 'completed'
-        };
-        
-        const { data, error } = await supabaseRequest('transactions', 'POST', transaction);
-        
-        if (error) {
-            return res.status(400).json({ error });
-        }
-        
-        res.json({ success: true, transaction: data });
-    } catch (err) {
-        console.error('Create transaction error:', err);
-        res.status(500).json({ error: 'Server error' });
-    }
-});
-
 // ==================== TICKET ROUTES ====================
 
-// Get User Tickets
 app.get('/api/tickets', async (req, res) => {
     try {
         const userId = req.headers['x-user-id'];
@@ -377,7 +496,6 @@ app.get('/api/tickets', async (req, res) => {
     }
 });
 
-// Create Ticket
 app.post('/api/tickets', async (req, res) => {
     try {
         const userId = req.headers['x-user-id'];
@@ -408,13 +526,29 @@ app.post('/api/tickets', async (req, res) => {
     }
 });
 
+// ==================== PROFILES (USERS) ====================
+
+app.get('/api/profiles', async (req, res) => {
+    try {
+        const { data, error } = await supabaseRequest('profiles?select=*&order=created_at.desc');
+        
+        if (error) {
+            return res.status(500).json({ error });
+        }
+        
+        res.json(data || []);
+    } catch (err) {
+        console.error('Get profiles error:', err);
+        res.status(500).json({ error: 'Server error' });
+    }
+});
+
 // ==================== STUDENT STATS ====================
 
 app.get('/api/student/stats', async (req, res) => {
     try {
         const userId = req.headers['x-user-id'];
         
-        // Default demo stats
         let stats = {
             balance: 50000,
             books: 8,
@@ -426,7 +560,6 @@ app.get('/api/student/stats', async (req, res) => {
         };
         
         if (userId) {
-            // Get real stats from Supabase
             const [profileRes, ordersRes, booksRes] = await Promise.all([
                 supabaseRequest(`profiles?id=eq.${userId}&select=balance_iqd`),
                 supabaseRequest(`orders?user_id=eq.${userId}&status=eq.pending&select=id`),
@@ -455,6 +588,7 @@ app.get('/api/student/stats', async (req, res) => {
 app.get('/api/health', (req, res) => {
     res.json({ 
         status: 'OK', 
+        version: '2.0',
         timestamp: new Date().toISOString(),
         supabase: SUPABASE_URL.includes('supabase') ? 'Connected' : 'Disconnected'
     });
@@ -467,7 +601,7 @@ app.get('*', (req, res) => {
 
 // ==================== START SERVER ====================
 app.listen(PORT, () => {
-    console.log('🚀 TECHOPRINT 2026 Server Running!');
+    console.log('🚀 TECHOPRINT 2026 v2.0 Server Running!');
     console.log(`📡 Port: ${PORT}`);
     console.log(`🗄️ Supabase: ${SUPABASE_URL}`);
     console.log(`🌐 http://localhost:${PORT}`);

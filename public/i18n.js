@@ -1,237 +1,446 @@
 /**
- * TECHOPRINT 2026 - Multi-language Support (i18n)
- * Languages: Arabic (IQ), English (US), Kurdish Sorani (Central Kurdish - Arabic Script)
- * RTL Support for Arabic and Kurdish
+ * TECHOPRINT 2026 - i18n (Multi-Language Support)
+ * Arabic, Kurdish, English with RTL/LTR Support
  */
+
+const translations = {
+    ar: {
+        // Navigation
+        'nav.dashboard': 'لوحة التحكم',
+        'nav.wallet': 'المحفظة',
+        'nav.library': 'المكتبة',
+        'nav.orders': 'الطلبات',
+        'nav.transfer': 'التحويل',
+        'nav.tracking': 'تتبع الطلب',
+        'nav.designer': 'المصممون',
+        'nav.support': 'الدعم',
+        'nav.home': 'الرئيسية',
+        'nav.adminDashboard': 'الرقابة المالية',
+        'nav.adminUsers': 'إدارة المستخدمين',
+        'nav.adminDelivery': 'إدارة التوصيل',
+        
+        // Common
+        'common.back': 'رجوع',
+        'common.more': 'المزيد',
+        'common.admin': 'لوحة الأدمن',
+        'common.loading': 'جاري التحميل...',
+        'common.save': 'حفظ',
+        'common.cancel': 'إلغاء',
+        'common.delete': 'حذف',
+        'common.edit': 'تعديل',
+        'common.view': 'عرض',
+        'common.submit': 'إرسال',
+        
+        // Auth
+        'auth.registerTitle': 'إنشاء حساب جديد',
+        'auth.loginTitle': 'تسجيل الدخول',
+        'auth.fullName': 'الاسم الكامل',
+        'auth.fullNamePlaceholder': 'أدخل اسمك الكامل',
+        'auth.emailField': 'البريد الإلكتروني',
+        'auth.phone': 'رقم الهاتف',
+        'auth.phoneHint': 'ابدأ من الرقم 7 - مثال: 7701234567',
+        'auth.password': 'كلمة المرور',
+        'auth.confirmPassword': 'تأكيد كلمة المرور',
+        'auth.role': 'الدور',
+        'auth.registerButton': 'إنشاء حساب',
+        'auth.loginButton': 'دخول',
+        'auth.joinEmpire': 'انضم إلى TECHOPRINT 2026',
+        'auth.haveAccount': 'لديك حساب؟',
+        'auth.noAccount': 'ليس لديك حساب؟',
+        'auth.loginNow': 'تسجيل الدخول',
+        'auth.registerNow': 'سجل الآن',
+        'auth.logout': 'تسجيل الخروج',
+        
+        // Roles
+        'roles.student': 'طالب',
+        'roles.teacher': 'معلم',
+        'roles.admin': 'مدير',
+        'roles.designer': 'مصمم',
+        'roles.guest': 'زائر',
+        
+        // Dashboard
+        'dashboard.welcome': 'مرحباً بك في',
+        'dashboard.techoprint': 'TECHOPRINT 2026',
+        'dashboard.subtitle': 'المنصة التعليمية الأولى في العراق - الطباعة والتوصيل',
+        'dashboard.totalOrders': 'إجمالي الطلبات',
+        'dashboard.totalBooks': 'الكتب المتاحة',
+        'dashboard.activeOrders': 'طلبات نشطة',
+        'dashboard.myWallet': 'المحفظة',
+        'dashboard.browseLibrary': 'تصفح المكتبة',
+        'dashboard.transferBalance': 'تحويل رصيد',
+        'dashboard.trackOrder': 'تتبع الطلب',
+        'dashboard.recentActivity': 'آخر النشاطات',
+        'dashboard.noActivity': 'لا توجد نشاطات حتى الآن',
+        
+        // Wallet
+        'wallet.title': '💰 محفظتي الذهبية',
+        'wallet.balance': 'الرصيد:',
+        'wallet.deposit': 'إيداع',
+        'wallet.withdraw': 'سحب',
+        'wallet.transactionHistory': 'سجل المعاملات',
+        'wallet.noTransactions': 'لا توجد معاملات حتى الآن',
+        'wallet.currentBalance': 'الرصيد الحالي',
+        
+        // Library
+        'library.searchPlaceholder': '🔍 البحث في المكتبة...',
+        'library.allSubjects': 'جميع المواد',
+        'library.math': 'الرياضيات',
+        'library.science': 'العلوم',
+        'library.arabic': 'العربية',
+        'library.english': 'الإنجليزية',
+        'library.allGrades': 'جميع الصفوف',
+        'library.noBooks': 'لا توجد كتب',
+        
+        // Orders
+        'orders.title': '📦 طلباتي',
+        'orders.all': 'الكل',
+        'orders.pending': 'معلق',
+        'orders.processing': 'قيد التنفيذ',
+        'orders.outForDelivery': 'قيد التوصيل',
+        'orders.delivered': 'تم التوصيل',
+        'orders.noOrders': 'لا توجد طلبات',
+        
+        // Transfer
+        'transfer.title': '🔄 تحويل رصيد',
+        'transfer.recipientId': 'معرف المستخدم المستلم',
+        'transfer.recipientPlaceholder': 'معرف المستخدم أو البريد الإلكتروني',
+        'transfer.amount': 'المبلغ',
+        'transfer.amountPlaceholder': 'أدخل المبلغ',
+        'transfer.currency': 'العملة',
+        'transfer.description': 'الوصف (اختياري)',
+        'transfer.descriptionPlaceholder': 'أضف ملاحظة...',
+        'transfer.submit': 'إرسال التحويل',
+        'transfer.success': 'تم التحويل بنجاح!',
+        
+        // Tracking
+        'tracking.title': '📍 تتبع الطلب',
+        'tracking.orderNumber': 'رقم الطلب',
+        'tracking.orderNumberPlaceholder': 'أدخل رقم الطلب',
+        'tracking.track': 'تتبع',
+        'tracking.notFound': 'لم يتم العثور على الطلب',
+        
+        // Support
+        'support.title': '🎫 فتح تذكرة دعم',
+        'support.type': 'نوع المشكلة',
+        'support.general': 'استفسار عام',
+        'support.receiptIssue': 'مشكلة في إيصال',
+        'support.deliveryIssue': 'مشكلة في التوصيل',
+        'support.customDesign': 'طلب تصميم مخصص',
+        'support.subject': 'الموضوع',
+        'support.subjectPlaceholder': 'موضوع التذكرة',
+        'support.description': 'الوصف',
+        'support.descriptionPlaceholder': 'وصف المشكلة...',
+        'support.submit': 'إرسال التذكرة',
+        'support.myTickets': 'تذاكري',
+        
+        // Designer
+        'designer.title': '🎨 المصممون والمؤلفون',
+        
+        // Admin
+        'admin.financialRadar': 'لوحة الرقابة المالية',
+        'admin.totalTransactions': 'إجمالي المعاملات',
+        'admin.pendingTransactions': 'المعاملات المعلقة',
+        'admin.totalRevenueIQD': 'إجمالي الإيرادات (IQD)',
+        'admin.pendingDeposits': 'الإيداعات المعلقة للمراجعة',
+        'admin.pendingWithdrawals': 'طلبات السحب المعلقة',
+        'admin.serverHealth': 'حالة الخادم',
+        'admin.uptime': 'Uptime',
+        'admin.memory': 'Memory',
+        'admin.userManagement': 'إدارة المستخدمين',
+        'admin.deliveryManagement': 'إدارة التوصيل',
+        'admin.activeDeliveries': 'التوصيلات النشطة',
+        'admin.user': 'المستخدم',
+        'admin.email': 'البريد',
+        'admin.role': 'الدور',
+        'admin.status': 'الحالة',
+        'admin.actions': 'إجراءات',
+        'admin.approve': 'قبول',
+        'admin.reject': 'رفض',
+        'admin.active': 'نشط',
+        'admin.inactive': 'غير نشط',
+        'admin.noPendingDeposits': 'لا توجد إيداعات معلقة ✅',
+        'admin.noPendingWithdrawals': 'لا توجد طلبات سحب معلقة ✅',
+        
+        // Deposit
+        'deposit.amount': 'المبلغ بالدينار العراقي (IQD)',
+        'deposit.currency': 'العملة',
+        'deposit.phone': 'رقم Zain Cash',
+        'deposit.refNumber': 'رقم الحوالة',
+        'deposit.receipt': 'صورة الإيصال / الوصل',
+        'deposit.submit': 'إرسال للإدارة',
+        
+        // Withdraw
+        'withdraw.amount': 'المبلغ بالدينار العراقي (IQD)',
+        'withdraw.currency': 'العملة',
+        'withdraw.method': 'طريقة الاستلام',
+        'withdraw.phone': 'رقم الهاتف',
+        'withdraw.details': 'رقم البطاقة / الحساب',
+        'withdraw.submit': 'طلب السحب',
+        
+        // Errors
+        'errors.duplicateTransfer': 'رقم الحوالة مستخدم مسبقاً! يرجى إدخال رقم مختلف',
+        'errors.invalidPhone': 'رقم الهاتف يجب أن يبدأ بـ 7 ويتكون من 10 أرقام',
+        'errors.required': 'هذا الحقل مطلوب',
+        'errors.invalidEmail': 'البريد الإلكتروني غير صالح',
+        'errors.passwordMismatch': 'كلمة المرور غير متطابقة',
+        
+        // Messages
+        'messages.welcome': 'مرحباً بك في TECHOPRINT 2026!',
+        'messages.registerSuccess': 'تم إنشاء الحساب بنجاح!',
+        'messages.loginSuccess': 'تم تسجيل الدخول بنجاح!',
+        'messages.depositSubmitted': 'تم إرسال طلب الإيداع للمراجعة',
+        'messages.withdrawSubmitted': 'تم إرسال طلب السحب',
+        'messages.depositApproved': 'تم قبول الإيداع',
+        'messages.depositRejected': 'تم رفض الإيداع',
+        'messages.transferSuccess': 'تم التحويل بنجاح!',
+        'messages.ticketSubmitted': 'تم إرسال التذكرة بنجاح!',
+        'messages.error': 'حدث خطأ! يرجى المحاولة مرة أخرى',
+        'messages.success': 'تمت العملية بنجاح',
+        'messages.logout': 'تم تسجيل الخروج',
+        
+        // Portal
+        'portal.tagline': 'The Sovereign Educational Empire',
+        'portal.subtitle': 'Choose your gateway to the empire',
+        'portal.studentTitle': '🎓 بوابة الطالب',
+        'portal.studentDesc': 'Your 4 Pillars: Library, Orders, Tracking, Upload',
+        'portal.enterStudent': 'دخول الطالب',
+        'portal.fLibrary': 'المكتبة',
+        'portal.fOrders': 'طلباتي',
+        'portal.fTracking': 'التتبع',
+        'portal.fUpload': 'رفع ملفات',
+        'portal.langAR': 'العربية',
+        'portal.langKU': 'کوردی',
+        'portal.langEN': 'English'
+    },
+    
+    ku: {
+        // Navigation
+        'nav.dashboard': 'داشبۆرد',
+        'nav.wallet': 'تەلەفۆن',
+        'nav.library': 'پارەگە',
+        'nav.orders': 'داواکارییەکان',
+        'nav.transfer': 'گواستنەوە',
+        'nav.tracking': 'هەڵسووڕێنان',
+        'nav.designer': 'دیزاینەر',
+        'nav.support': 'پشتیوانی',
+        'nav.home': 'سەرەتا',
+        'nav.adminDashboard': 'سەرپەرشتی دارایی',
+        'nav.adminUsers': 'بەڕێوەبەردی بەکارهێنەران',
+        'nav.adminDelivery': 'بەڕێوەبەردی گەیاندن',
+        
+        // Common
+        'common.back': 'گەڕانەوە',
+        'common.more': 'هەڵبژاردن',
+        'common.admin': 'بەڕێوەبەر',
+        
+        // Auth
+        'auth.registerTitle': 'دروستکردنی هەژمار',
+        'auth.loginTitle': 'چوونەژوورەوە',
+        'auth.fullName': 'ناوی تەواو',
+        'auth.emailField': 'ئیمەیڵ',
+        'auth.phone': 'ژمارەی تەلەفۆن',
+        'auth.password': 'وشەی نهێنی',
+        'auth.registerButton': 'دروستکردن',
+        'auth.loginButton': 'چوونەژوورەوە',
+        'auth.haveAccount': 'هەژمارت هەیە؟',
+        'auth.noAccount': 'هەژمارت نییە؟',
+        'auth.loginNow': 'چوونەژوورەوە',
+        'auth.registerNow': 'سەرێتی',
+        
+        // Roles
+        'roles.student': 'قوتابی',
+        'roles.teacher': 'مامۆستا',
+        'roles.admin': 'بەڕێوەبەر',
+        
+        // Dashboard
+        'dashboard.welcome': 'بەخێربێیت بۆ',
+        'dashboard.techoprint': 'TECHOPRINT 2026',
+        'dashboard.subtitle': 'پلاتفۆرمی فێرکاری یەکەم لە عێراق',
+        'dashboard.totalOrders': 'کۆی داواکارییەکان',
+        'dashboard.totalBooks': 'پارەگە بەردەست',
+        'dashboard.activeOrders': 'داواکاری چالاک',
+        'dashboard.myWallet': 'تەلەفۆنم',
+        'dashboard.browseLibrary': 'بینینی پارەگە',
+        'dashboard.transferBalance': 'گواستنەوەی ژمارە',
+        'dashboard.trackOrder': 'هەڵسووڕێنان',
+        'dashboard.recentActivity': 'چالاکی دوا',
+        'dashboard.noActivity': 'هیچ چالاکییەک نییە',
+        
+        // Wallet
+        'wallet.title': '💰 پارەholeی زێڕین',
+        'wallet.balance': 'ژمارە:',
+        'wallet.deposit': 'پارەدان',
+        'wallet.withdraw': 'ئە withdrawalولەوەگرتن',
+        'wallet.transactionHistory': 'مێژووی گواستنەوە',
+        'wallet.noTransactions': 'هیچ گواستنەوەیەک نییە',
+        
+        // Messages
+        'messages.welcome': 'بەخێربێیت بۆ TECHOPRINT 2026!',
+        'messages.registerSuccess': 'هەژمار دروستکرا!',
+        'messages.loginSuccess': 'بە سەرکەوتوویی چوویتە ژوورەوە!',
+        'messages.error': 'هەڵەیەک ڕوویدا!',
+        'messages.success': 'بە سەرکەوتوویی تەواو بوو'
+    },
+    
+    en: {
+        // Navigation
+        'nav.dashboard': 'Dashboard',
+        'nav.wallet': 'Wallet',
+        'nav.library': 'Library',
+        'nav.orders': 'Orders',
+        'nav.transfer': 'Transfer',
+        'nav.tracking': 'Tracking',
+        'nav.designer': 'Designers',
+        'nav.support': 'Support',
+        'nav.home': 'Home',
+        'nav.adminDashboard': 'Financial Control',
+        'nav.adminUsers': 'User Management',
+        'nav.adminDelivery': 'Delivery Management',
+        
+        // Common
+        'common.back': 'Back',
+        'common.more': 'More',
+        'common.admin': 'Admin Panel',
+        
+        // Auth
+        'auth.registerTitle': 'Create Account',
+        'auth.loginTitle': 'Login',
+        'auth.fullName': 'Full Name',
+        'auth.emailField': 'Email',
+        'auth.phone': 'Phone Number',
+        'auth.password': 'Password',
+        'auth.registerButton': 'Register',
+        'auth.loginButton': 'Login',
+        'auth.haveAccount': 'Have an account?',
+        'auth.noAccount': "Don't have an account?",
+        'auth.loginNow': 'Login',
+        'auth.registerNow': 'Register Now',
+        
+        // Roles
+        'roles.student': 'Student',
+        'roles.teacher': 'Teacher',
+        'roles.admin': 'Admin',
+        
+        // Dashboard
+        'dashboard.welcome': 'Welcome to',
+        'dashboard.techoprint': 'TECHOPRINT 2026',
+        'dashboard.subtitle': 'The First Educational Platform in Iraq',
+        'dashboard.totalOrders': 'Total Orders',
+        'dashboard.totalBooks': 'Available Books',
+        'dashboard.activeOrders': 'Active Orders',
+        'dashboard.myWallet': 'My Wallet',
+        'dashboard.browseLibrary': 'Browse Library',
+        'dashboard.transferBalance': 'Transfer Balance',
+        'dashboard.trackOrder': 'Track Order',
+        'dashboard.recentActivity': 'Recent Activity',
+        'dashboard.noActivity': 'No activities yet',
+        
+        // Wallet
+        'wallet.title': '💰 My Golden Wallet',
+        'wallet.balance': 'Balance:',
+        'wallet.deposit': 'Deposit',
+        'wallet.withdraw': 'Withdraw',
+        'wallet.transactionHistory': 'Transaction History',
+        'wallet.noTransactions': 'No transactions yet',
+        
+        // Messages
+        'messages.welcome': 'Welcome to TECHOPRINT 2026!',
+        'messages.registerSuccess': 'Account created successfully!',
+        'messages.loginSuccess': 'Logged in successfully!',
+        'messages.error': 'An error occurred!',
+        'messages.success': 'Success!'
+    }
+};
 
 class I18n {
     constructor() {
         this.currentLang = localStorage.getItem('techoprint_lang') || 'ar';
-        this.translations = {};
-        this.fallbackLang = 'ar';
-        
-        // Supported languages configuration
-        this.languages = {
-            ar: {
-                name: 'العربية',
-                nativeName: 'العربية',
-                dir: 'rtl',
-                flag: '🇮🇶'
-            },
-            en: {
-                name: 'English',
-                nativeName: 'English',
-                dir: 'ltr',
-                flag: '🇺🇸'
-            },
-            ku: {
-                name: 'کوردی',
-                nativeName: 'کوردی سۆرانی',
-                dir: 'rtl',
-                flag: '🇹🇯'
-            }
-        };
-        
-        this.loaded = false;
+        this.translations = translations;
     }
-
-    async init() {
-        try {
-            // Load all translations
-            const langs = ['ar', 'en', 'ku'];
-            const promises = langs.map(lang => 
-                fetch(`locales/${lang}.json`)
-                    .then(res => res.json())
-                    .then(data => {
-                        this.translations[lang] = data;
-                    })
-                    .catch(err => console.error(`[i18n] Failed to load ${lang}:`, err))
-            );
-            
-            await Promise.all(promises);
-            this.loaded = true;
-            
-            // Apply current language
-            this.setLanguage(this.currentLang);
-            
-            console.log(`[i18n] Initialized with ${Object.keys(this.translations).length} languages`);
-        } catch (error) {
-            console.error('[i18n] Initialization failed:', error);
-        }
+    
+    init() {
+        this.applyLanguage(this.currentLang);
+        this.updateUITranslations();
     }
-
+    
     setLanguage(lang) {
-        if (!this.languages[lang]) {
-            console.warn(`[i18n] Language ${lang} not supported, falling back to ${this.fallbackLang}`);
-            lang = this.fallbackLang;
-        }
-        
         this.currentLang = lang;
         localStorage.setItem('techoprint_lang', lang);
-        
-        // Update document direction
-        const dir = this.languages[lang].dir;
-        document.documentElement.dir = dir;
-        document.documentElement.lang = lang;
-        
-        // Apply translations to page
-        this.translatePage();
-        
-        // Update language switcher if exists
-        this.updateLanguageSwitcher();
-        
-        console.log(`[i18n] Language set to: ${lang} (${dir})`);
+        this.applyLanguage(lang);
+        this.updateUITranslations();
     }
-
-    t(key, params = {}) {
-        if (!this.loaded) {
-            console.warn('[i18n] Translations not loaded yet');
-            return key;
+    
+    applyLanguage(lang) {
+        const html = document.documentElement;
+        
+        // Apply RTL/LTR
+        if (lang === 'ar' || lang === 'ku') {
+            html.setAttribute('dir', 'rtl');
+        } else {
+            html.setAttribute('dir', 'ltr');
         }
         
-        const translation = this.getNestedValue(this.translations[this.currentLang], key);
+        // Set lang attribute
+        html.setAttribute('lang', lang);
         
-        if (translation === undefined) {
-            // Try fallback language
-            const fallback = this.getNestedValue(this.translations[this.fallbackLang], key);
-            if (fallback !== undefined) {
-                return this.interpolate(fallback, params);
+        // Update language switcher buttons
+        document.querySelectorAll('[data-lang]').forEach(btn => {
+            btn.classList.remove('active');
+            if (btn.dataset.lang === lang) {
+                btn.classList.add('active');
             }
-            console.warn(`[i18n] Missing translation: ${key}`);
-            return key;
-        }
-        
-        return this.interpolate(translation, params);
-    }
-
-    getNestedValue(obj, path) {
-        return path.split('.').reduce((acc, part) => acc && acc[part], obj);
-    }
-
-    interpolate(template, params) {
-        return template.replace(/\{\{(\w+)\}\}/g, (match, key) => {
-            return params[key] !== undefined ? params[key] : match;
         });
-    }
-
-    translatePage() {
-        if (!this.loaded) return;
         
-        // Translate elements with data-i18n attribute
+        // Trigger language change event
+        window.dispatchEvent(new CustomEvent('languageChanged', { detail: { lang } }));
+    }
+    
+    updateUITranslations() {
+        // Translate elements with data-i18n
         document.querySelectorAll('[data-i18n]').forEach(el => {
             const key = el.getAttribute('data-i18n');
             const translation = this.t(key);
-            if (translation !== key) {
+            if (translation) {
                 el.textContent = translation;
             }
         });
         
-        // Translate elements with data-i18n-placeholder attribute
+        // Translate placeholders
         document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
             const key = el.getAttribute('data-i18n-placeholder');
             const translation = this.t(key);
-            if (translation !== key) {
+            if (translation) {
                 el.placeholder = translation;
             }
         });
-        
-        // Translate elements with data-i18n-title attribute
-        document.querySelectorAll('[data-i18n-title]').forEach(el => {
-            const key = el.getAttribute('data-i18n-title');
-            const translation = this.t(key);
-            if (translation !== key) {
-                el.title = translation;
-            }
-        });
-        
-        // Update page title
-        document.title = this.t('dashboard.techoprint') + ' - ' + this.t('nav.dashboard');
     }
-
-    updateLanguageSwitcher() {
-        const switcher = document.getElementById('languageSwitcher');
-        if (!switcher) return;
-        
-        // Update active language indicator
-        const buttons = switcher.querySelectorAll('.lang-btn');
-        buttons.forEach(btn => {
-            btn.classList.remove('active');
-            if (btn.dataset.lang === this.currentLang) {
-                btn.classList.add('active');
-            }
-        });
-    }
-
-    getAvailableLanguages() {
-        return Object.entries(this.languages).map(([code, config]) => ({
-            code,
-            ...config
-        }));
-    }
-
-    getCurrentLanguage() {
-        return {
-            code: this.currentLang,
-            ...this.languages[this.currentLang]
-        };
-    }
-
-    getDirection() {
-        return this.languages[this.currentLang]?.dir || 'rtl';
-    }
-
-    isRTL() {
-        return this.getDirection() === 'rtl';
-    }
-
-    // Helper to get role name in current language
-    getRoleName(role) {
-        return this.t(`roles.${role}`) || role;
-    }
-
-    // Helper to get transaction type name
-    getTransactionTypeName(type) {
-        return this.t(`transactionTypes.${type}`) || type;
-    }
-
-    // Helper to get order status name
-    getOrderStatusName(status) {
-        // Map status keys to translation keys
-        const statusMap = {
-            'pending': 'orders.pending',
-            'processing': 'orders.processing',
-            'printing': 'orders.printing',
-            'out_for_delivery': 'orders.outForDelivery',
-            'delivered': 'orders.delivered',
-            'cancelled': 'orders.cancelled'
-        };
-        
-        const key = statusMap[status] || 'orders.pending';
-        return this.t(key) || status;
-    }
-
-    // Helper to format numbers in current locale
-    formatNumber(num) {
+    
+    t(key, fallback = '') {
         const lang = this.currentLang;
-        return new Intl.NumberFormat(lang === 'ku' ? 'ckb' : lang).format(num);
+        return this.translations[lang]?.[key] || this.translations['ar']?.[key] || fallback || key;
     }
-
-    // Helper to format currency
-    formatCurrency(amount, currency = 'IQD') {
-        const formatted = this.formatNumber(amount);
-        return `${formatted} ${currency}`;
+    
+    getRoleName(role) {
+        const roles = {
+            'student': this.t('roles.student'),
+            'teacher': this.t('roles.teacher'),
+            'admin': this.t('roles.admin'),
+            'designer': this.t('roles.designer'),
+            'guest': this.t('roles.guest')
+        };
+        return roles[role] || role;
     }
-
-    // Reload translations (for dynamic content)
+    
     reload() {
-        this.translatePage();
+        this.updateUITranslations();
     }
 }
 
-// Create global instance
 window.i18n = new I18n();
 
-// Initialize on DOM ready
+// Auto-initialize
 document.addEventListener('DOMContentLoaded', () => {
-    window.i18n.init();
+    if (window.i18n) {
+        window.i18n.init();
+    }
 });
