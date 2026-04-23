@@ -2560,3 +2560,20 @@ html[dir="ltr"] textarea::placeholder {
         margin-left: 320px;
     }
 }
+  
+"/* ====== HORIZONTAL PORTAL SCROLL ====== */"  
+".portals-grid {"  
+"    display: flex;"  
+"    flex-direction: row;"  
+"    overflow-x: auto;"  
+"    scroll-snap-type: x mandatory;"  
+"    gap: 20px;"  
+"    padding: 20px;"  
+"}"  
+""  
+".portals-grid .portal-card {"  
+"    min-width: 320px;"  
+"    max-width: 350px;"  
+"    flex-shrink: 0;"  
+"    scroll-snap-align: start;"  
+"}" 
