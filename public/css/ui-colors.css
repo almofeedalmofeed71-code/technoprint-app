@@ -1,84 +1,47 @@
 /* TECHOPRINT 2026 - COLORS */
-/* Premium Animated Borders */
+/* Gold/Black Empire */
 
 :root {
     --gold: #D4AF37;
     --gold-light: #F4E4BA;
     --gold-dark: #8B6914;
+    --black: #000000;
     --dark: #0a0a0f;
     --dark-light: #12121a;
 }
 
 body {
-    background: var(--dark);
+    background: var(--black);
     color: #ffffff;
-    font-family: 'Segoe UI', Arial, sans-serif;
     margin: 0;
     padding: 0;
 }
 
-/* Premium Rotating Golden Border */
-.premium-frame {
+/* Frame Animation */
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.slider-frame {
     position: relative;
+    background: #000000;
+    border: 3px solid #D4AF37;
     border-radius: 15px;
     overflow: hidden;
 }
 
-.premium-frame::before {
+.slider-frame::before {
     content: '';
     position: absolute;
-    inset: 0;
-    padding: 3px;
-    background: linear-gradient(
-        var(--angle, 0deg),
-        var(--gold),
-        var(--gold-light),
-        var(--gold),
-        var(--gold-dark),
-        var(--gold)
-    );
-    background-size: 300% 300%;
-    animation: premiumBorder 4s linear infinite;
-    border-radius: inherit;
-    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
+    inset: -3px;
+    border-radius: 15px;
+    background: linear-gradient(45deg, #D4AF37, #F4E4BA, #D4AF37, #F4E4BA);
+    animation: spin 4s linear infinite;
+    z-index: -1;
 }
 
-@keyframes premiumBorder {
-    0% {
-        background-position: 0% 50%;
-        filter: hue-rotate(0deg);
-    }
-    50% {
-        background-position: 100% 50%;
-    }
-    100% {
-        background-position: 0% 50%;
-        filter: hue-rotate(360deg);
-    }
-}
-
-/* Animated Glow Pulse */
-@keyframes goldPulse {
-    0%, 100% {
-        box-shadow: 0 0 10px rgba(212, 175, 55, 0.3),
-                    0 0 20px rgba(212, 175, 55, 0.2),
-                    0 0 30px rgba(212, 175, 55, 0.1);
-    }
-    50% {
-        box-shadow: 0 0 20px rgba(212, 175, 55, 0.6),
-                    0 0 40px rgba(212, 175, 55, 0.4),
-                    0 0 60px rgba(212, 175, 55, 0.2);
-    }
-}
-
-.gold-glow {
-    animation: goldPulse 2s ease-in-out infinite;
-}
-
-/* Modal Colors */
+/* Modal */
 .modal {
     position: fixed;
     inset: 0;
@@ -86,7 +49,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 99999 !important;
+    z-index: 99999;
 }
 
 .modal-box {
@@ -96,8 +59,6 @@ body {
     padding: 30px;
     max-width: 400px;
     width: 90%;
-    position: relative;
-    animation: goldPulse 2s ease-in-out infinite;
 }
 
 .modal-close {
@@ -109,38 +70,4 @@ body {
     color: var(--gold);
     font-size: 1.5rem;
     cursor: pointer;
-}
-
-.modal h2 {
-    color: var(--gold);
-    text-align: center;
-    margin-bottom: 20px;
-}
-
-/* Language Bar */
-.language-bar {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-    padding: 15px;
-    position: fixed;
-    right: 10px;
-    top: 80px;
-    z-index: 9998;
-}
-
-.lang-btn {
-    padding: 8px 16px;
-    background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(212, 175, 55, 0.3);
-    border-radius: 20px;
-    color: rgba(255,255,255,0.7);
-    cursor: pointer;
-    font-size: 0.85rem;
-    transition: all 0.3s ease;
-}
-
-.lang-btn:hover, .lang-btn.active {
-    background: var(--gold);
-    color: var(--dark);
 }

@@ -6,10 +6,10 @@
     <title>TECHOPRINT 2026</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- CORE CSS - Must be at top -->
+    <!-- CORE CSS LINKING ORDER -->
     <link rel="stylesheet" href="css/ui-colors.css">
     <link rel="stylesheet" href="css/ui-glass.css">
-    <link rel="stylesheet" href="css/ui-fonts.css">
+    <link rel="stylesheet" href="css/ui-ads-slider.css">
     <!-- COMPONENT CSS -->
     <link rel="stylesheet" href="css/ui-header.css">
     <link rel="stylesheet" href="css/ui-buttons.css">
@@ -27,7 +27,7 @@
     <div id="splashScreen" class="splash">
         <div class="splash-logo">T</div>
         <p class="splash-text">TECHOPRINT 2026</p>
-        <p class="splash-welcome">Welcome to the Empire</p>
+        <p class="splash-welcome">Welcome to Techoprint 2026</p>
     </div>
 
     <!-- Header -->
@@ -37,11 +37,11 @@
             <span class="brand-name">TECHOPRINT</span>
         </div>
         <div class="header-actions">
-            <div class="header-notif" onclick="showNotification()">
+            <div class="header-notif" id="btn-notification" onclick="showNotification()">
                 <i class="fas fa-bell"></i>
                 <span class="notif-badge">3</span>
             </div>
-            <div class="header-wallet" onclick="navigateTo('wallet')">
+            <div class="header-wallet" id="btn-wallet" onclick="Nav.go('wallet')">
                 <i class="fas fa-wallet"></i>
                 <span id="headerBalance">0 IQD</span>
             </div>
@@ -57,17 +57,19 @@
 
     <!-- Central Ad Slider - 3x3 Grid -->
     <section id="slider" class="slider-section">
-        <div class="slider-container">
-            <div class="slide">
-                <div class="slide-block"><img src="https://picsum.photos/400/300?random=1" alt="Ad 1"></div>
-                <div class="slide-block"><img src="https://picsum.photos/400/300?random=2" alt="Ad 2"></div>
-                <div class="slide-block"><img src="https://picsum.photos/400/300?random=3" alt="Ad 3"></div>
-                <div class="slide-block"><img src="https://picsum.photos/400/300?random=4" alt="Ad 4"></div>
-                <div class="slide-block"><img src="https://picsum.photos/400/300?random=5" alt="Ad 5"></div>
-                <div class="slide-block"><img src="https://picsum.photos/400/300?random=6" alt="Ad 6"></div>
-                <div class="slide-block"><img src="https://picsum.photos/400/300?random=7" alt="Ad 7"></div>
-                <div class="slide-block"><img src="https://picsum.photos/400/300?random=8" alt="Ad 8"></div>
-                <div class="slide-block"><img src="https://picsum.photos/400/300?random=9" alt="Ad 9"></div>
+        <div class="slider-frame">
+            <div class="slider-container">
+                <div class="slide">
+                    <div class="slide-block"><img src="https://picsum.photos/400/300?random=1" alt="Ad 1"></div>
+                    <div class="slide-block"><img src="https://picsum.photos/400/300?random=2" alt="Ad 2"></div>
+                    <div class="slide-block"><img src="https://picsum.photos/400/300?random=3" alt="Ad 3"></div>
+                    <div class="slide-block"><img src="https://picsum.photos/400/300?random=4" alt="Ad 4"></div>
+                    <div class="slide-block"><img src="https://picsum.photos/400/300?random=5" alt="Ad 5"></div>
+                    <div class="slide-block"><img src="https://picsum.photos/400/300?random=6" alt="Ad 6"></div>
+                    <div class="slide-block"><img src="https://picsum.photos/400/300?random=7" alt="Ad 7"></div>
+                    <div class="slide-block"><img src="https://picsum.photos/400/300?random=8" alt="Ad 8"></div>
+                    <div class="slide-block"><img src="https://picsum.photos/400/300?random=9" alt="Ad 9"></div>
+                </div>
             </div>
         </div>
         <div class="slide-nav">
@@ -81,35 +83,35 @@
     <section id="dashboardSection" class="dashboard-section">
         <h2 style="color:#D4AF37;text-align:center;margin:20px 0;">لوحة التحكم</h2>
         <div class="service-grid">
-            <div class="service-card" onclick="navigateTo('orders')">
+            <div class="service-card" id="btn-orders" onclick="Nav.go('orders')">
                 <div class="service-icon">📦</div>
                 <p class="service-title">طلباتي</p>
             </div>
-            <div class="service-card" onclick="navigateTo('wallet')">
+            <div class="service-card" id="btn-wallet" onclick="Nav.go('wallet')">
                 <div class="service-icon">💰</div>
                 <p class="service-title">المحفظة</p>
             </div>
-            <div class="service-card" onclick="navigateTo('library')">
+            <div class="service-card" id="btn-library" onclick="Nav.go('library')">
                 <div class="service-icon">📚</div>
                 <p class="service-title">المكتبة</p>
             </div>
-            <div class="service-card" onclick="navigateTo('tracking')">
+            <div class="service-card" onclick="Nav.go('tracking')">
                 <div class="service-icon">📍</div>
                 <p class="service-title">التتبع</p>
             </div>
-            <div class="service-card" onclick="navigateTo('printing')">
+            <div class="service-card" onclick="Nav.go('printing')">
                 <div class="service-icon">🖨️</div>
                 <p class="service-title">الطباعة</p>
             </div>
-            <div class="service-card" onclick="navigateTo('support')">
+            <div class="service-card" onclick="Nav.go('support')">
                 <div class="service-icon">🔧</div>
                 <p class="service-title">الدعم</p>
             </div>
-            <div class="service-card" onclick="navigateTo('teacher')">
+            <div class="service-card" onclick="Nav.go('teacher')">
                 <div class="service-icon">👨‍🏫</div>
                 <p class="service-title">المعلم</p>
             </div>
-            <div class="service-card" onclick="navigateTo('inks')">
+            <div class="service-card" onclick="Nav.go('inks')">
                 <div class="service-icon">🎨</div>
                 <p class="service-title">الحبر</p>
             </div>
@@ -122,128 +124,117 @@
 
     <!-- ==================== WALLET SECTION ==================== -->
     <section id="walletSection" class="dashboard-section" style="display:none;">
-        <div style="text-align:center;padding:30px;">
+        <div class="text-center">
             <h2 style="color:#D4AF37;">المحفظة</h2>
             <div class="glass-card" style="padding:40px;max-width:400px;margin:20px auto;">
                 <i class="fas fa-wallet" style="font-size:4rem;color:#D4AF37;margin-bottom:20px;"></i>
                 <h3 style="color:#fff;margin:10px 0;">الرصيد الحالي</h3>
                 <p style="font-size:2.5rem;color:#D4AF37;font-weight:bold;margin:10px 0;">0 IQD</p>
-                <button class="btn-gold" style="margin-top:20px;">إضافة رصيد</button>
+                <button class="btn-gold" onclick="Nav.go('dashboard')">العودة</button>
             </div>
-            <button class="btn-gold" onclick="navigateTo('dashboard')" style="margin-top:20px;">العودة للرئيسية</button>
         </div>
     </section>
 
     <!-- ==================== LIBRARY SECTION ==================== -->
     <section id="librarySection" class="dashboard-section" style="display:none;">
-        <div style="text-align:center;padding:30px;">
+        <div class="text-center">
             <h2 style="color:#D4AF37;">المكتبة</h2>
-            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:20px;max-width:800px;margin:20px auto;">
-                <div class="service-card" style="cursor:default;"><div class="service-icon">📖</div><p class="service-title">كتاب 1</p></div>
-                <div class="service-card" style="cursor:default;"><div class="service-icon">📗</div><p class="service-title">كتاب 2</p></div>
-                <div class="service-card" style="cursor:default;"><div class="service-icon">📘</div><p class="service-title">كتاب 3</p></div>
-                <div class="service-card" style="cursor:default;"><div class="service-icon">📕</div><p class="service-title">كتاب 4</p></div>
+            <div class="grid-4" style="max-width:800px;margin:20px auto;">
+                <div class="glass-card" style="padding:20px;text-align:center;"><div style="font-size:3rem;">📖</div><p>كتاب 1</p></div>
+                <div class="glass-card" style="padding:20px;text-align:center;"><div style="font-size:3rem;">📗</div><p>كتاب 2</p></div>
+                <div class="glass-card" style="padding:20px;text-align:center;"><div style="font-size:3rem;">📘</div><p>كتاب 3</p></div>
+                <div class="glass-card" style="padding:20px;text-align:center;"><div style="font-size:3rem;">📕</div><p>كتاب 4</p></div>
             </div>
-            <button class="btn-gold" onclick="navigateTo('dashboard')" style="margin-top:20px;">العودة للرئيسية</button>
+            <button class="btn-gold" onclick="Nav.go('dashboard')">العودة</button>
         </div>
     </section>
 
     <!-- ==================== ORDERS SECTION ==================== -->
     <section id="ordersSection" class="dashboard-section" style="display:none;">
-        <div style="text-align:center;padding:30px;">
+        <div class="text-center">
             <h2 style="color:#D4AF37;">طلباتي</h2>
             <div class="glass-card" style="padding:30px;max-width:600px;margin:20px auto;">
                 <p style="color:#fff;">📦 لا توجد طلبات حالياً</p>
-                <button class="btn-gold" style="margin-top:20px;">إنشاء طلب جديد</button>
             </div>
-            <button class="btn-gold" onclick="navigateTo('dashboard')" style="margin-top:20px;">العودة للرئيسية</button>
+            <button class="btn-gold" onclick="Nav.go('dashboard')">العودة</button>
         </div>
     </section>
 
     <!-- ==================== TRACKING SECTION ==================== -->
     <section id="trackingSection" class="dashboard-section" style="display:none;">
-        <div style="text-align:center;padding:30px;">
+        <div class="text-center">
             <h2 style="color:#D4AF37;">تتبع الطلب</h2>
             <div class="glass-card" style="padding:30px;max-width:600px;margin:20px auto;">
-                <p style="color:#fff;">📍 أدخل رقم التتبع</p>
                 <input type="text" class="input-field" placeholder="رقم الطلب" style="max-width:300px;">
-                <button class="btn-gold" style="margin-top:15px;">تتبع</button>
             </div>
-            <button class="btn-gold" onclick="navigateTo('dashboard')" style="margin-top:20px;">العودة للرئيسية</button>
+            <button class="btn-gold" onclick="Nav.go('dashboard')">العودة</button>
         </div>
     </section>
 
     <!-- ==================== PRINTING SECTION ==================== -->
     <section id="printingSection" class="dashboard-section" style="display:none;">
-        <div style="text-align:center;padding:30px;">
+        <div class="text-center">
             <h2 style="color:#D4AF37;">خدمة الطباعة</h2>
             <div class="glass-card" style="padding:30px;max-width:600px;margin:20px auto;">
-                <p style="color:#fff;">🖨️ ارفع ملفك للطباعة</p>
+                <p style="color:#fff;">🖨️ ارفع ملفك</p>
                 <input type="file" class="input-field" style="max-width:300px;">
-                <button class="btn-gold" style="margin-top:15px;">طباعة</button>
             </div>
-            <button class="btn-gold" onclick="navigateTo('dashboard')" style="margin-top:20px;">العودة للرئيسية</button>
+            <button class="btn-gold" onclick="Nav.go('dashboard')">العودة</button>
         </div>
     </section>
 
     <!-- ==================== SUPPORT SECTION ==================== -->
     <section id="supportSection" class="dashboard-section" style="display:none;">
-        <div style="text-align:center;padding:30px;">
+        <div class="text-center">
             <h2 style="color:#D4AF37;">مركز الدعم</h2>
             <div class="glass-card" style="padding:30px;max-width:600px;margin:20px auto;">
                 <p style="color:#fff;">🔧 كيف يمكننا مساعدتك؟</p>
-                <textarea class="input-field" rows="4" placeholder="اكتب رسالتك هنا..." style="max-width:400px;resize:none;"></textarea>
-                <button class="btn-gold" style="margin-top:15px;">إرسال</button>
+                <textarea class="input-field" rows="4" style="max-width:400px;resize:none;"></textarea>
             </div>
-            <button class="btn-gold" onclick="navigateTo('dashboard')" style="margin-top:20px;">العودة للرئيسية</button>
+            <button class="btn-gold" onclick="Nav.go('dashboard')">العودة</button>
         </div>
     </section>
 
     <!-- ==================== TEACHER SECTION ==================== -->
     <section id="teacherSection" class="dashboard-section" style="display:none;">
-        <div style="text-align:center;padding:30px;">
+        <div class="text-center">
             <h2 style="color:#D4AF37;">بوابة المعلم</h2>
             <div class="glass-card" style="padding:30px;max-width:600px;margin:20px auto;">
                 <p style="color:#fff;">👨‍🏫 لوحة تحكم المعلم</p>
-                <div style="display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:20px;">
-                    <button class="btn-gold">إدارة الكتب</button>
-                    <button class="btn-gold">الطلبات</button>
-                    <button class="btn-gold">الطلاب</button>
-                </div>
             </div>
-            <button class="btn-gold" onclick="navigateTo('dashboard')" style="margin-top:20px;">العودة للرئيسية</button>
+            <button class="btn-gold" onclick="Nav.go('dashboard')">العودة</button>
         </div>
     </section>
 
     <!-- ==================== INKS SECTION ==================== -->
     <section id="inksSection" class="dashboard-section" style="display:none;">
-        <div style="text-align:center;padding:30px;">
+        <div class="text-center">
             <h2 style="color:#D4AF37;">الحبر والمستلزمات</h2>
-            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:20px;max-width:800px;margin:20px auto;">
-                <div class="service-card" style="cursor:default;"><div class="service-icon">🖤</div><p class="service-title">حبر أسود</p></div>
-                <div class="service-card" style="cursor:default;"><div class="service-icon">🔵</div><p class="service-title">حبر أزرق</p></div>
-                <div class="service-card" style="cursor:default;"><div class="service-icon">🔴</div><p class="service-title">حبر أحمر</p></div>
-                <div class="service-card" style="cursor:default;"><div class="service-icon">🟢</div><p class="service-title">حبر أخضر</p></div>
+            <div class="grid-4" style="max-width:800px;margin:20px auto;">
+                <div class="glass-card" style="padding:20px;text-align:center;"><div style="font-size:3rem;">🖤</div><p>حبر أسود</p></div>
+                <div class="glass-card" style="padding:20px;text-align:center;"><div style="font-size:3rem;">🔵</div><p>حبر أزرق</p></div>
+                <div class="glass-card" style="padding:20px;text-align:center;"><div style="font-size:3rem;">🔴</div><p>حبر أحمر</p></div>
+                <div class="glass-card" style="padding:20px;text-align:center;"><div style="font-size:3rem;">🟢</div><p>حبر أخضر</p></div>
             </div>
-            <button class="btn-gold" onclick="navigateTo('dashboard')" style="margin-top:20px;">العودة للرئيسية</button>
+            <button class="btn-gold" onclick="Nav.go('dashboard')">العودة</button>
         </div>
     </section>
 
     <!-- Bottom Navigation -->
     <nav class="bottom-nav">
-        <button class="nav-btn active" id="nav-dashboard" onclick="navigateTo('dashboard')">
+        <button class="nav-btn active" id="nav-dashboard" onclick="Nav.go('dashboard')">
             <i class="fas fa-home"></i>
             <span>الرئيسية</span>
         </button>
-        <button class="nav-btn" id="nav-wallet" onclick="navigateTo('wallet')">
+        <button class="nav-btn" id="nav-wallet" onclick="Nav.go('wallet')">
             <i class="fas fa-wallet"></i>
             <span>المحفظة</span>
         </button>
-        <button class="nav-btn" id="nav-library" onclick="navigateTo('library')">
+        <button class="nav-btn" id="nav-library" onclick="Nav.go('library')">
             <i class="fas fa-book"></i>
             <span>المكتبة</span>
         </button>
-        <button class="nav-btn" id="nav-orders" onclick="navigateTo('orders')">
+        <button class="nav-btn" id="nav-orders" onclick="Nav.go('orders')">
             <i class="fas fa-box"></i>
             <span>طلباتي</span>
         </button>
@@ -295,6 +286,7 @@
     </div>
 
     <!-- Scripts -->
+    <script src="js/eng-main.js"></script>
     <script src="js/eng-i18n.js"></script>
     <script src="js/eng-navigation.js"></script>
     <script src="js/eng-slider.js"></script>
