@@ -1,17 +1,21 @@
 /* TECHOPRINT 2026 - NAVIGATION */
-/* NO ALERTS - Use display flex */
+/* Direct DOM binding - NO ALERTS */
 
 const Nav = {
-    sections: ['dashboard', 'wallet', 'library', 'orders', 'tracking', 'printing', 'support', 'teacher', 'inks'],
+    sections: ['dashboard', 'orders', 'wallet', 'library', 'tracking', 'printing', 'support', 'teacher', 'settings'],
     
     go(page) {
+        // Hide all sections
         this.sections.forEach(function(s) {
             var el = document.getElementById(s + 'Section');
             if (el) el.style.display = 'none';
         });
+        
+        // Show target
         var target = document.getElementById(page + 'Section');
         if (target) target.style.display = 'block';
         
+        // Update nav buttons
         document.querySelectorAll('.nav-btn').forEach(function(b) { b.classList.remove('active'); });
         var btn = document.getElementById('nav-' + page);
         if (btn) btn.classList.add('active');
@@ -20,7 +24,7 @@ const Nav = {
 
 window.Nav = Nav;
 
-// Modal functions - USE DISPLAY FLEX
+// Modal functions
 window.openModal = function(id) { var m = document.getElementById(id); if (m) m.style.display = 'flex'; };
 window.closeModal = function(id) { var m = document.getElementById(id); if (m) m.style.display = 'none'; };
 
@@ -34,8 +38,8 @@ window.toggleRegister = function() {
 window.showNotification = function() {
     var m = document.createElement('div');
     m.className = 'modal';
-    m.innerHTML = '<div class="modal-box"><h2>🔔</h2><p>📦 New order</p><p>💰 Payment</p></div>';
     m.style.display = 'flex';
+    m.innerHTML = '<div class="modal-box"><h2>🔔 الإشعارات</h2><p>📦 طلب جديد</p><p>💰 دفعة مستلمة</p></div>';
     m.onclick = function(e) { if (e.target === m) m.remove(); };
     document.body.appendChild(m);
 };
