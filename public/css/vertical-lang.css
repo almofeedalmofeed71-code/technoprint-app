@@ -1,16 +1,16 @@
 /* TECHOPRINT 2026 - VERTICAL LANGUAGE SIDEBAR CSS */
 /* Right-side vertical language switcher with glassmorphism circles */
 
-/* ==================== VERTICAL LANGUAGE SIDEBAR ==================== */
+/* ==================== VERTICAL LANGUAGE SIDEBAR (z-index: 999) ==================== */
 .vertical-lang-sidebar {
     position: fixed;
     right: 20px;
     top: 50%;
     transform: translateY(-50%);
+    z-index: 999;
     display: flex;
     flex-direction: column;
     gap: 12px;
-    z-index: 2000;
     padding: 16px 12px;
     border-radius: 20px;
 }
@@ -52,17 +52,11 @@ html[dir="ltr"] .vertical-lang-sidebar {
 
 .vert-lang-btn .flag { font-size: 1.5rem; }
 
-.vert-lang-btn .lang-label {
-    display: none;
-    font-size: 0.7rem;
-    font-weight: 600;
-    color: var(--bg-cosmic);
-}
-
 /* ==================== RESPONSIVE ==================== */
 @media (max-width: 768px) {
     .vertical-lang-sidebar {
         right: 10px;
+        z-index: 999;
         gap: 8px;
         padding: 10px 8px;
     }
@@ -72,22 +66,9 @@ html[dir="ltr"] .vertical-lang-sidebar {
         height: 40px;
         font-size: 1.2rem;
     }
-    
-    html[dir="ltr"] .vertical-lang-sidebar {
-        left: 10px;
-    }
 }
 
 @media (max-width: 480px) {
-    .vertical-lang-sidebar {
-        right: 5px;
-        gap: 6px;
-        padding: 8px 6px;
-    }
-    
-    .vert-lang-btn {
-        width: 36px;
-        height: 36px;
-        font-size: 1rem;
-    }
+    .vertical-lang-sidebar { right: 5px; }
+    .vert-lang-btn { width: 36px; height: 36px; font-size: 1rem; }
 }

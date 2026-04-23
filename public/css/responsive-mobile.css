@@ -1,0 +1,131 @@
+/* TECHOPRINT 2026 - RESPONSIVE MOBILE FIX */
+/* 100% visibility for all gate cards on mobile */
+
+/* ==================== MOBILE FULL VIEW FIX ==================== */
+@media (max-width: 768px) {
+    /* Gate Cards - 100% Visible */
+    .portal-card {
+        width: 90% !important;
+        margin: 12px auto !important;
+        max-width: 400px !important;
+        flex: 0 0 auto !important;
+        scroll-snap-align: center !important;
+    }
+    
+    /* Portals Grid - Full Width */
+    .portals-grid {
+        width: 100% !important;
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 16px !important;
+        padding: 16px !important;
+        align-items: center !important;
+    }
+    
+    .portals-grid.horizontal-scroll-section {
+        overflow-x: visible !important;
+        flex-wrap: nowrap !important;
+        justify-content: center !important;
+    }
+    
+    /* Portal Hero */
+    .portal-hero h1 { font-size: 1.8rem !important; }
+    .portal-hero .tagline { font-size: 1rem !important; }
+    .hero-logo { width: 100px !important; height: 100px !important; font-size: 3rem !important; }
+    
+    /* Mega Slider - Fill Available Area */
+    .mega-slider {
+        width: 92% !important;
+        max-width: none !important;
+        margin: 12px auto !important;
+        border-radius: 16px !important;
+    }
+    
+    .mega-slide {
+        padding: 16px 12px !important;
+    }
+    
+    .mega-grid {
+        grid-template-columns: repeat(3, 1fr) !important;
+        gap: 8px !important;
+    }
+    
+    .mega-block { padding: 10px 6px !important; }
+    .mega-block .block-icon { font-size: 1.5rem !important; }
+    .mega-block h4 { font-size: 0.7rem !important; }
+    .mega-block p { font-size: 0.6rem !important; margin: 2px 0 !important; }
+    .mega-block .block-btn { padding: 4px 8px !important; font-size: 0.6rem !important; margin-top: 4px !important; }
+    
+    /* Master Portal */
+    #masterPortal {
+        padding: 16px !important;
+        padding-bottom: 80px !important;
+    }
+    
+    /* Header */
+    .header { padding: 12px !important; gap: 8px !important; }
+    .page-title { font-size: 1rem !important; }
+    .balance-display { padding: 8px 12px !important; }
+    .balance-label { display: none !important; }
+    
+    /* Bottom Nav */
+    .bottom-nav { display: flex !important; }
+    
+    /* Main Content */
+    .main-content { padding-bottom: 80px !important; margin: 0 !important; }
+    
+    /* Language Sidebar */
+    .vertical-lang-sidebar {
+        z-index: 999 !important;
+        right: 8px !important;
+        top: 50% !important;
+    }
+    
+    /* Advertising Slider */
+    .advertising-slider { width: 92% !important; margin: 12px auto !important; }
+    .ad-slide { padding: 20px 12px !important; }
+    .ad-content h3 { font-size: 1.2rem !important; }
+    
+    /* Student Portal */
+    .student-portal-page { padding: 12px !important; }
+    .four-pillars { display: grid !important; grid-template-columns: 1fr !important; gap: 16px !important; }
+    
+    /* Four Pillars Mobile */
+    .pillar-card { width: 100% !important; margin: 0 !important; }
+    .premium-slider-container { max-width: 100% !important; margin: 0 auto 20px !important; }
+}
+
+/* ==================== SMALL PHONES ==================== */
+@media (max-width: 374px) {
+    .portal-card { width: 92% !important; }
+    .mega-block .block-icon { font-size: 1.2rem !important; }
+    .mega-block h4 { font-size: 0.6rem !important; }
+    .mega-block p { display: none !important; }
+    .vert-lang-btn { width: 36px !important; height: 36px !important; }
+}
+
+/* ==================== TABLETS ==================== */
+@media (min-width: 768px) and (max-width: 1024px) {
+    .portal-card { width: 280px !important; }
+    .mega-grid { grid-template-columns: repeat(3, 1fr) !important; gap: 12px !important; }
+}
+
+/* ==================== LARGE DESKTOP ==================== */
+@media (min-width: 1367px) {
+    .portal-card { width: 320px !important; }
+    .mega-block { padding: 24px 20px !important; }
+}
+
+/* ==================== PORTAL LANGUAGE SIDEBAR (RESTORED) ==================== */
+.vertical-lang-sidebar {
+    position: fixed;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 999;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+html[dir="ltr"] .vertical-lang-sidebar { left: 20px; right: auto; }
