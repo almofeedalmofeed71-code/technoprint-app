@@ -1,27 +1,33 @@
 /* TECHOPRINT 2026 - ENG I18N ENGINE */
-/* Translation Logic ONLY (AR, KU, EN) */
+/* LANGUAGE TRIO: Arabic, Kurdish, English */
 
 const I18n = {
     current: 'ar',
     
     dict: {
         ar: {
-            nav: { dashboard: 'لوحة التحكم', wallet: 'المحفظة', library: 'المكتبة', orders: 'الطلبات' },
-            auth: { login: 'تسجيل الدخول', register: 'إنشاء حساب', logout: 'خروج' },
-            wallet: { balance: 'الرصيد', deposit: 'إيداع', withdraw: 'سحب' },
-            common: { back: 'رجوع', admin: 'الأدمن', more: 'المزيد', welcome: 'مرحباً بك' }
+            app: { name: 'TECHOPRINT 2026', loading: 'جاري التحميل...' },
+            nav: { dashboard: 'لوحة التحكم', wallet: 'المحفظة', library: 'المكتبة', orders: 'الطلبات', tracking: 'تتبع الطلب', designer: 'المصممون', maintenance: 'الصيانة', printing: 'الطباعة', inks: 'الحبر' },
+            auth: { login: 'تسجيل الدخول', register: 'إنشاء حساب', logout: 'خروج', email: 'البريد الالكتروني', password: 'كلمة المرور', enter: 'دخول' },
+            wallet: { balance: 'الرصيد', deposit: 'إيداع', withdraw: 'سحب', iqd: 'IQD' },
+            screens: { student: 'بوابة الطالب', teacher: 'بوابة المعلم', maintenance: 'الصيانة', printing: 'الطباعة', inks: 'الحبر', wallet: 'المحفظة' },
+            common: { back: 'رجوع', admin: 'الأدمن', more: 'المزيد', welcome: 'مرحباً بك', home: 'الرئيسية', myOrders: 'طلباتي' }
         },
         ku: {
-            nav: { dashboard: 'داشبۆرد', wallet: 'سەرف', library: 'پارەگە', orders: 'داواکان' },
-            auth: { login: 'چوونەژوورەوە', register: 'دروستکردن', logout: 'چوونەدەر' },
-            wallet: { balance: 'سەرف', deposit: 'پارەدان', withdraw: 'رەوانەکردن' },
-            common: { back: 'گەڕانەوە', admin: 'بەڕێوبەرایەتی', more: 'زیاتر', welcome: 'بەخێربێیت' }
+            app: { name: 'TECHOPRINT 2026', loading: 'بار دەکرێت...' },
+            nav: { dashboard: 'داشبۆرد', wallet: 'سەرف', library: 'پارەگە', orders: 'داواکان', tracking: 'هەڵگر', designer: 'دیزاینەر', maintenance: 'چاککردن', printing: 'پرینت', inks: 'مەرکەز' },
+            auth: { login: 'چوونەژوورەوە', register: 'دروستکردن', logout: 'چوونەدەر', email: 'ئیمەیڵ', password: 'تێپەرە', enter: 'بچۆ ژوورەوە' },
+            wallet: { balance: 'سەرف', deposit: 'پارەدان', withdraw: 'رەوانەکردن', iqd: 'IQD' },
+            screens: { student: 'دروازەی قوتابی', teacher: 'دروازەی مامۆستا', maintenance: 'چاککردن', printing: 'پرینت', inks: 'مەرکەز', wallet: 'سەرف' },
+            common: { back: 'گەڕانەوە', admin: 'بەڕێوبەرایەتی', more: 'زیاتر', welcome: 'بەخێربێیت', home: 'سەرەتا', myOrders: 'داواکانم' }
         },
         en: {
-            nav: { dashboard: 'Dashboard', wallet: 'Wallet', library: 'Library', orders: 'Orders' },
-            auth: { login: 'Login', register: 'Register', logout: 'Logout' },
-            wallet: { balance: 'Balance', deposit: 'Deposit', withdraw: 'Withdraw' },
-            common: { back: 'Back', admin: 'Admin', more: 'More', welcome: 'Welcome' }
+            app: { name: 'TECHOPRINT 2026', loading: 'Loading...' },
+            nav: { dashboard: 'Dashboard', wallet: 'Wallet', library: 'Library', orders: 'Orders', tracking: 'Track Order', designer: 'Designers', maintenance: 'Maintenance', printing: 'Printing', inks: 'Inks' },
+            auth: { login: 'Login', register: 'Create Account', logout: 'Logout', email: 'Email', password: 'Password', enter: 'Enter' },
+            wallet: { balance: 'Balance', deposit: 'Deposit', withdraw: 'Withdraw', iqd: 'IQD' },
+            screens: { student: 'Student Portal', teacher: 'Teacher Portal', maintenance: 'Maintenance', printing: 'Printing', inks: 'Inks', wallet: 'Wallet' },
+            common: { back: 'Back', admin: 'Admin', more: 'More', welcome: 'Welcome', home: 'Home', myOrders: 'My Orders' }
         }
     },
     

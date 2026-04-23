@@ -1,17 +1,17 @@
 /* TECHOPRINT 2026 - UI COLORS */
-/* Gold/Black Palette & CSS Variables ONLY */
+/* COLOR AUTHORITY: Golden Theme & Deep Black */
 
 :root {
-    /* Cosmic Black Theme */
-    --bg-cosmic: #0a0a0b;
-    --bg-dark: #121214;
-    --bg-medium: #1a1a1f;
-    --bg-light: #2a2a30;
+    /* Deep Black - Main Backgrounds */
+    --bg-cosmic: #000000;
+    --bg-dark: #0a0a0a;
+    --bg-medium: #141414;
+    --bg-light: #1f1f1f;
     
-    /* Royal Gold Palette */
-    --gold-dark: #b8860b;
-    --gold-royal: #d4af37;
-    --gold-light: #f0d875;
+    /* Primary Gold - Borders, Icons, Active States */
+    --gold-dark: #b8941f;
+    --gold-royal: #D4AF37;
+    --gold-light: #e8cc6a;
     
     /* Status Colors */
     --success: #27ae60;
@@ -24,6 +24,10 @@
     --text-secondary: rgba(255, 255, 255, 0.7);
     --text-muted: rgba(255, 255, 255, 0.4);
     
+    /* Golden Borders */
+    --gold-border: rgba(212, 175, 55, 0.3);
+    --gold-border-active: rgba(212, 175, 55, 0.6);
+    
     /* Spacing */
     --space-xs: 4px;
     --space-sm: 8px;
@@ -35,7 +39,6 @@
     --radius-sm: 8px;
     --radius-md: 12px;
     --radius-lg: 20px;
-    --radius-full: 50%;
     
     /* Transitions */
     --transition-fast: 0.2s ease;
