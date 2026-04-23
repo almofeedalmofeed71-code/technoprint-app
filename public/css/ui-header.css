@@ -1,14 +1,14 @@
-/* TECHOPRINT 2026 - HEADER */
-.app-header { background: rgba(0, 0, 0, 0.95); border-bottom: 2px solid #D4AF37; padding: 10px 15px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
-.brand { display: flex; align-items: center; gap: 8px; }
-.brand-logo { width: 35px; height: 35px; background: #D4AF37; color: #000; font-size: 1.5rem; font-weight: bold; border-radius: 8px; display: flex; align-items: center; justify-content: center; }
-.brand-name { color: #D4AF37; font-size: 1rem; font-weight: bold; }
-.register-btn { background: transparent; border: 1px solid #D4AF37; color: #D4AF37; padding: 5px 12px; border-radius: 20px; font-size: 0.8rem; cursor: pointer; }
+/* TECHOPRINT 2026 - HEADER (SLIM) */
+.app-header { background: rgba(0, 0, 0, 0.95); border-bottom: 2px solid #D4AF37; padding: 5px 10px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
+.brand { display: flex; align-items: center; gap: 6px; }
+.brand-logo { width: 28px; height: 28px; background: #D4AF37; color: #000; font-size: 1.2rem; font-weight: bold; border-radius: 6px; display: flex; align-items: center; justify-content: center; }
+.brand-name { color: #D4AF37; font-size: 0.85rem; font-weight: bold; }
+.register-btn { background: transparent; border: 1px solid #D4AF37; color: #D4AF37; padding: 4px 10px; border-radius: 15px; font-size: 0.7rem; cursor: pointer; }
 .register-btn:hover { background: #D4AF37; color: #000; }
-.header-actions { display: flex; gap: 15px; }
-.header-notif, .header-wallet { color: #D4AF37; font-size: 1.2rem; cursor: pointer; }
-.bottom-nav { background: rgba(0, 0, 0, 0.95); border-top: 2px solid #D4AF37; padding: 10px; display: flex; justify-content: space-around; position: fixed; bottom: 0; left: 0; right: 0; z-index: 100; }
-.nav-btn { background: transparent; border: none; color: #666; display: flex; flex-direction: column; align-items: center; gap: 3px; cursor: pointer; font-size: 0.7rem; }
-.nav-btn i { font-size: 1.3rem; }
+.header-actions { display: flex; gap: 12px; }
+.header-notif, .header-wallet { color: #D4AF37; font-size: 1rem; cursor: pointer; }
+.bottom-nav { background: rgba(0, 0, 0, 0.95); border-top: 2px solid #D4AF37; padding: 8px; display: flex; justify-content: space-around; position: fixed; bottom: 0; left: 0; right: 0; z-index: 100; }
+.nav-btn { background: transparent; border: none; color: #666; display: flex; flex-direction: column; align-items: center; gap: 2px; cursor: pointer; font-size: 0.65rem; }
+.nav-btn i { font-size: 1.1rem; }
 .nav-btn.active { color: #D4AF37; }
 .nav-btn span { color: inherit; }

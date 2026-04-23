@@ -23,9 +23,9 @@
     <header class="app-header">
         <div class="brand">
             <div class="brand-logo">T</div>
-            <span class="brand-name">تكنوبرنت</span>
+            <span class="brand-name">TECHOPRINT</span>
         </div>
-        <button class="btn-gold register-btn" onclick="openModal('loginModal')">تسجيل الدخول</button>
+        <button class="btn-gold register-btn" onclick="openModal('loginModal')">Login</button>
         <div class="header-actions">
             <div class="header-notif" onclick="showNotification()"><i class="fas fa-bell"></i></div>
             <div class="header-wallet" onclick="Nav.go('wallet')"><i class="fas fa-wallet"></i></div>
@@ -46,7 +46,7 @@
                 </div>
             </div>
         </div>
-        <div class="slide-nav">
+        <div class="slide-nav" style="margin-top:5px;">
             <div class="slider-dot active"></div>
             <div class="slider-dot"></div>
             <div class="slider-dot"></div>
@@ -54,51 +54,50 @@
     </section>
 
     <section id="dashboardSection" class="dashboard-section">
-        <h2 class="section-title">الخدمات الرئيسية</h2>
         <div class="portals-grid">
             <div class="portal-card" onclick="Nav.go('student')">
                 <div class="portal-icon">🎓</div>
                 <h3>فضاء النجاح</h3>
-                <p>مركز الطالب</p>
+                <p>Student Center</p>
             </div>
             <div class="portal-card" onclick="Nav.go('teacher')">
                 <div class="portal-icon">👨‍🏫</div>
                 <h3>منبر الأساتذة</h3>
-                <p>ديوان التدريسيين</p>
+                <p>Teachers Hub</p>
             </div>
             <div class="portal-card" onclick="Nav.go('design')">
                 <div class="portal-icon">🎨</div>
                 <h3>بصمة المبدعين</h3>
-                <p>استوديو التصميم</p>
+                <p>Design Studio</p>
             </div>
             <div class="portal-card" onclick="Nav.go('library')">
                 <div class="portal-icon">📚</div>
                 <h3>كنوز المعرفة</h3>
-                <p>المكتبة الرقمية</p>
+                <p>Digital Library</p>
             </div>
             <div class="portal-card" onclick="Nav.go('ai')">
                 <div class="portal-icon">🤖</div>
                 <h3>العقل الرقمي</h3>
-                <p>مساعد AI الذكي</p>
+                <p>AI Assistant</p>
             </div>
             <div class="portal-card construction" onclick="Nav.go('academy')">
                 <div class="portal-icon">🏫</div>
                 <h3>أكاديمية تكنو</h3>
-                <p>المعهد والدورات</p>
-                <span class="construction-badge">قريباً</span>
+                <p>Academy</p>
+                <span class="construction-badge">Soon</span>
             </div>
         </div>
 
         <div class="utility-row">
-            <button class="utility-btn" onclick="Nav.go('about')">من نحن</button>
-            <button class="utility-btn" onclick="Nav.go('settings')">الإعدادات</button>
-            <button class="utility-btn" onclick="Nav.go('support')">الدعم الفني</button>
-            <button class="utility-btn" onclick="Nav.go('tracking')">التتبع</button>
+            <button class="utility-btn" onclick="Nav.go('about')">About Us</button>
+            <button class="utility-btn" onclick="Nav.go('settings')">Settings</button>
+            <button class="utility-btn" onclick="Nav.go('support')">Support</button>
+            <button class="utility-btn" onclick="Nav.go('tracking')">Tracking</button>
         </div>
     </section>
 
     <section id="studentSection" class="dashboard-section" style="display:none;">
-        <h2 class="section-title">فضاء النجاح - مركز الطالب</h2>
+        <h2 class="section-title">فضاء النجاح</h2>
         <div class="service-grid">
             <div class="glass-card"><p>📦 طلباتي</p></div>
             <div class="glass-card"><p>💰 محفظتي</p></div>
@@ -114,7 +113,7 @@
     </section>
 
     <section id="teacherSection" class="dashboard-section" style="display:none;">
-        <h2 class="section-title">منبر الأساتذة - ديوان التدريسيين</h2>
+        <h2 class="section-title">منبر الأساتذة</h2>
         <div class="service-grid">
             <div class="glass-card"><p>📝 الواجبات</p></div>
             <div class="glass-card"><p>📊 النتائج</p></div>
@@ -130,15 +129,15 @@
     </section>
 
     <section id="designSection" class="dashboard-section" style="display:none;">
-        <h2 class="section-title">بصمة المبدعين - استوديو التصميم</h2>
+        <h2 class="section-title">بصمة المبدعين</h2>
         <div class="service-grid">
-            <div class="glass-card"><p>🎨 تصميم شعار</p></div>
-            <div class="glass-card"><p>📄 تصميم كارت</p></div>
-            <div class="glass-card"><p>🖼️ تصميم بوستر</p></div>
-            <div class="glass-card"><p>📱 تصميم تطبيق</p></div>
-            <div class="glass-card"><p>🌐 تصميم موقع</p></div>
+            <div class="glass-card"><p>🎨 شعار</p></div>
+            <div class="glass-card"><p>📄 كارت</p></div>
+            <div class="glass-card"><p>🖼️ بوستر</p></div>
+            <div class="glass-card"><p>📱 تطبيق</p></div>
+            <div class="glass-card"><p>🌐 موقع</p></div>
             <div class="glass-card"><p>📦 تغليف</p></div>
-            <div class="glass-card"><p>🎭 هوية بصرية</p></div>
+            <div class="glass-card"><p>🎭 هوية</p></div>
             <div class="glass-card"><p>📸 تصوير</p></div>
             <div class="glass-card"><p>🎬 مونتاج</p></div>
         </div>
@@ -146,11 +145,11 @@
     </section>
 
     <section id="librarySection" class="dashboard-section" style="display:none;">
-        <h2 class="section-title">كنوز المعرفة - المكتبة الرقمية</h2>
+        <h2 class="section-title">كنوز المعرفة</h2>
         <div class="service-grid">
             <div class="glass-card"><p>📖 كتب</p></div>
             <div class="glass-card"><p>📝 مقالات</p></div>
-            <div class="glass-card"><p>🎥 فيديوهات</p></div>
+            <div class="glass-card"><p>🎥 فيديو</p></div>
             <div class="glass-card"><p>🎧 بودكاست</p></div>
             <div class="glass-card"><p>📜 أبحاث</p></div>
             <div class="glass-card"><p>💡 شروحات</p></div>
@@ -162,22 +161,27 @@
     </section>
 
     <section id="aiSection" class="dashboard-section" style="display:none;">
-        <h2 class="section-title">العقل الرقمي - مساعد AI</h2>
-        <div class="glass-card" style="padding:30px;max-width:600px;margin:20px auto;text-align:center;">
-            <p style="color:#D4AF37;font-size:1.5rem;">🤖</p>
-            <p style="color:#fff;">اكتب سؤالك هنا...</p>
-            <textarea class="input-field" rows="4" style="resize:none;"></textarea>
+        <h2 class="section-title">العقل الرقمي - AI</h2>
+        <div class="service-grid">
+            <div class="glass-card" onclick="alert('PDF Summarizer Coming Soon!')"><p>📄 ملخص PDF</p></div>
+            <div class="glass-card" onclick="alert('Image to Doc Coming Soon!')"><p>🖼️ صورة لنص</p></div>
+            <div class="glass-card" onclick="alert('Design Request Coming Soon!')"><p>🎨 طلب تصميم</p></div>
+        </div>
+        <div class="glass-card" style="padding:20px;max-width:500px;margin:15px auto;text-align:center;">
+            <p style="color:#D4AF37;">🤖</p>
+            <p style="color:#fff;font-size:0.9rem;">اكتب سؤالك...</p>
+            <textarea class="input-field" rows="3" style="resize:none;"></textarea>
             <button class="btn-gold">إرسال</button>
         </div>
         <button class="btn-gold" onclick="Nav.go('dashboard')">العودة</button>
     </section>
 
     <section id="academySection" class="dashboard-section" style="display:none;">
-        <h2 class="section-title">أكاديمية تكنو - المعهد والدورات</h2>
+        <h2 class="section-title">أكاديمية تكنو</h2>
         <div class="glass-card" style="padding:40px;text-align:center;max-width:400px;margin:20px auto;">
             <p style="font-size:4rem;">🏫</p>
             <h3 style="color:#D4AF37;">قريباً</h3>
-            <p style="color:#fff;">نحن نعمل على إطلاق الأكاديمية</p>
+            <p style="color:#fff;">Coming Soon!</p>
         </div>
         <button class="btn-gold" onclick="Nav.go('dashboard')">العودة</button>
     </section>
@@ -194,22 +198,22 @@
     <section id="ordersSection" class="dashboard-section" style="display:none;">
         <h2 class="section-title">طلباتي</h2>
         <div class="service-grid">
-            <div class="glass-card"><p>📦 طلب 1</p></div>
-            <div class="glass-card"><p>📦 طلب 2</p></div>
-            <div class="glass-card"><p>📦 طلب 3</p></div>
-            <div class="glass-card"><p>📦 طلب 4</p></div>
-            <div class="glass-card"><p>📦 طلب 5</p></div>
-            <div class="glass-card"><p>📦 طلب 6</p></div>
-            <div class="glass-card"><p>📦 طلب 7</p></div>
-            <div class="glass-card"><p>📦 طلب 8</p></div>
-            <div class="glass-card"><p>📦 طلب 9</p></div>
+            <div class="glass-card"><p>📦 1</p></div>
+            <div class="glass-card"><p>📦 2</p></div>
+            <div class="glass-card"><p>📦 3</p></div>
+            <div class="glass-card"><p>📦 4</p></div>
+            <div class="glass-card"><p>📦 5</p></div>
+            <div class="glass-card"><p>📦 6</p></div>
+            <div class="glass-card"><p>📦 7</p></div>
+            <div class="glass-card"><p>📦 8</p></div>
+            <div class="glass-card"><p>📦 9</p></div>
         </div>
         <button class="btn-gold" onclick="Nav.go('dashboard')">العودة</button>
     </section>
 
     <section id="trackingSection" class="dashboard-section" style="display:none;">
         <h2 class="section-title">تتبع الطلب</h2>
-        <div class="glass-card" style="padding:30px;text-align:center;max-width:400px;margin:20px auto;">
+        <div class="glass-card" style="padding:20px;text-align:center;max-width:400px;margin:20px auto;">
             <input type="text" class="input-field" placeholder="رقم الطلب" style="max-width:300px;">
         </div>
         <button class="btn-gold" onclick="Nav.go('dashboard')">العودة</button>
@@ -228,8 +232,8 @@
             <div class="glass-card"><p>🗑️ البيانات</p></div>
             <div class="glass-card"><p>ℹ️ عن التطبيق</p></div>
         </div>
-        <div class="glass-card" style="margin:20px auto;max-width:500px;text-align:center;padding:20px;">
-            <p style="color:#D4AF37;margin-bottom:10px;">🌐 اختر اللغة:</p>
+        <div class="glass-card" style="margin:15px auto;max-width:500px;text-align:center;padding:15px;">
+            <p style="color:#D4AF37;margin-bottom:10px;">🌐 Language:</p>
             <button class="lang-btn" onclick="I18n.set('ar')">عربي</button>
             <button class="lang-btn" onclick="I18n.set('ku')">کوردی</button>
             <button class="lang-btn" onclick="I18n.set('en')">English</button>
@@ -239,9 +243,9 @@
 
     <section id="supportSection" class="dashboard-section" style="display:none;">
         <h2 class="section-title">الدعم الفني</h2>
-        <div class="glass-card" style="padding:30px;text-align:center;max-width:500px;margin:20px auto;">
+        <div class="glass-card" style="padding:20px;text-align:center;max-width:500px;margin:20px auto;">
             <p style="color:#fff;">كيف يمكننا مساعدتك؟</p>
-            <textarea class="input-field" rows="4" style="resize:none;"></textarea>
+            <textarea class="input-field" rows="3" style="resize:none;"></textarea>
             <button class="btn-gold">إرسال</button>
         </div>
         <button class="btn-gold" onclick="Nav.go('dashboard')">العودة</button>
@@ -249,47 +253,55 @@
 
     <section id="aboutSection" class="dashboard-section" style="display:none;">
         <h2 class="section-title">من نحن</h2>
-        <div class="glass-card" style="padding:30px;max-width:600px;margin:20px auto;text-align:center;">
+        <div class="glass-card" style="padding:20px;max-width:600px;margin:20px auto;text-align:center;">
             <p style="color:#D4AF37;font-size:3rem;">T</p>
             <h3>TECHOPRINT 2026</h3>
-            <p style="color:#fff;">منصتك الرقمية الشاملة للطباعة والتعليم والتصميم</p>
+            <p style="color:#fff;">منصتك الرقمية الشاملة</p>
         </div>
         <button class="btn-gold" onclick="Nav.go('dashboard')">العودة</button>
     </section>
 
     <nav class="bottom-nav">
-        <button class="nav-btn active" onclick="Nav.go('dashboard')"><i class="fas fa-home"></i><span>الرئيسية</span></button>
-        <button class="nav-btn" onclick="Nav.go('orders')"><i class="fas fa-box"></i><span>طلباتي</span></button>
-        <button class="nav-btn" onclick="Nav.go('wallet')"><i class="fas fa-coins"></i><span>رصيدي</span></button>
-        <button class="nav-btn" onclick="openModal('loginModal')"><i class="fas fa-user"></i><span>حسابي</span></button>
+        <button class="nav-btn active" onclick="Nav.go('dashboard')"><i class="fas fa-home"></i><span>Home</span></button>
+        <button class="nav-btn" onclick="Nav.go('orders')"><i class="fas fa-box"></i><span>Orders</span></button>
+        <button class="nav-btn" onclick="Nav.go('wallet')"><i class="fas fa-coins"></i><span>Balance</span></button>
+        <button class="nav-btn" onclick="openModal('loginModal')"><i class="fas fa-user"></i><span>Account</span></button>
     </nav>
 
     <div id="loginModal" class="modal" style="display:none;">
         <div class="modal-box">
             <button class="modal-close" onclick="closeModal('loginModal')"><i class="fas fa-times"></i></button>
-            <h2>تسجيل الدخول</h2>
+            <h2>Login</h2>
             <form onsubmit="return Auth.login(this.email.value, this.password.value)">
-                <input type="email" name="email" class="input-field" placeholder="البريد" required>
-                <input type="password" name="password" class="input-field" placeholder="كلمة المرور" required>
-                <button type="submit" class="btn-gold">دخول</button>
+                <input type="email" name="email" class="input-field" placeholder="Email" required>
+                <input type="password" name="password" class="input-field" placeholder="Password" required>
+                <button type="submit" class="btn-gold">Login</button>
             </form>
-            <p style="text-align:center;margin-top:15px;color:#D4AF37;cursor:pointer;" onclick="toggleRegister()">إنشاء حساب</p>
+            <p style="text-align:center;margin-top:15px;color:#D4AF37;cursor:pointer;" onclick="toggleRegister()">Create Account</p>
         </div>
     </div>
 
     <div id="registerModal" class="modal" style="display:none;">
         <div class="modal-box">
             <button class="modal-close" onclick="closeModal('registerModal')"><i class="fas fa-times"></i></button>
-            <h2>إنشاء حساب</h2>
+            <h2>Registration</h2>
             <form onsubmit="return handleRegister(this)">
-                <input type="text" name="fullName" class="input-field" placeholder="الاسم" required>
-                <input type="text" name="username" class="input-field" placeholder="المستخدم" required>
-                <input type="email" name="email" class="input-field" placeholder="البريد" required>
-                <input type="tel" name="phone" class="input-field" placeholder="الهاتف" required>
-                <input type="password" name="password" class="input-field" placeholder="كلمة المرور" required>
-                <button type="submit" class="btn-gold">تسجيل</button>
+                <input type="text" name="fullName" class="input-field" placeholder="الاسم (Arabic Name)" required>
+                <input type="text" name="username" class="input-field" placeholder="Username (English)" required>
+                <input type="password" name="password" class="input-field" placeholder="Password" required>
+                <input type="tel" name="phone" class="input-field" placeholder="Phone (Numerical)" required>
+                <input type="text" name="address" class="input-field" placeholder="Address" required>
+                <select name="governorate" class="input-field" required>
+                    <option value="">Governorate</option>
+                    <option value="baghdad">Baghdad</option>
+                    <option value="basra">Basra</option>
+                    <option value="erbil">Erbil</option>
+                    <option value="duhok">Duhok</option>
+                    <option value="sulaymaniyah">Sulaymaniyah</option>
+                </select>
+                <button type="submit" class="btn-gold">Register</button>
             </form>
-            <p style="text-align:center;margin-top:15px;color:#D4AF37;cursor:pointer;" onclick="toggleRegister()">لديك حساب؟</p>
+            <p style="text-align:center;margin-top:15px;color:#D4AF37;cursor:pointer;" onclick="toggleRegister()">Already have account?</p>
         </div>
     </div>
 

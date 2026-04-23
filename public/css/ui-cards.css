@@ -1,15 +1,15 @@
-/* TECHOPRINT 2026 - CARDS */
-/* Glassmorphism + Portal Cards */
-.glass-card { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(15px); border: 1px solid rgba(212, 175, 55, 0.3); border-radius: 15px; padding: 15px; color: #fff; }
-.service-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; padding: 10px; }
-.portals-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; padding: 10px; }
-.portal-card { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(15px); border: 1px solid rgba(212, 175, 55, 0.3); border-radius: 15px; padding: 15px; text-align: center; cursor: pointer; transition: transform 0.3s; position: relative; }
+/* TECHOPRINT 2026 - CARDS (COMPRESSED) */
+/* Glassmorphism + Portal Cards - Mobile Optimized */
+.glass-card { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(15px); border: 1px solid rgba(212, 175, 55, 0.3); border-radius: 12px; padding: 12px; color: #fff; }
+.service-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; padding: 8px; }
+.portals-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; padding: 5px 8px; }
+.portal-card { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(15px); border: 1px solid rgba(212, 175, 55, 0.3); border-radius: 12px; padding: 10px 5px; text-align: center; cursor: pointer; transition: transform 0.3s; position: relative; }
 .portal-card:hover { transform: scale(1.05); border-color: #D4AF37; }
 .portal-card.construction { opacity: 0.7; }
-.portal-icon { font-size: 2.5rem; margin-bottom: 5px; }
-.portal-card h3 { color: #D4AF37; font-size: 0.9rem; margin: 5px 0; }
-.portal-card p { color: #ccc; font-size: 0.75rem; margin: 0; }
-.construction-badge { position: absolute; top: 5px; right: 5px; background: #D4AF37; color: #000; font-size: 0.6rem; padding: 2px 6px; border-radius: 10px; font-weight: bold; }
-.utility-row { display: flex; justify-content: center; gap: 10px; padding: 10px; flex-wrap: wrap; }
-.utility-btn { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(212, 175, 55, 0.3); color: #D4AF37; padding: 8px 15px; border-radius: 20px; cursor: pointer; font-size: 0.8rem; }
+.portal-icon { font-size: 2rem; margin-bottom: 3px; }
+.portal-card h3 { color: #D4AF37; font-size: 0.8rem; margin: 3px 0; }
+.portal-card p { color: #ccc; font-size: 0.65rem; margin: 0; }
+.construction-badge { position: absolute; top: 3px; right: 3px; background: #D4AF37; color: #000; font-size: 0.55rem; padding: 1px 4px; border-radius: 8px; font-weight: bold; }
+.utility-row { display: flex; justify-content: center; gap: 6px; padding: 5px 8px; flex-wrap: wrap; }
+.utility-btn { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(212, 175, 55, 0.3); color: #D4AF37; padding: 6px 10px; border-radius: 15px; cursor: pointer; font-size: 0.7rem; }
 .utility-btn:hover { background: rgba(212, 175, 55, 0.2); }

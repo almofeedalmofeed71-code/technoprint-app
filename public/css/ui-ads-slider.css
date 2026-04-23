@@ -1,11 +1,13 @@
-/* TECHOPRINT 2026 - ADS SLIDER */
-/* 40vh Height, Single Large Ad Per Slide */
-.slider-section { padding: 10px; }
+/* TECHOPRINT 2026 - ADS SLIDER (COMPRESSED) */
+/* 30vh Height for Mobile - Single Large Ad Per Slide */
+.slider-section { padding: 5px; }
+.slider-frame { position: relative; background: #000000; border: 2px solid #D4AF37; border-radius: 10px; overflow: hidden; height: 30vh; }
+.slider-frame::before { content: ''; position: absolute; inset: -2px; border-radius: 10px; background: linear-gradient(45deg, #D4AF37, #F4E4BA, #D4AF37, #F4E4BA); animation: spin 4s linear infinite; z-index: 1; pointer-events: none; }
 .slider-container { width: 100%; height: 100%; background: #000000; overflow: hidden; }
 .slide { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; background: #000000; height: 100%; }
 .slide-block { background: #000000; overflow: hidden; height: 100%; }
 .slide-block[style*="span 3"] { grid-column: span 3; }
 .slide-block img { width: 100%; height: 100%; object-fit: cover; display: block; }
-.slide-nav { display: flex; justify-content: center; gap: 10px; margin-top: 10px; }
-.slider-dot { width: 12px; height: 12px; border-radius: 50%; background: rgba(212, 175, 55, 0.3); border: 2px solid #D4AF37; cursor: pointer; }
+.slide-nav { display: flex; justify-content: center; gap: 8px; margin-top: 5px; }
+.slider-dot { width: 10px; height: 10px; border-radius: 50%; background: rgba(212, 175, 55, 0.3); border: 2px solid #D4AF37; cursor: pointer; }
 .slider-dot.active { background: #D4AF37; }
