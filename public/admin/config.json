@@ -1,0 +1,47 @@
+{
+  "version": "1.0.0",
+  "lastUpdated": "2024-01-24T12:00:00Z",
+  "theme": {
+    "mainGold": "#D4AF37",
+    "mainBlack": "#0A0A0A",
+    "accentColor": "#3498DB",
+    "successColor": "#2ECC71",
+    "warningColor": "#F39C12",
+    "errorColor": "#E74C3C"
+  },
+  "texts": {
+    "appTitle": "TECHNO-PRINT",
+    "appDescription": "منصة الطباعة الذكية",
+    "welcomeText": "مرحباً بك في تقنية",
+    "studentPortalName": "بوابة الطالب",
+    "teacherPortalName": "بوابة المعلم",
+    "academyPortalName": " تكنو أكاديمي",
+    "storePortalName": "المتجر",
+    "supportPortalName": "الدعم الفني",
+    "footerText": "© 2024 TECHNO-PRINT"
+  },
+  "portalIcons": {
+    "student": "👨‍🎓",
+    "teacher": "👨‍🏫",
+    "academy": "🎓",
+    "store": "🏪",
+    "support": "💻",
+    "settings": "⚙️"
+  },
+  "portalStatus": {
+    "student": true,
+    "teacher": true,
+    "academy": true,
+    "store": false,
+    "support": true,
+    "settings": true
+  },
+  "ads": [],
+  "notifications": [],
+  "messages": [],
+  "adminSettings": {
+    "demoMode": true,
+    "allowUserRegistration": true,
+    "maintenanceMode": false
+  }
+}
