@@ -1,4 +1,4 @@
-// ===== TECHNO-PRINT AUTH LOGIC - USERNAME AUTH & SESSION PERSISTENCE =====
+// ===== TECHNO-PRINT AUTH LOGIC - ROLES & REWARDS VERSION =====
 // Session: localStorage → technoprintSession
 
 // Session Keys
@@ -9,6 +9,10 @@ const USER_KEY = 'technoprintUser';
 const SUPABASE_URL = 'https://avabozirwdefwtabywqo.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF2YWJvemlyd2RlZnd0YWJ5d3FvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY4NjM1NDQsImV4cCI6MjA5MjQzOTU0NH0.boDU0pXR1MGYiJXF1Jos-w0uehKCCZHsKgxHP7nbQVY';
 
+// Welcome gift amount
+const WELCOME_PAGES = 1000;
+const WELCOME_BALANCE = 0; // Balance is 0, only pages are gifted
+
 // Check if user is already logged in (Session Persistence)
 function checkExistingSession() {
     const session = localStorage.getItem(SESSION_KEY);
@@ -16,7 +20,7 @@ function checkExistingSession() {
         try {
             const userData = JSON.parse(session);
             if (userData && userData.username) {
-                // User is logged in - redirect to home
+                // User is logged in
                 return true;
             }
         } catch (e) {
@@ -67,8 +71,7 @@ async function login(username, password) {
 
         const user = users[0];
 
-        // For demo: check password (in production, use Supabase Auth)
-        // Simple password check - in real app, use Supabase Auth with email
+        // Simple password check (in production, use proper auth)
         if (password.length >= 4) {
             // Create session
             const sessionData = {
@@ -77,6 +80,7 @@ async function login(username, password) {
                 fullName: user.full_name,
                 phone: user.phone,
                 governorate: user.governorate,
+                role: user.role || 'student',
                 balance: user.balance_iqd || 0,
                 pages: user.pages_count || 0,
                 loginTime: new Date().toISOString()
@@ -86,8 +90,12 @@ async function login(username, password) {
             localStorage.setItem(SESSION_KEY, JSON.stringify(sessionData));
             localStorage.setItem(USER_KEY, JSON.stringify(sessionData));
 
-            // Success - redirect to home
-            window.location.href = 'index.html?loggedin=true';
+            // Update wallet UI
+            updateWalletUI(sessionData.balance, sessionData.pages);
+            
+            // Success - stay on home page
+            closeModal('loginModal');
+            showToast('مرحباً بك ' + (sessionData.fullName || sessionData.username));
             return true;
         } else {
             showAuthError('كلمة المرور غير صحيحة');
@@ -101,11 +109,11 @@ async function login(username, password) {
     }
 }
 
-// REGISTER with Username + Password
+// REGISTER with Role Selection + Welcome Gift
 async function register(formData) {
-    const { fullName, username, password, phone, address, governorate } = formData;
+    const { fullName, username, password, phone, address, governorate, role } = formData;
 
-    if (!fullName || !username || !password || !phone) {
+    if (!fullName || !username || !password || !phone || !role) {
         showAuthError('الرجاء ملء جميع الحقول المطلوبة');
         return false;
     }
@@ -133,7 +141,7 @@ async function register(formData) {
             return false;
         }
 
-        // Create new user profile
+        // Create new user profile with WELCOME GIFT
         const userId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
 
         const profileData = {
@@ -143,8 +151,9 @@ async function register(formData) {
             phone: phone,
             address: address || '',
             governorate: governorate || '',
-            balance_iqd: 0,
-            pages_count: 100, // Welcome bonus
+            role: role, // Student, Teacher, Designer, Library Owner
+            balance_iqd: WELCOME_BALANCE,
+            pages_count: WELCOME_PAGES, // WELCOME GIFT!
             created_at: new Date().toISOString()
         };
 
@@ -170,19 +179,24 @@ async function register(formData) {
                 fullName: fullName,
                 phone: phone,
                 governorate: governorate || '',
-                balance: 0,
-                pages: 100,
+                role: role,
+                balance: WELCOME_BALANCE,
+                pages: WELCOME_PAGES,
                 loginTime: new Date().toISOString()
             };
 
             localStorage.setItem(SESSION_KEY, JSON.stringify(sessionData));
             localStorage.setItem(USER_KEY, JSON.stringify(sessionData));
 
-            showAuthSuccess('✅ تم إنشاء الحساب بنجاح! مرحباً بك ' + fullName);
-            setTimeout(() => {
-                window.location.href = 'index.html?loggedin=true';
-            }, 1500);
-
+            // Close registration modal
+            closeModal('registerModal');
+            
+            // Show CINEMATIC WELCOME POPUP
+            showWelcomeGift(sessionData.fullName, sessionData.pages);
+            
+            // Update wallet UI
+            updateWalletUI(WELCOME_BALANCE, WELCOME_PAGES);
+            
             return true;
         } else {
             showAuthError('فشل في إنشاء الحساب');
@@ -205,7 +219,7 @@ function logout() {
 
 // Show error message
 function showAuthError(message) {
-    const errorEl = document.getElementById('authError') || document.getElementById('loginError') || document.getElementById('registerError');
+    const errorEl = document.getElementById('authError') || document.getElementById('registerError');
     if (errorEl) {
         errorEl.textContent = message;
         errorEl.style.display = 'block';
@@ -217,14 +231,203 @@ function showAuthError(message) {
     }
 }
 
-// Show success message
-function showAuthSuccess(message) {
-    const successEl = document.getElementById('authSuccess');
-    if (successEl) {
-        successEl.textContent = message;
-        successEl.style.display = 'block';
-    } else {
-        alert(message);
+// Update Wallet UI with real database values
+function updateWalletUI(balance, pages) {
+    const balanceEl = document.getElementById('walletBalanceDisplay') || document.querySelector('.wallet-balance');
+    const pagesEl = document.getElementById('walletPagesDisplay') || document.querySelector('.wallet-pages');
+    const walletModalBalance = document.getElementById('walletModalBalance');
+    const walletModalPages = document.getElementById('walletModalPages');
+    
+    if (balanceEl) balanceEl.textContent = (balance || 0).toLocaleString() + ' IQD';
+    if (pagesEl) pagesEl.textContent = (pages || 0).toLocaleString() + ' صفحة';
+    if (walletModalBalance) walletModalBalance.textContent = (balance || 0).toLocaleString() + ' IQD';
+    if (walletModalPages) walletModalPages.textContent = (pages || 0).toLocaleString() + ' صفحة';
+}
+
+// Sync wallet from database
+async function syncWalletFromDatabase() {
+    const user = getCurrentUser();
+    if (!user) return;
+    
+    try {
+        const response = await fetch(
+            `${SUPABASE_URL}/rest/v1/profiles?id=eq.${user.id}&select=balance_iqd,pages_count`,
+            {
+                headers: {
+                    'apikey': SUPABASE_KEY,
+                    'Authorization': `Bearer ${SUPABASE_KEY}`
+                }
+            }
+        );
+        
+        const data = await response.json();
+        if (Array.isArray(data) && data.length > 0) {
+            const dbUser = data[0];
+            user.balance = dbUser.balance_iqd || 0;
+            user.pages = dbUser.pages_count || 0;
+            
+            localStorage.setItem(SESSION_KEY, JSON.stringify(user));
+            updateWalletUI(user.balance, user.pages);
+        }
+    } catch (e) {
+        console.error('Wallet sync error:', e);
+    }
+}
+
+// CINEMATIC WELCOME POPUP
+function showWelcomeGift(userName, pages) {
+    // Create overlay
+    const overlay = document.createElement('div');
+    overlay.id = 'welcomeOverlay';
+    overlay.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0,0,0,0.95);
+        z-index: 99999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        animation: fadeIn 0.5s ease;
+    `;
+    
+    overlay.innerHTML = `
+        <style>
+            @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+            @keyframes scaleIn { from { transform: scale(0.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+            @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+            @keyframes shimmer {
+                0% { background-position: -200% center; }
+                100% { background-position: 200% center; }
+            }
+            @keyframes confetti {
+                0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+                100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+            }
+            .welcome-content {
+                text-align: center;
+                animation: scaleIn 0.8s ease 0.3s both;
+            }
+            .welcome-logo {
+                font-size: 80px;
+                color: #D4AF37;
+                margin-bottom: 20px;
+                animation: pulse 2s infinite;
+            }
+            .welcome-title {
+                font-size: 32px;
+                color: #D4AF37;
+                margin-bottom: 10px;
+                text-shadow: 0 0 20px rgba(212, 175, 55, 0.5);
+            }
+            .welcome-name {
+                font-size: 24px;
+                color: #fff;
+                margin-bottom: 30px;
+            }
+            .welcome-gift-box {
+                background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+                border: 2px solid #D4AF37;
+                border-radius: 20px;
+                padding: 30px 50px;
+                margin: 20px auto;
+                max-width: 400px;
+                animation: pulse 1.5s infinite;
+            }
+            .welcome-gift-icon {
+                font-size: 60px;
+                margin-bottom: 15px;
+            }
+            .welcome-gift-text {
+                font-size: 18px;
+                color: #ccc;
+                margin-bottom: 15px;
+            }
+            .welcome-gift-amount {
+                font-size: 48px;
+                color: #D4AF37;
+                font-weight: bold;
+                background: linear-gradient(90deg, #D4AF37, #F4D03F, #D4AF37);
+                background-size: 200% auto;
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                animation: shimmer 3s linear infinite;
+            }
+            .welcome-gift-label {
+                font-size: 14px;
+                color: #888;
+                margin-top: 5px;
+            }
+            .welcome-btn {
+                background: linear-gradient(135deg, #D4AF37 0%, #B8860B 100%);
+                color: #000;
+                border: none;
+                padding: 15px 50px;
+                font-size: 18px;
+                border-radius: 30px;
+                cursor: pointer;
+                margin-top: 30px;
+                font-weight: bold;
+                transition: all 0.3s;
+            }
+            .welcome-btn:hover {
+                transform: scale(1.05);
+                box-shadow: 0 0 30px rgba(212, 175, 55, 0.5);
+            }
+            .confetti {
+                position: absolute;
+                width: 10px;
+                height: 10px;
+                background: #D4AF37;
+                animation: confetti 3s ease-out forwards;
+            }
+        </style>
+        <div class="welcome-content">
+            <div class="welcome-logo">🎉</div>
+            <div class="welcome-title">أهلاً بك في تكنوبرنت!</div>
+            <div class="welcome-name">${userName || 'صديقي'}</div>
+            <div class="welcome-gift-box">
+                <div class="welcome-gift-icon">🎁</div>
+                <div class="welcome-gift-text">لقد حصلت على هدية ترحيبية</div>
+                <div class="welcome-gift-amount">${pages.toLocaleString()}</div>
+                <div class="welcome-gift-label">صفحة طباعة مجانية</div>
+            </div>
+            <button class="welcome-btn" onclick="closeWelcomePopup()">🚀 ابدأ الآن</button>
+        </div>
+        ${createConfetti()}
+    `;
+    
+    document.body.appendChild(overlay);
+    
+    // Auto-close after 10 seconds if user doesn't click
+    setTimeout(() => {
+        const existingOverlay = document.getElementById('welcomeOverlay');
+        if (existingOverlay) {
+            closeWelcomePopup();
+        }
+    }, 10000);
+}
+
+// Create confetti effect
+function createConfetti() {
+    let confettiHTML = '';
+    const colors = ['#D4AF37', '#F4D03F', '#fff', '#E63946', '#2ECC71'];
+    for (let i = 0; i < 50; i++) {
+        const color = colors[Math.floor(Math.random() * colors.length)];
+        const left = Math.random() * 100;
+        const delay = Math.random() * 2;
+        confettiHTML += `<div class="confetti" style="left:${left}%;top:-20px;background:${color};animation-delay:${delay}s;"></div>`;
+    }
+    return confettiHTML;
+}
+
+// Close welcome popup
+function closeWelcomePopup() {
+    const overlay = document.getElementById('welcomeOverlay');
+    if (overlay) {
+        overlay.remove();
     }
 }
 
@@ -233,18 +436,20 @@ function updateUserUI() {
     const user = getCurrentUser();
     if (user) {
         const userNameEl = document.getElementById('userName');
-        const userBalanceEl = document.getElementById('userBalance');
-        const userPagesEl = document.getElementById('userPages');
         const loginBtn = document.querySelector('.login-btn');
         const registerBtn = document.querySelector('.register-btn');
 
         if (userNameEl) userNameEl.textContent = user.fullName || user.username;
-        if (userBalanceEl) userBalanceEl.textContent = (user.balance || 0).toLocaleString() + ' IQD';
-        if (userPagesEl) userPagesEl.textContent = (user.pages || 0) + ' صفحة';
 
-        // Hide login/register buttons, show user info
+        // Hide login/register buttons
         if (loginBtn) loginBtn.style.display = 'none';
         if (registerBtn) registerBtn.style.display = 'none';
+        
+        // Update wallet
+        updateWalletUI(user.balance, user.pages);
+        
+        // Sync from database
+        syncWalletFromDatabase();
     }
 }
 
@@ -256,6 +461,9 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log('Welcome back, ' + (user?.fullName || user?.username));
         updateUserUI();
     }
+    
+    // Poll wallet every 30 seconds
+    setInterval(syncWalletFromDatabase, 30000);
 });
 
 // Export functions
@@ -266,5 +474,9 @@ window.Auth = {
     getCurrentUser,
     checkExistingSession,
     showAuthError,
-    showAuthSuccess
+    updateUserUI,
+    updateWalletUI,
+    syncWalletFromDatabase,
+    closeWelcomePopup,
+    WELCOME_PAGES
 };
