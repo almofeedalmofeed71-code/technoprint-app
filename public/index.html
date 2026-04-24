@@ -290,50 +290,60 @@
         </div>
     </div>
 
+    <!-- LOGIN MODAL - USERNAME AUTH ONLY -->
     <div id="loginModal" class="modal" style="display:none;">
         <div class="modal-box">
             <button class="modal-close" onclick="closeModal('loginModal')"><i class="fas fa-times"></i></button>
-            <h2>تسجيل الدخول</h2>
-            <form onsubmit="return Auth.login(this.email.value, this.password.value)">
-                <input type="email" name="email" class="input-field" placeholder="البريد الإلكتروني" required>
-                <input type="password" name="password" class="input-field" placeholder="كلمة المرور" required>
-                <button type="submit" class="btn-gold">دخول</button>
+            <h2>🔐 تسجيل الدخول</h2>
+            <div id="authError" style="display:none;color:#E63946;padding:10px;background:rgba(230,57,70,0.1);border-radius:8px;margin-bottom:15px;text-align:center;"></div>
+            <form id="loginForm">
+                <div class="input-group" style="margin-bottom:15px;">
+                    <label style="color:#D4AF37;margin-bottom:5px;display:block;">👤 اسم المستخدم</label>
+                    <input type="text" id="loginUsername" class="input-field" placeholder="أدخل اسم المستخدم" required style="width:100%;padding:12px;border-radius:8px;border:1px solid #333;background:#1a1a2e;color:#fff;">
+                </div>
+                <div class="input-group" style="margin-bottom:15px;">
+                    <label style="color:#D4AF37;margin-bottom:5px;display:block;">🔑 كلمة المرور</label>
+                    <input type="password" id="loginPassword" class="input-field" placeholder="أدخل كلمة المرور" required style="width:100%;padding:12px;border-radius:8px;border:1px solid #333;background:#1a1a2e;color:#fff;">
+                </div>
+                <button type="submit" class="btn-gold" style="width:100%;padding:15px;font-size:1.1rem;">دخول</button>
             </form>
-            <p style="text-align:center;margin-top:15px;color:#D4AF37;cursor:pointer;" onclick="toggleRegister()">إنشاء حساب جديد</p>
+            <p style="text-align:center;margin-top:15px;color:#D4AF37;cursor:pointer;" onclick="closeModal('loginModal');openModal('registerModal')">إنشاء حساب جديد ➡️</p>
         </div>
     </div>
 
+    <!-- REGISTER MODAL - USERNAME AUTH ONLY -->
     <div id="registerModal" class="modal" style="display:none;">
         <div class="modal-box" style="width:90%;max-width:500px;">
             <button class="modal-close" onclick="closeModal('registerModal')"><i class="fas fa-times"></i></button>
-            <h2>إنشاء حساب جديد</h2>
-            <form onsubmit="return handleRegister(this)">
-                <div class="input-group">
-                    <label>الاسم (عربي)</label>
-                    <input type="text" name="fullName" class="input-field" placeholder="محمد أحمد" required>
+            <h2>📝 إنشاء حساب جديد</h2>
+            <div id="registerError" style="display:none;color:#E63946;padding:10px;background:rgba(230,57,70,0.1);border-radius:8px;margin-bottom:15px;text-align:center;"></div>
+            <form id="registerForm">
+                <div class="input-group" style="margin-bottom:12px;">
+                    <label style="color:#D4AF37;">الاسم (عربي)</label>
+                    <input type="text" name="fullName" class="input-field" placeholder="محمد أحمد" required style="width:100%;padding:12px;border-radius:8px;border:1px solid #333;background:#1a1a2e;color:#fff;">
                 </div>
-                <div class="input-group">
-                    <label>اسم المستخدم</label>
-                    <input type="text" name="username" class="input-field" placeholder="Username" required>
+                <div class="input-group" style="margin-bottom:12px;">
+                    <label style="color:#D4AF37;">اسم المستخدم</label>
+                    <input type="text" name="username" class="input-field" placeholder="اختر اسم مستخدم فريد" required style="width:100%;padding:12px;border-radius:8px;border:1px solid #333;background:#1a1a2e;color:#fff;">
                 </div>
-                <div class="input-group">
-                    <label>كلمة المرور</label>
-                    <input type="password" name="password" class="input-field" placeholder="••••••••" required>
+                <div class="input-group" style="margin-bottom:12px;">
+                    <label style="color:#D4AF37;">كلمة المرور</label>
+                    <input type="password" name="password" class="input-field" placeholder="6 أحرف على الأقل" required style="width:100%;padding:12px;border-radius:8px;border:1px solid #333;background:#1a1a2e;color:#fff;">
                 </div>
-                <div class="input-group">
-                    <label>رقم الهاتف 🇮🇶</label>
+                <div class="input-group" style="margin-bottom:12px;">
+                    <label style="color:#D4AF37;">رقم الهاتف 🇮🇶</label>
                     <div class="phone-input">
                         <span class="phone-code">+964</span>
-                        <input type="tel" name="phone" class="input-field" placeholder="771 123 4567" required>
+                        <input type="tel" name="phone" class="input-field" placeholder="771 123 4567" required style="flex:1;padding:12px;border-radius:8px;border:1px solid #333;background:#1a1a2e;color:#fff;">
                     </div>
                 </div>
-                <div class="input-group">
-                    <label>العنوان</label>
-                    <input type="text" name="address" class="input-field" placeholder="المنطقة/الشارع" required>
+                <div class="input-group" style="margin-bottom:12px;">
+                    <label style="color:#D4AF37;">العنوان</label>
+                    <input type="text" name="address" class="input-field" placeholder="المنطقة/الشارع" required style="width:100%;padding:12px;border-radius:8px;border:1px solid #333;background:#1a1a2e;color:#fff;">
                 </div>
-                <div class="input-group">
-                    <label>المحافظة</label>
-                    <select name="governorate" class="input-field" required>
+                <div class="input-group" style="margin-bottom:15px;">
+                    <label style="color:#D4AF37;">المحافظة</label>
+                    <select name="governorate" class="input-field" required style="width:100%;padding:12px;border-radius:8px;border:1px solid #333;background:#1a1a2e;color:#fff;">
                         <option value="">اختر المحافظة</option>
                         <option value="baghdad">بغداد</option>
                         <option value="basra">البصرة</option>
@@ -354,17 +364,62 @@
                         <option value="karbala">كربلاء</option>
                     </select>
                 </div>
-                <button type="submit" class="btn-gold" style="width:100%;margin-top:10px;">تسجيل</button>
+                <button type="submit" class="btn-gold" style="width:100%;padding:15px;font-size:1.1rem;">تسجيل</button>
             </form>
-            <p style="text-align:center;margin-top:15px;color:#D4AF37;cursor:pointer;" onclick="toggleRegister()">لديك حساب؟</p>
+            <p style="text-align:center;margin-top:15px;color:#D4AF37;cursor:pointer;" onclick="closeModal('registerModal');openModal('loginModal')">⬅️ لديك حساب؟ تسجيل الدخول</p>
         </div>
     </div>
 
+    <script src="admin/register-sync.js?v=2026"></script>
+    <script src="js/auth-logic.js?v=2026"></script>
     <script src="js/eng-main.js?v=2026"></script>
     <script src="js/eng-navigation.js?v=2026"></script>
     <script src="js/eng-slider.js?v=2026"></script>
-    <script src="js/eng-auth.js?v=2026"></script>
     <script>
+        // Session Persistence - Check if user is already logged in
+        window.addEventListener('DOMContentLoaded', function() {
+            // Check session on load
+            if (window.Auth && window.Auth.checkExistingSession && window.Auth.checkExistingSession()) {
+                // User is logged in - just update UI
+                console.log('Session found - user is already logged in');
+                if (window.Auth.updateUserUI) {
+                    window.Auth.updateUserUI();
+                }
+            }
+        });
+        
+        // Login form handler
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const username = document.getElementById('loginUsername').value.trim();
+            const password = document.getElementById('loginPassword').value;
+            
+            if (window.Auth && window.Auth.login) {
+                window.Auth.login(username, password);
+            } else {
+                alert('System loading... Please try again');
+            }
+        });
+        
+        // Register form handler
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const formData = {
+                fullName: e.target.fullName.value,
+                username: e.target.username.value,
+                password: e.target.password.value,
+                phone: e.target.phone.value,
+                address: e.target.address.value,
+                governorate: e.target.governorate.value
+            };
+            
+            if (window.Auth && window.Auth.register) {
+                window.Auth.register(formData);
+            } else {
+                alert('System loading... Please try again');
+            }
+        });
+        
         window.setLang = function(lang) {
             document.documentElement.lang = lang;
             document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
