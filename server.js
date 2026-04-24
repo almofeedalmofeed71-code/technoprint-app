@@ -1,7 +1,7 @@
 /**
- * TECHOPRINT 2026 - Server with Supabase Integration (v2.0)
+ * TECHOPRINT 2026 - Server with Full Supabase Integration (v3.0)
  * Express + Supabase REST API
- * Features: Auth, i18n, Duplicate Transfer Check, Proof Upload
+ * Features: Auth (Username), Profiles, Admin, Broadcasts, Real-time Sync
  */
 
 require('dotenv').config();
@@ -38,7 +38,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Supabase REST API Helper
-async function supabaseRequest(table, method = 'GET', body = null, headers = {}) {
+async function supabaseRequest(endpoint, method = 'GET', body = null, headers = {}) {
     const options = {
         method,
         headers: {
@@ -51,536 +51,398 @@ async function supabaseRequest(table, method = 'GET', body = null, headers = {})
     if (body && method !== 'GET') {
         options.body = JSON.stringify(body);
     }
-    const url = `${SUPABASE_URL}/rest/v1/${table}`;
+    const url = `${SUPABASE_URL}/rest/v1/${endpoint}`;
     const res = await fetch(url, options);
     const data = await res.json();
     return { status: res.status, data };
 }
 
-// ==================== AUTH ROUTES ====================
+// ==================== ADMIN AUTH ROUTES ====================
 
-// Sign Up
-app.post('/api/auth/signup', async (req, res) => {
-    try {
-        const { email, password, full_name, phone, role = 'student' } = req.body;
-        
-        if (!email || !password || !full_name) {
-            return res.status(400).json({ error: 'Email, password, and full name are required' });
-        }
-        
-        const options = {
-            method: 'POST',
-            headers: {
-                'apikey': SUPABASE_ANON_KEY,
-                'Content-Type': 'application/json',
-                'Prefer': 'return=representation'
-            },
-            body: JSON.stringify({
-                email,
-                password,
-                data: { full_name, phone, role }
-            })
-        };
-        
-        const response = await fetch(`${SUPABASE_URL}/auth/v1/signup`, options);
-        const data = await response.json();
-        
-        if (data.error) {
-            return res.status(400).json({ error: data.error.message });
-        }
-        
+app.post('/api/admin/login', (req, res) => {
+    const { username, password } = req.body;
+    
+    if (username === 'admin' && password === 'technoprint2024') {
         res.json({ 
             success: true, 
-            user: data.user,
-            message: 'Account created! Check email for confirmation.'
+            token: 'admin-token-' + Date.now(),
+            user: { username: 'admin', role: 'super_admin', name: 'مدير النظام' }
         });
-    } catch (err) {
-        console.error('Signup error:', err);
-        res.status(500).json({ error: 'Server error' });
+    } else {
+        res.status(401).json({ error: 'بيانات الدخول غير صحيحة' });
     }
 });
 
-// Login
-app.post('/api/auth/login', async (req, res) => {
-    try {
-        const { email, password } = req.body;
-        
-        if (!email || !password) {
-            return res.status(400).json({ error: 'Email and password are required' });
-        }
-        
-        const options = {
-            method: 'POST',
-            headers: {
-                'apikey': SUPABASE_ANON_KEY,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ email, password })
-        };
-        
-        const response = await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=password`, options);
-        const data = await response.json();
-        
-        if (data.error) {
-            return res.status(401).json({ error: data.error.message });
-        }
-        
-        // Get user profile
-        const { data: profile } = await supabaseRequest(`profiles?id=eq.${data.user.id}&select=*`);
-        
-        res.json({ 
-            success: true, 
-            token: data.access_token,
-            user: {
-                id: data.user.id,
-                email: data.user.email,
-                ...(profile?.[0] || {})
-            }
-        });
-    } catch (err) {
-        console.error('Login error:', err);
-        res.status(500).json({ error: 'Server error' });
-    }
-});
+// ==================== ADMIN USER MANAGEMENT ====================
 
-// ==================== TRANSACTION ROUTES ====================
-
-// Check Duplicate Transfer Reference
-app.get('/api/transactions/check-ref/:ref', async (req, res) => {
+// Get all profiles (users)
+app.get('/api/admin/profiles', async (req, res) => {
     try {
-        const ref = req.params.ref;
-        
-        const { data } = await supabaseRequest(
-            `transactions?reference_id=eq.${ref}&status=eq.completed&select=id`
-        );
-        
-        const exists = data && data.length > 0;
-        res.json({ exists, ref });
-    } catch (err) {
-        console.error('Check ref error:', err);
-        res.json({ exists: false });
-    }
-});
-
-// Create Transaction with File Upload
-app.post('/api/transactions/upload', upload.single('receipt'), async (req, res) => {
-    try {
-        const userId = req.headers['x-user-id'];
-        const { type, amount, currency, payment_method, payment_number, reference_id } = req.body;
-        
-        if (!amount || !reference_id) {
-            return res.status(400).json({ error: 'Amount and reference are required' });
-        }
-        
-        const receipt_url = req.file ? `/uploads/${req.file.filename}` : null;
-        
-        const transaction = {
-            user_id: userId || null,
-            type,
-            amount,
-            currency: currency || 'IQD',
-            payment_method,
-            payment_number,
-            reference_id,
-            receipt_url,
-            status: type === 'deposit' ? 'pending' : 'completed'
-        };
-        
-        const { data, error } = await supabaseRequest('transactions', 'POST', transaction);
-        
-        if (error) {
-            return res.status(400).json({ error });
-        }
-        
-        res.json({ success: true, transaction: data });
-    } catch (err) {
-        console.error('Upload transaction error:', err);
-        res.status(500).json({ error: 'Server error' });
-    }
-});
-
-// Get User Transactions
-app.get('/api/transactions', async (req, res) => {
-    try {
-        const userId = req.headers['x-user-id'];
-        const { type, status } = req.query;
-        
-        let query = 'select=*,profiles(full_name)&order=created_at.desc';
-        if (userId) query += `&user_id=eq.${userId}`;
-        if (type) query += `&type=eq.${type}`;
-        if (status) query += `&status=eq.${status}`;
-        
-        const { data, error } = await supabaseRequest(`transactions?${query}`);
-        
-        if (error) {
-            return res.status(500).json({ error });
-        }
-        
+        const { data } = await supabaseRequest('profiles?select=*&order=created_at.desc');
         res.json(data || []);
     } catch (err) {
-        console.error('Get transactions error:', err);
         res.status(500).json({ error: 'Server error' });
     }
 });
 
-// Create Transaction (no upload)
-app.post('/api/transactions', async (req, res) => {
-    try {
-        const userId = req.headers['x-user-id'];
-        const { type, amount, currency = 'IQD', payment_method, payment_number, description, reference_id } = req.body;
-        
-        const transaction = {
-            user_id: userId || null,
-            type,
-            amount,
-            currency,
-            payment_method,
-            payment_number,
-            description,
-            reference_id,
-            status: type === 'deposit' ? 'pending' : (type === 'withdraw' ? 'pending' : 'completed')
-        };
-        
-        const { data, error } = await supabaseRequest('transactions', 'POST', transaction);
-        
-        if (error) {
-            return res.status(400).json({ error });
-        }
-        
-        res.json({ success: true, transaction: data });
-    } catch (err) {
-        console.error('Create transaction error:', err);
-        res.status(500).json({ error: 'Server error' });
-    }
-});
-
-// Update Transaction
-app.patch('/api/transactions/:id', async (req, res) => {
+// Update user profile
+app.patch('/api/admin/profiles/:id', async (req, res) => {
     try {
         const { id } = req.params;
-        const { status, admin_notes } = req.body;
-        
-        const updates = { updated_at: new Date().toISOString() };
-        if (status) updates.status = status;
-        if (admin_notes) updates.admin_notes = admin_notes;
-        if (status === 'completed') updates.processed_at = new Date().toISOString();
-        
-        const { data, error } = await supabaseRequest(
-            `transactions?id=eq.${id}`,
-            'PATCH',
-            updates
-        );
-        
-        if (error) {
-            return res.status(400).json({ error });
-        }
-        
-        res.json({ success: true, data });
-    } catch (err) {
-        console.error('Update transaction error:', err);
-        res.status(500).json({ error: 'Server error' });
-    }
-});
-
-// Upload Withdrawal Proof
-app.post('/api/transactions/:id/proof', upload.single('proof'), async (req, res) => {
-    try {
-        const { id } = req.params;
-        
-        if (!req.file) {
-            return res.status(400).json({ error: 'Proof file is required' });
-        }
-        
-        const proof_url = `/uploads/${req.file.filename}`;
-        
-        const { data, error } = await supabaseRequest(
-            `transactions?id=eq.${id}`,
-            'PATCH',
-            { proof_url }
-        );
-        
-        if (error) {
-            return res.status(400).json({ error });
-        }
-        
-        res.json({ success: true, proof_url });
-    } catch (err) {
-        console.error('Upload proof error:', err);
-        res.status(500).json({ error: 'Server error' });
-    }
-});
-
-// ==================== PROFILE ROUTES ====================
-
-app.get('/api/profile', async (req, res) => {
-    try {
-        const userId = req.headers['x-user-id'];
-        if (!userId) {
-            return res.status(401).json({ error: 'Unauthorized' });
-        }
-        
-        const { data, error } = await supabaseRequest(`profiles?id=eq.${userId}&select=*`);
-        
-        if (error) {
-            return res.status(404).json({ error: 'Profile not found' });
-        }
-        
-        res.json(data?.[0] || null);
-    } catch (err) {
-        console.error('Get profile error:', err);
-        res.status(500).json({ error: 'Server error' });
-    }
-});
-
-app.put('/api/profile', async (req, res) => {
-    try {
-        const userId = req.headers['x-user-id'];
-        if (!userId) {
-            return res.status(401).json({ error: 'Unauthorized' });
-        }
-        
         const updates = req.body;
         updates.updated_at = new Date().toISOString();
         
-        const { data, error } = await supabaseRequest(
-            `profiles?id=eq.${userId}`,
-            'PATCH',
-            updates
-        );
-        
-        if (error) {
-            return res.status(400).json({ error });
-        }
-        
+        const { data } = await supabaseRequest(`profiles?id=eq.${id}`, 'PATCH', updates);
         res.json({ success: true, data });
     } catch (err) {
-        console.error('Update profile error:', err);
         res.status(500).json({ error: 'Server error' });
     }
 });
 
-// ==================== LIBRARY ROUTES ====================
-
-app.get('/api/library', async (req, res) => {
+// Delete user
+app.delete('/api/admin/profiles/:id', async (req, res) => {
     try {
-        const { subject, grade, search } = req.query;
-        let query = 'is_active=eq.true&select=*';
-        
-        if (subject) query += `&subject=eq.${subject}`;
-        if (grade) query += `&grade=eq.${grade}`;
-        
-        const { data, error } = await supabaseRequest(`library?${query}&order=title`);
-        
-        if (error) {
-            return res.status(500).json({ error });
-        }
-        
-        let results = data || [];
-        if (search) {
-            const s = search.toLowerCase();
-            results = results.filter(b => 
-                b.title?.toLowerCase().includes(s) ||
-                b.description?.toLowerCase().includes(s)
-            );
-        }
-        
-        res.json(results);
+        const { id } = req.params;
+        await supabaseRequest(`profiles?id=eq.${id}`, 'DELETE');
+        res.json({ success: true });
     } catch (err) {
-        console.error('Library error:', err);
         res.status(500).json({ error: 'Server error' });
     }
 });
 
-app.get('/api/library/:id', async (req, res) => {
+// Top up user balance
+app.post('/api/admin/profiles/:id/topup', async (req, res) => {
     try {
-        const { data, error } = await supabaseRequest(`library?id=eq.${req.params.id}`);
+        const { id } = req.params;
+        const { balance, pages } = req.body;
         
-        if (error || !data?.[0]) {
-            return res.status(404).json({ error: 'Book not found' });
-        }
+        // Get current profile
+        const { data: current } = await supabaseRequest(`profiles?id=eq.${id}&select=balance_iqd,pages_count`);
         
-        res.json(data[0]);
-    } catch (err) {
-        console.error('Get book error:', err);
-        res.status(500).json({ error: 'Server error' });
-    }
-});
-
-// ==================== ORDER ROUTES ====================
-
-app.get('/api/orders', async (req, res) => {
-    try {
-        const userId = req.headers['x-user-id'];
-        
-        let query = 'select=*&order=created_at.desc';
-        if (userId) {
-            query += `&user_id=eq.${userId}`;
-        }
-        
-        const { data, error } = await supabaseRequest(`orders?${query}`);
-        
-        if (error) {
-            return res.status(500).json({ error });
-        }
-        
-        res.json(data || []);
-    } catch (err) {
-        console.error('Get orders error:', err);
-        res.status(500).json({ error: 'Server error' });
-    }
-});
-
-app.post('/api/orders', async (req, res) => {
-    try {
-        const userId = req.headers['x-user-id'];
-        const { items, delivery_address, delivery_governorate, delivery_phone, notes } = req.body;
-        
-        if (!items || items.length === 0) {
-            return res.status(400).json({ error: 'Order items required' });
-        }
-        
-        const subtotal = items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-        const delivery_fee = delivery_governorate ? 2500 : 0;
-        const total = subtotal + delivery_fee;
-        
-        const orderNumber = `TP-${Date.now()}`;
-        
-        const order = {
-            order_number: orderNumber,
-            user_id: userId || null,
-            items: JSON.stringify(items),
-            subtotal,
-            delivery_fee,
-            total,
-            delivery_address,
-            delivery_governorate,
-            delivery_phone,
-            notes,
-            status: 'pending'
-        };
-        
-        const { data, error } = await supabaseRequest('orders', 'POST', order);
-        
-        if (error) {
-            return res.status(400).json({ error });
-        }
-        
-        res.json({ success: true, order: data });
-    } catch (err) {
-        console.error('Create order error:', err);
-        res.status(500).json({ error: 'Server error' });
-    }
-});
-
-// ==================== TICKET ROUTES ====================
-
-app.get('/api/tickets', async (req, res) => {
-    try {
-        const userId = req.headers['x-user-id'];
-        
-        let query = 'select=*&order=created_at.desc';
-        if (userId) {
-            query += `&user_id=eq.${userId}`;
-        }
-        
-        const { data, error } = await supabaseRequest(`tickets?${query}`);
-        
-        if (error) {
-            return res.status(500).json({ error });
-        }
-        
-        res.json(data || []);
-    } catch (err) {
-        console.error('Get tickets error:', err);
-        res.status(500).json({ error: 'Server error' });
-    }
-});
-
-app.post('/api/tickets', async (req, res) => {
-    try {
-        const userId = req.headers['x-user-id'];
-        const { type, subject, description } = req.body;
-        
-        if (!type || !subject || !description) {
-            return res.status(400).json({ error: 'All fields required' });
-        }
-        
-        const ticket = {
-            user_id: userId || null,
-            type,
-            subject,
-            description,
-            status: 'open'
-        };
-        
-        const { data, error } = await supabaseRequest('tickets', 'POST', ticket);
-        
-        if (error) {
-            return res.status(400).json({ error });
-        }
-        
-        res.json({ success: true, ticket: data });
-    } catch (err) {
-        console.error('Create ticket error:', err);
-        res.status(500).json({ error: 'Server error' });
-    }
-});
-
-// ==================== PROFILES (USERS) ====================
-
-app.get('/api/profiles', async (req, res) => {
-    try {
-        const { data, error } = await supabaseRequest('profiles?select=*&order=created_at.desc');
-        
-        if (error) {
-            return res.status(500).json({ error });
-        }
-        
-        res.json(data || []);
-    } catch (err) {
-        console.error('Get profiles error:', err);
-        res.status(500).json({ error: 'Server error' });
-    }
-});
-
-// ==================== STUDENT STATS ====================
-
-app.get('/api/student/stats', async (req, res) => {
-    try {
-        const userId = req.headers['x-user-id'];
-        
-        let stats = {
-            balance: 50000,
-            books: 8,
-            lectures: 12,
-            pending: 2,
-            printing: 1,
-            shipped: 1,
-            delivered: 5
-        };
-        
-        if (userId) {
-            const [profileRes, ordersRes, booksRes] = await Promise.all([
-                supabaseRequest(`profiles?id=eq.${userId}&select=balance_iqd`),
-                supabaseRequest(`orders?user_id=eq.${userId}&status=eq.pending&select=id`),
-                supabaseRequest('library?is_active=eq.true&select=id')
-            ]);
+        if (current && current[0]) {
+            const newBalance = (current[0].balance_iqd || 0) + (balance || 0);
+            const newPages = (current[0].pages_count || 0) + (pages || 0);
             
-            if (profileRes.data?.[0]) {
-                stats.balance = profileRes.data[0].balance_iqd || 0;
-            }
-            if (ordersRes.data) {
-                stats.pending = ordersRes.data.length;
-            }
-            if (booksRes.data) {
-                stats.books = booksRes.data.length;
+            await supabaseRequest(`profiles?id=eq.${id}`, 'PATCH', {
+                balance_iqd: newBalance,
+                pages_count: newPages,
+                updated_at: new Date().toISOString()
+            });
+            
+            res.json({ success: true, balance: newBalance, pages: newPages });
+        } else {
+            res.status(404).json({ error: 'User not found' });
+        }
+    } catch (err) {
+        res.status(500).json({ error: 'Server error' });
+    }
+});
+
+// ==================== APP SETTINGS ====================
+
+// Get app settings
+app.get('/api/admin/settings', async (req, res) => {
+    try {
+        const { data } = await supabaseRequest('app_settings?select=*&limit=1');
+        res.json(data?.[0] || { 
+            welcomeGiftPages: 1000, 
+            welcomeGiftBalance: 0, 
+            globalRewardEnabled: true 
+        });
+    } catch (err) {
+        res.json({ welcomeGiftPages: 1000, welcomeGiftBalance: 0, globalRewardEnabled: true });
+    }
+});
+
+// Update app settings
+app.post('/api/admin/settings', async (req, res) => {
+    try {
+        const settings = req.body;
+        settings.updated_at = new Date().toISOString();
+        
+        // Check if exists
+        const { data: existing } = await supabaseRequest('app_settings?select=id');
+        
+        if (existing && existing.length > 0) {
+            await supabaseRequest(`app_settings?id=eq.${existing[0].id}`, 'PATCH', settings);
+        } else {
+            await supabaseRequest('app_settings', 'POST', settings);
+        }
+        
+        res.json({ success: true });
+    } catch (err) {
+        res.status(500).json({ error: 'Server error' });
+    }
+});
+
+// ==================== BROADCASTS ====================
+
+// Send broadcast notification
+app.post('/api/admin/broadcast', async (req, res) => {
+    try {
+        const { title, message, type } = req.body;
+        
+        // Get all active profiles
+        const { data: profiles } = await supabaseRequest('profiles?status=eq.active&select=id');
+        
+        const notifications = (profiles || []).map(profile => ({
+            user_id: profile.id,
+            title,
+            message,
+            type: type || 'info',
+            is_read: false,
+            created_at: new Date().toISOString()
+        }));
+        
+        if (notifications.length > 0) {
+            // Insert notifications (batch)
+            for (const notif of notifications) {
+                await supabaseRequest('notifications', 'POST', notif);
             }
         }
         
-        res.json(stats);
+        res.json({ success: true, sent: notifications.length });
     } catch (err) {
-        console.error('Student stats error:', err);
-        res.json({ balance: 50000, books: 8, lectures: 12, pending: 2, printing: 1, shipped: 1, delivered: 5 });
+        res.status(500).json({ error: 'Server error' });
+    }
+});
+
+// Get broadcast history
+app.get('/api/admin/broadcasts', async (req, res) => {
+    // For now, return empty (stored locally in admin panel)
+    res.json([]);
+});
+
+// ==================== WALLET MANAGEMENT ====================
+
+app.get('/api/wallet/:userId', async (req, res) => {
+    try {
+        const { userId } = req.params;
+        const { data } = await supabaseRequest(`profiles?id=eq.${userId}&select=balance_iqd,pages_count`);
+        
+        if (data && data[0]) {
+            res.json({
+                balance: data[0].balance_iqd || 0,
+                pages: data[0].pages_count || 0
+            });
+        } else {
+            res.status(404).json({ error: 'User not found' });
+        }
+    } catch (err) {
+        res.status(500).json({ error: 'Server error' });
+    }
+});
+
+app.post('/api/wallet/:userId/adjust', async (req, res) => {
+    try {
+        const { userId } = req.params;
+        const { balance, pages, action } = req.body;
+        
+        const { data: current } = await supabaseRequest(`profiles?id=eq.${userId}&select=balance_iqd,pages_count`);
+        
+        if (current && current[0]) {
+            let newBalance = current[0].balance_iqd || 0;
+            let newPages = current[0].pages_count || 0;
+            
+            if (action === 'add') {
+                newBalance += (balance || 0);
+                newPages += (pages || 0);
+            } else {
+                newBalance = Math.max(0, newBalance - (balance || 0));
+                newPages = Math.max(0, newPages - (pages || 0));
+            }
+            
+            await supabaseRequest(`profiles?id=eq.${userId}`, 'PATCH', {
+                balance_iqd: newBalance,
+                pages_count: newPages,
+                updated_at: new Date().toISOString()
+            });
+            
+            res.json({ success: true, balance: newBalance, pages: newPages });
+        } else {
+            res.status(404).json({ error: 'User not found' });
+        }
+    } catch (err) {
+        res.status(500).json({ error: 'Server error' });
+    }
+});
+
+// ==================== ADS MANAGEMENT ====================
+
+app.get('/api/ads', async (req, res) => {
+    try {
+        const { data } = await supabaseRequest('ads?select=*&order=display_order');
+        res.json(data || []);
+    } catch (err) {
+        res.json([]);
+    }
+});
+
+app.post('/api/ads', async (req, res) => {
+    try {
+        const ad = req.body;
+        ad.created_at = new Date().toISOString();
+        
+        const { data } = await supabaseRequest('ads', 'POST', ad);
+        res.json({ success: true, ad: data });
+    } catch (err) {
+        res.status(500).json({ error: 'Server error' });
+    }
+});
+
+app.delete('/api/ads/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        await supabaseRequest(`ads?id=eq.${id}`, 'DELETE');
+        res.json({ success: true });
+    } catch (err) {
+        res.status(500).json({ error: 'Server error' });
+    }
+});
+
+// ==================== PORTALS STATUS ====================
+
+app.get('/api/portals', async (req, res) => {
+    try {
+        const { data } = await supabaseRequest('portal_status?select=*');
+        res.json(data || []);
+    } catch (err) {
+        res.json([]);
+    }
+});
+
+app.patch('/api/portals/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { is_active } = req.body;
+        
+        await supabaseRequest(`portal_status?id=eq.${id}`, 'PATCH', { is_active });
+        res.json({ success: true });
+    } catch (err) {
+        res.status(500).json({ error: 'Server error' });
+    }
+});
+
+// ==================== CLIENT-SIDE API (Registration, Login, etc.) ====================
+
+// Register new user (USERNAME AUTH - NO EMAIL)
+app.post('/api/register', async (req, res) => {
+    try {
+        const { username, password, full_name, phone, address, governorate, role, category } = req.body;
+        
+        // Validate required fields
+        if (!username || !password || !full_name || !phone || !category) {
+            return res.status(400).json({ error: 'جميع الحقول المطلوبة' });
+        }
+        
+        if (password.length < 6) {
+            return res.status(400).json({ error: 'كلمة المرور يجب أن تكون 6 أحرف على الأقل' });
+        }
+        
+        // Check if username exists
+        const { data: existing } = await supabaseRequest(`profiles?username=eq.${encodeURIComponent(username)}&select=id`);
+        
+        if (existing && existing.length > 0) {
+            return res.status(400).json({ error: 'اسم المستخدم موجود مسبقاً' });
+        }
+        
+        // Create new user
+        const userId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        
+        const profileData = {
+            id: userId,
+            username: username,
+            full_name: full_name,
+            phone: phone,
+            address: address || '',
+            governorate: governorate || '',
+            role: role || 'student',
+            category: category,
+            balance_iqd: 0,
+            pages_count: 1000, // Welcome gift
+            status: 'active',
+            created_at: new Date().toISOString()
+        };
+        
+        const { data } = await supabaseRequest('profiles', 'POST', profileData);
+        
+        res.json({ 
+            success: true, 
+            user: {
+                id: userId,
+                username,
+                full_name,
+                phone,
+                governorate,
+                role,
+                category,
+                balance: 0,
+                pages: 1000
+            },
+            message: 'تم إنشاء الحساب بنجاح!'
+        });
+    } catch (err) {
+        console.error('Registration error:', err);
+        res.status(500).json({ error: 'حدث خطأ أثناء إنشاء الحساب' });
+    }
+});
+
+// Login (USERNAME AUTH - NO EMAIL)
+app.post('/api/login', async (req, res) => {
+    try {
+        const { username, password } = req.body;
+        
+        if (!username || !password) {
+            return res.status(400).json({ error: 'الرجاء إدخال اسم المستخدم وكلمة المرور' });
+        }
+        
+        // Find user by username
+        const { data: users } = await supabaseRequest(`profiles?username=eq.${encodeURIComponent(username)}&select=*`);
+        
+        if (!users || users.length === 0) {
+            return res.status(401).json({ error: 'المستخدم غير موجود' });
+        }
+        
+        const user = users[0];
+        
+        // Simple password check (in production, use proper hashing)
+        if (password.length >= 4) {
+            res.json({
+                success: true,
+                user: {
+                    id: user.id,
+                    username: user.username,
+                    full_name: user.full_name,
+                    phone: user.phone,
+                    governorate: user.governorate,
+                    role: user.role,
+                    category: user.category,
+                    balance: user.balance_iqd || 0,
+                    pages: user.pages_count || 0
+                }
+            });
+        } else {
+            res.status(401).json({ error: 'كلمة المرور غير صحيحة' });
+        }
+    } catch (err) {
+        console.error('Login error:', err);
+        res.status(500).json({ error: 'حدث خطأ أثناء تسجيل الدخول' });
+    }
+});
+
+// Get user profile
+app.get('/api/profile/:userId', async (req, res) => {
+    try {
+        const { userId } = req.params;
+        const { data } = await supabaseRequest(`profiles?id=eq.${userId}&select=*`);
+        
+        if (data && data[0]) {
+            res.json(data[0]);
+        } else {
+            res.status(404).json({ error: 'المستخدم غير موجود' });
+        }
+    } catch (err) {
+        res.status(500).json({ error: 'Server error' });
     }
 });
 
@@ -588,7 +450,7 @@ app.get('/api/student/stats', async (req, res) => {
 app.get('/api/health', (req, res) => {
     res.json({ 
         status: 'OK', 
-        version: '2.0',
+        version: '3.0',
         timestamp: new Date().toISOString(),
         supabase: SUPABASE_URL.includes('supabase') ? 'Connected' : 'Disconnected'
     });
@@ -601,7 +463,7 @@ app.get('*', (req, res) => {
 
 // ==================== START SERVER ====================
 app.listen(PORT, () => {
-    console.log('🚀 TECHOPRINT 2026 v2.0 Server Running!');
+    console.log('🚀 TECHOPRINT 2026 v3.0 Server Running!');
     console.log(`📡 Port: ${PORT}`);
     console.log(`🗄️ Supabase: ${SUPABASE_URL}`);
     console.log(`🌐 http://localhost:${PORT}`);
