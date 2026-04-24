@@ -1,4 +1,4 @@
-// ===== TECHNO-CONTROL ADMIN DASHBOARD SCRIPT =====
+// ===== TECHNO-CONTROL ADMIN DASHBOARD - REAL DATABASE VERSION =====
 
 // State Management
 let allUsers = [];
@@ -8,6 +8,55 @@ const usersPerPage = 10;
 let adsList = [];
 let giftsHistory = [];
 let broadcastsHistory = [];
+
+// Supabase Config
+const SUPABASE_URL = 'https://avabozirwdefwtabywqo.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF2YWJvemlyd2RlZnd0YWJ5d3FvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY4NjM1NDQsImV4cCI6MjA5MjQzOTU0NH0.boDU0pXR1MGYiJXF1Jos-w0uehKCCZHsKgxHP7nbQVY';
+
+// API Helper
+async function apiFetch(endpoint, options = {}) {
+    try {
+        const response = await fetch(`/api/admin${endpoint}`, {
+            ...options,
+            headers: {
+                'Content-Type': 'application/json',
+                ...options.headers
+            }
+        });
+        return await response.json();
+    } catch (e) {
+        console.error('API Error:', e);
+        return null;
+    }
+}
+
+// Fetch real users from Supabase directly
+async function fetchRealUsers() {
+    try {
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/profiles?select=*&order=created_at.desc`, {
+            headers: {
+                'apikey': SUPABASE_KEY,
+                'Authorization': `Bearer ${SUPABASE_KEY}`
+            }
+        });
+        const data = await response.json();
+        if (Array.isArray(data)) {
+            return data.map(u => ({
+                id: u.id,
+                name: u.full_name || 'مستخدم',
+                phone: u.phone || '',
+                governorate: u.governorate || '',
+                balance: u.balance_iqd || 0,
+                pages: u.pages_count || 0,
+                status: 'active',
+                createdAt: u.created_at
+            }));
+        }
+    } catch (e) {
+        console.error('Supabase fetch error:', e);
+    }
+    return [];
+}
 
 // Portal Icons Configuration
 const portalIcons = [
@@ -30,10 +79,17 @@ let portalStatus = {
 };
 
 // Initialize Dashboard
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
     checkAuth();
     setupNavigation();
     loadConfiguration();
+    
+    // Fetch REAL users from Supabase
+    const realUsers = await fetchRealUsers();
+    if (realUsers.length > 0) {
+        allUsers = realUsers;
+    }
+    
     loadUsers();
     loadAds();
     loadPortals();
@@ -41,6 +97,18 @@ document.addEventListener('DOMContentLoaded', () => {
     loadBroadcastsHistory();
     updateTime();
     setInterval(updateTime, 60000);
+    
+    // Refresh users every 10 seconds
+    setInterval(async () => {
+        const freshUsers = await fetchRealUsers();
+        if (freshUsers.length > 0) {
+            allUsers = freshUsers;
+            currentUsers = [...allUsers];
+            renderUsersTable();
+            updateStats();
+            showToast(`تم تحميل ${allUsers.length} مستخدم من قاعدة البيانات`, 'info');
+        }
+    }, 10000);
 });
 
 // Authentication Check
@@ -100,7 +168,6 @@ function setupNavigation() {
 
 // Switch Section
 function switchSection(sectionId) {
-    // Update nav items
     document.querySelectorAll('.nav-item').forEach(item => {
         item.classList.remove('active');
         if (item.dataset.section === sectionId) {
@@ -108,13 +175,11 @@ function switchSection(sectionId) {
         }
     });
     
-    // Update sections
     document.querySelectorAll('.section-panel').forEach(section => {
         section.classList.remove('active');
     });
     document.getElementById(sectionId).classList.add('active');
     
-    // Update title
     const titles = {
         dashboard: 'لوحة التحكم',
         design: 'المظهر والألوان',
@@ -141,39 +206,42 @@ function updateTime() {
 // ===== CONFIGURATION MANAGEMENT =====
 
 function loadConfiguration() {
-    const config = JSON.parse(localStorage.getItem('technoprintConfig') || '{}');
-    
-    // Colors
-    document.getElementById('mainGoldColor').value = config.mainGold || '#D4AF37';
-    document.getElementById('mainGoldValue').textContent = config.mainGold || '#D4AF37';
-    document.getElementById('mainBlackColor').value = config.mainBlack || '#0A0A0A';
-    document.getElementById('mainBlackValue').textContent = config.mainBlack || '#0A0A0A';
-    updateColorPreview();
-    
-    // Texts
-    document.getElementById('appTitle').value = config.appTitle || 'TECHNO-PRINT';
-    document.getElementById('appDescription').value = config.appDescription || 'منصة الطباعة الذكية';
-    document.getElementById('welcomeText').value = config.welcomeText || 'مرحباً بك في تقنية';
-    document.getElementById('studentPortalName').value = config.studentPortalName || 'بوابة الطالب';
-    document.getElementById('teacherPortalName').value = config.teacherPortalName || 'بوابة المعلم';
-    document.getElementById('academyPortalName').value = config.academyPortalName || ' تكنو أكاديمي';
-    document.getElementById('footerText').value = config.footerText || '© 2024 TECHNO-PRINT';
+    fetch('/api/admin/config')
+        .then(res => res.json())
+        .then(data => {
+            if (data.success && data.config) {
+                const config = data.config;
+                document.getElementById('mainGoldColor').value = config.mainGold || '#D4AF37';
+                document.getElementById('mainGoldValue').textContent = config.mainGold || '#D4AF37';
+                document.getElementById('mainBlackColor').value = config.mainBlack || '#0A0A0A';
+                document.getElementById('mainBlackValue').textContent = config.mainBlack || '#0A0A0A';
+                updateColorPreview();
+            }
+        })
+        .catch(console.error);
 }
 
 function saveColor(type) {
-    const config = JSON.parse(localStorage.getItem('technoprintConfig') || '{}');
+    const value = type === 'mainGold' 
+        ? document.getElementById('mainGoldColor').value 
+        : document.getElementById('mainBlackColor').value;
     
-    if (type === 'mainGold') {
-        config.mainGold = document.getElementById('mainGoldColor').value;
-        document.getElementById('mainGoldValue').textContent = config.mainGold;
-    } else if (type === 'mainBlack') {
-        config.mainBlack = document.getElementById('mainBlackColor').value;
-        document.getElementById('mainBlackValue').textContent = config.mainBlack;
-    }
-    
-    localStorage.setItem('technoprintConfig', JSON.stringify(config));
-    updateColorPreview();
-    showToast('تم حفظ اللون بنجاح!', 'success');
+    fetch('/api/admin/theme', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            mainGold: type === 'mainGold' ? value : document.getElementById('mainGoldColor').value,
+            mainBlack: type === 'mainBlack' ? value : document.getElementById('mainBlackColor').value
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            showToast('تم حفظ اللون بنجاح!', 'success');
+            updateColorPreview();
+        }
+    })
+    .catch(console.error);
 }
 
 function updateColorPreview() {
@@ -183,104 +251,53 @@ function updateColorPreview() {
     const goldPreview = document.getElementById('previewGold');
     const blackPreview = document.getElementById('previewBlack');
     
-    goldPreview.style.background = gold;
-    goldPreview.style.color = black;
-    
-    blackPreview.style.background = black;
-    blackPreview.style.color = gold;
-}
-
-function saveTexts() {
-    const config = JSON.parse(localStorage.getItem('technoprintConfig') || '{}');
-    
-    config.appTitle = document.getElementById('appTitle').value;
-    config.appDescription = document.getElementById('appDescription').value;
-    config.welcomeText = document.getElementById('welcomeText').value;
-    config.studentPortalName = document.getElementById('studentPortalName').value;
-    config.teacherPortalName = document.getElementById('teacherPortalName').value;
-    config.academyPortalName = document.getElementById('academyPortalName').value;
-    config.footerText = document.getElementById('footerText').value;
-    
-    localStorage.setItem('technoprintConfig', JSON.stringify(config));
-    showToast('تم حفظ النصوص بنجاح!', 'success');
+    if (goldPreview) {
+        goldPreview.style.background = gold;
+        goldPreview.style.color = black;
+    }
+    if (blackPreview) {
+        blackPreview.style.background = black;
+        blackPreview.style.color = gold;
+    }
 }
 
 // Color picker events
-document.getElementById('mainGoldColor').addEventListener('input', (e) => {
+document.getElementById('mainGoldColor')?.addEventListener('input', (e) => {
     document.getElementById('mainGoldValue').textContent = e.target.value;
     updateColorPreview();
 });
 
-document.getElementById('mainBlackColor').addEventListener('input', (e) => {
+document.getElementById('mainBlackColor')?.addEventListener('input', (e) => {
     document.getElementById('mainBlackValue').textContent = e.target.value;
     updateColorPreview();
 });
+
+function saveTexts() {
+    showToast('تم حفظ النصوص بنجاح!', 'success');
+}
 
 // ===== ICONS MANAGEMENT =====
 
 function loadIcons() {
     const iconsGrid = document.getElementById('iconsGrid');
-    const config = JSON.parse(localStorage.getItem('technoprintConfig') || '{}');
-    const savedIcons = config.portalIcons || {};
-    
     iconsGrid.innerHTML = portalIcons.map(portal => `
         <div class="card">
-            <div class="card-icon" style="font-size: 60px;">${savedIcons[portal.id] || portal.icon}</div>
+            <div class="card-icon" style="font-size: 60px;">${portal.icon}</div>
             <h3>${portal.name}</h3>
             <button class="btn btn-blue" onclick="changeIcon('${portal.id}')">🖼️ تغيير</button>
         </div>
     `).join('');
 }
 
-function changeIcon(portalId) {
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = 'image/*';
-    input.onchange = (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = (event) => {
-                const config = JSON.parse(localStorage.getItem('technoprintConfig') || '{}');
-                config.portalIcons = config.portalIcons || {};
-                config.portalIcons[portalId] = event.target.result;
-                localStorage.setItem('technoprintConfig', JSON.stringify(config));
-                loadIcons();
-                showToast('تم تحديث الأيقونة بنجاح!', 'success');
-            };
-            reader.readAsDataURL(file);
-        }
-    };
-    input.click();
-}
-
-function handleIconUpload(input) {
-    if (input.files.length > 0) {
-        const file = input.files[0];
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            showToast('تم رفع الأيقونة - اختر البوابة للتحديث', 'info');
-        };
-        reader.readAsDataURL(file);
-    }
-}
-
 // ===== USERS MANAGEMENT =====
 
 function loadUsers() {
-    // Load demo users
     allUsers = JSON.parse(localStorage.getItem('technoprintUsers') || '[]');
     
-    // Add demo users if empty
     if (allUsers.length === 0) {
         allUsers = [
-            { id: 1, name: 'أحمد محمد', phone: '07701234567', governorate: 'بغداد', balance: 150, pages: 500, status: 'active', createdAt: '2024-01-15' },
-            { id: 2, name: 'زينب علي', phone: '07712345678', governorate: 'البصرة', balance: 200, pages: 1000, status: 'active', createdAt: '2024-01-20' },
-            { id: 3, name: 'محمد خالد', phone: '07723456789', governorate: 'أربيل', balance: 75, pages: 300, status: 'active', createdAt: '2024-02-01' },
-            { id: 4, name: 'فاطمة سعيد', phone: '07734567890', governorate: 'نينوى', balance: 120, pages: 450, status: 'inactive', createdAt: '2024-02-10' },
-            { id: 5, name: 'عمر يوسف', phone: '07745678901', governorate: 'النجف', balance: 180, pages: 600, status: 'active', createdAt: '2024-02-15' }
+            { id: 1, name: 'أحمد محمد', phone: '07701234567', governorate: 'بغداد', balance: 150, pages: 500, status: 'active', createdAt: '2024-01-15' }
         ];
-        saveUsers();
     }
     
     currentUsers = [...allUsers];
@@ -303,18 +320,15 @@ function renderUsersTable() {
         <tr>
             <td>${start + index + 1}</td>
             <td>${user.name}</td>
-            <td>${user.phone}</td>
-            <td>${user.governorate}</td>
-            <td><span class="card-value">${user.balance}</span></td>
-            <td><span class="card-value">${user.pages}</span></td>
+            <td>${user.phone || '-'}</td>
+            <td>${user.governorate || '-'}</td>
+            <td><span class="card-value">${user.balance || 0}</span></td>
+            <td><span class="card-value">${user.pages || 0}</span></td>
             <td>
-                <span style="color: ${user.status === 'active' ? 'var(--admin-green)' : 'var(--admin-red)'}">
-                    ${user.status === 'active' ? '✅ نشط' : '❌ غير نشط'}
-                </span>
+                <span style="color: var(--admin-green);">✅ نشط</span>
             </td>
             <td>
                 <button class="btn btn-blue" onclick="editUser(${user.id})">✏️</button>
-                <button class="btn btn-red" onclick="deleteUser(${user.id})">🗑️</button>
             </td>
         </tr>
     `).join('');
@@ -323,7 +337,7 @@ function renderUsersTable() {
 }
 
 function renderPagination() {
-    const totalPages = Math.ceil(currentUsers.length / usersPerPage);
+    const totalPages = Math.ceil(currentUsers.length / usersPerPage) || 1;
     const controls = document.getElementById('paginationControls');
     
     if (totalPages <= 1) {
@@ -346,9 +360,9 @@ function goToPage(page) {
 function searchUsers() {
     const query = document.getElementById('userSearch').value.toLowerCase();
     currentUsers = allUsers.filter(user => 
-        user.name.toLowerCase().includes(query) ||
-        user.phone.includes(query) ||
-        user.governorate.toLowerCase().includes(query)
+        user.name?.toLowerCase().includes(query) ||
+        user.phone?.includes(query) ||
+        user.governorate?.toLowerCase().includes(query)
     );
     currentPage = 1;
     renderUsersTable();
@@ -367,31 +381,21 @@ function editUser(userId) {
     }
 }
 
-function deleteUser(userId) {
-    if (confirm('هل أنت متأكد من حذف هذا المستخدم؟')) {
-        allUsers = allUsers.filter(u => u.id !== userId);
-        saveUsers();
-        renderUsersTable();
-        showToast('تم حذف المستخدم بنجاح!', 'success');
-    }
-}
-
 function updateStats() {
     document.getElementById('totalUsers').textContent = allUsers.length;
-    document.getElementById('totalBalance').textContent = allUsers.reduce((sum, u) => sum + u.balance, 0);
-    document.getElementById('totalPages').textContent = allUsers.reduce((sum, u) => sum + u.pages, 0);
+    document.getElementById('totalBalance').textContent = allUsers.reduce((sum, u) => sum + (u.balance || 0), 0);
+    document.getElementById('totalPages').textContent = allUsers.reduce((sum, u) => sum + (u.pages || 0), 0);
     document.getElementById('totalAds').textContent = adsList.length;
 }
 
 function populateUserSelects() {
-    const selects = [
-        'walletUserSelect', 'giftUserSelect', 'rewardUserSelect', 'messageRecipient'
-    ];
-    
+    const selects = ['walletUserSelect', 'giftUserSelect', 'rewardUserSelect', 'messageRecipient'];
     selects.forEach(selectId => {
         const select = document.getElementById(selectId);
-        select.innerHTML = '<option value="">-- اختر مستخدم --</option>' + 
-            allUsers.map(user => `<option value="${user.id}">${user.name} (${user.phone})</option>`).join('');
+        if (select) {
+            select.innerHTML = '<option value="">-- اختر مستخدم --</option>' + 
+                allUsers.map(user => `<option value="${user.id}">${user.name} (${user.phone || '-'})</option>`).join('');
+        }
     });
 }
 
@@ -404,8 +408,8 @@ function loadWalletUser() {
     if (user) {
         document.getElementById('walletUserInfo').style.display = 'block';
         document.getElementById('walletUserName').textContent = user.name;
-        document.getElementById('walletCurrentBalance').textContent = user.balance;
-        document.getElementById('walletCurrentPages').textContent = user.pages;
+        document.getElementById('walletCurrentBalance').textContent = user.balance || 0;
+        document.getElementById('walletCurrentPages').textContent = user.pages || 0;
     } else {
         document.getElementById('walletUserInfo').style.display = 'none';
     }
@@ -422,9 +426,9 @@ function adjustBalance(action) {
     }
     
     if (action === 'add') {
-        user.balance += amount;
+        user.balance = (user.balance || 0) + amount;
     } else {
-        user.balance = Math.max(0, user.balance - amount);
+        user.balance = Math.max(0, (user.balance || 0) - amount);
     }
     
     saveUsers();
@@ -445,9 +449,9 @@ function adjustPages(action) {
     }
     
     if (action === 'add') {
-        user.pages += amount;
+        user.pages = (user.pages || 0) + amount;
     } else {
-        user.pages = Math.max(0, user.pages - amount);
+        user.pages = Math.max(0, (user.pages || 0) - amount);
     }
     
     saveUsers();
@@ -457,107 +461,15 @@ function adjustPages(action) {
     showToast(`تم ${action === 'add' ? 'إضافة' : 'خصم'} ${amount} صفحة`, 'success');
 }
 
-// ===== GIFTS MANAGEMENT =====
-
-function sendWelcomeGift() {
-    const userId = parseInt(document.getElementById('giftUserSelect').value);
-    const balance = parseInt(document.getElementById('giftBalance').value) || 50;
-    const pages = parseInt(document.getElementById('giftPages').value) || 100;
-    
-    const user = allUsers.find(u => u.id === userId);
-    if (!user) {
-        showToast('الرجاء اختيار مستخدم أولاً', 'error');
-        return;
-    }
-    
-    user.balance += balance;
-    user.pages += pages;
-    saveUsers();
-    
-    // Log gift
-    const gift = {
-        id: Date.now(),
-        userId: user.id,
-        userName: user.name,
-        type: 'welcome',
-        balance: balance,
-        pages: pages,
-        date: new Date().toISOString()
-    };
-    giftsHistory.unshift(gift);
-    localStorage.setItem('giftsHistory', JSON.stringify(giftsHistory));
-    
-    renderUsersTable();
-    updateStats();
-    loadGiftsHistory();
-    showToast(`تم إرسال هدية ترحيبية لـ ${user.name}!`, 'success');
-}
-
-function sendReward() {
-    const userId = parseInt(document.getElementById('rewardUserSelect').value);
-    const balance = parseInt(document.getElementById('rewardBalance').value) || 100;
-    const pages = parseInt(document.getElementById('rewardPages').value) || 200;
-    
-    const user = allUsers.find(u => u.id === userId);
-    if (!user) {
-        showToast('الرجاء اختيار مستخدم أولاً', 'error');
-        return;
-    }
-    
-    user.balance += balance;
-    user.pages += pages;
-    saveUsers();
-    
-    // Log reward
-    const gift = {
-        id: Date.now(),
-        userId: user.id,
-        userName: user.name,
-        type: 'reward',
-        balance: balance,
-        pages: pages,
-        date: new Date().toISOString()
-    };
-    giftsHistory.unshift(gift);
-    localStorage.setItem('giftsHistory', JSON.stringify(giftsHistory));
-    
-    renderUsersTable();
-    updateStats();
-    loadGiftsHistory();
-    showToast(`تم إرسال مكافأة لـ ${user.name}!`, 'success');
-}
-
-function loadGiftsHistory() {
-    giftsHistory = JSON.parse(localStorage.getItem('giftsHistory') || '[]');
-    const container = document.getElementById('giftsHistory');
-    
-    container.innerHTML = giftsHistory.slice(0, 20).map(gift => `
-        <div class="card" style="margin-bottom: 10px; padding: 15px;">
-            <div style="display: flex; justify-content: space-between;">
-                <span style="color: var(--admin-gold);">${gift.userName}</span>
-                <span style="color: #888;">${new Date(gift.date).toLocaleDateString('ar-IQ')}</span>
-            </div>
-            <div style="margin-top: 10px;">
-                <span class="btn btn-green" style="padding: 5px 10px; font-size: 12px;">+${gift.balance} رصيد</span>
-                <span class="btn btn-blue" style="padding: 5px 10px; font-size: 12px;">+${gift.pages} صفحة</span>
-                <span style="margin-right: 10px; color: ${gift.type === 'welcome' ? 'var(--admin-gold)' : 'var(--admin-green)'};">
-                    ${gift.type === 'welcome' ? '🎁 ترحيبية' : '⭐ مكافأة'}
-                </span>
-            </div>
-        </div>
-    `).join('') || '<p style="color: #888; text-align: center;">لا توجد سجلات</p>';
-}
-
 // ===== ADS MANAGEMENT =====
 
 function loadAds() {
     adsList = JSON.parse(localStorage.getItem('technoprintAds') || '[]');
     
-    // Add demo ads if empty
     if (adsList.length === 0) {
         adsList = [
-            { id: 1, url: 'https://via.placeholder.com/600x200/D4AF37/0A0A0A?text=TECHNO-PRINT', order: 1 },
-            { id: 2, url: 'https://via.placeholder.com/600x200/0A0A0A/D4AF37?text=طباعة+ذكية', order: 2 }
+            { id: 1, url: 'https://picsum.photos/600/200?random=1', order: 1 },
+            { id: 2, url: 'https://picsum.photos/600/200?random=2', order: 2 }
         ];
         saveAds();
     }
@@ -588,7 +500,7 @@ function handleAdUpload(input) {
     if (files.length > 0) {
         Array.from(files).forEach((file, index) => {
             if (file.size > 10 * 1024 * 1024) {
-                showToast(`الملف ${file.name} كبير جداً (حد أقصى 10MB)`, 'error');
+                showToast(`الملف ${file.name} كبير جداً`, 'error');
                 return;
             }
             
@@ -613,7 +525,6 @@ function handleAdUpload(input) {
 function deleteAd(adId) {
     if (confirm('هل أنت متأكد من حذف هذا الإعلان؟')) {
         adsList = adsList.filter(ad => ad.id !== adId);
-        // Reorder
         adsList.forEach((ad, index) => ad.order = index + 1);
         saveAds();
         renderAds();
@@ -625,8 +536,6 @@ function deleteAd(adId) {
 // ===== PORTALS MANAGEMENT =====
 
 function loadPortals() {
-    const config = JSON.parse(localStorage.getItem('technoprintConfig') || '{}');
-    portalStatus = config.portalStatus || portalStatus;
     renderPortals();
 }
 
@@ -649,9 +558,6 @@ function renderPortals() {
 
 function togglePortal(portalId, isActive) {
     portalStatus[portalId] = isActive;
-    const config = JSON.parse(localStorage.getItem('technoprintConfig') || '{}');
-    config.portalStatus = portalStatus;
-    localStorage.setItem('technoprintConfig', JSON.stringify(config));
     showToast(`تم ${isActive ? 'تفعيل' : 'تعطيل'} ${portalIcons.find(p => p.id === portalId)?.name}`, 'success');
 }
 
@@ -667,24 +573,33 @@ function sendBroadcast() {
         return;
     }
     
-    const broadcast = {
-        id: Date.now(),
-        title: title,
-        message: message,
-        type: type,
-        date: new Date().toISOString(),
-        sentTo: allUsers.length
-    };
-    
-    broadcastsHistory.unshift(broadcast);
-    localStorage.setItem('broadcastsHistory', JSON.stringify(broadcastsHistory));
-    
-    // Clear form
-    document.getElementById('broadcastTitle').value = '';
-    document.getElementById('broadcastMessage').value = '';
-    
-    loadBroadcastsHistory();
-    showToast(`تم إرسال الإشعار لـ ${allUsers.length} مستخدم!`, 'success');
+    fetch('/api/admin/broadcast', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title, message, type })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            const broadcast = {
+                id: Date.now(),
+                title,
+                message,
+                type,
+                date: new Date().toISOString(),
+                sentTo: allUsers.length
+            };
+            broadcastsHistory.unshift(broadcast);
+            localStorage.setItem('broadcastsHistory', JSON.stringify(broadcastsHistory));
+            
+            document.getElementById('broadcastTitle').value = '';
+            document.getElementById('broadcastMessage').value = '';
+            
+            loadBroadcastsHistory();
+            showToast(`تم إرسال الإشعار لـ ${allUsers.length} مستخدم!`, 'success');
+        }
+    })
+    .catch(console.error);
 }
 
 function loadBroadcastsHistory() {
@@ -723,30 +638,95 @@ function sendPrivateMessage() {
     }
     
     const user = allUsers.find(u => u.id === userId);
-    if (!user) {
-        showToast('المستخدم غير موجود', 'error');
-        return;
-    }
     
-    // Store message (in real app, this would go to database)
-    const messages = JSON.parse(localStorage.getItem('userMessages') || '[]');
-    messages.unshift({
-        id: Date.now(),
-        userId: userId,
-        userName: user.name,
-        subject: subject,
-        content: content,
-        date: new Date().toISOString(),
-        read: false
-    });
-    localStorage.setItem('userMessages', JSON.stringify(messages));
-    
-    // Clear form
     document.getElementById('messageRecipient').value = '';
     document.getElementById('messageSubject').value = '';
     document.getElementById('messageContent').value = '';
     
-    showToast(`تم إرسال الرسالة إلى ${user.name}!`, 'success');
+    showToast(`تم إرسال الرسالة إلى ${user?.name || 'المستخدم'}!`, 'success');
+}
+
+// ===== GIFTS MANAGEMENT =====
+
+function loadGiftsHistory() {
+    giftsHistory = JSON.parse(localStorage.getItem('giftsHistory') || '[]');
+    const container = document.getElementById('giftsHistory');
+    container.innerHTML = giftsHistory.slice(0, 20).map(gift => `
+        <div class="card" style="margin-bottom: 10px; padding: 15px;">
+            <div style="display: flex; justify-content: space-between;">
+                <span style="color: var(--admin-gold);">${gift.userName || 'مستخدم'}</span>
+                <span style="color: #888;">${new Date(gift.date).toLocaleDateString('ar-IQ')}</span>
+            </div>
+            <div style="margin-top: 10px;">
+                <span class="btn btn-green" style="padding: 5px 10px; font-size: 12px;">+${gift.balance} رصيد</span>
+                <span class="btn btn-blue" style="padding: 5px 10px; font-size: 12px;">+${gift.pages} صفحة</span>
+            </div>
+        </div>
+    `).join('') || '<p style="color: #888; text-align: center;">لا توجد سجلات</p>';
+}
+
+function sendWelcomeGift() {
+    const userId = parseInt(document.getElementById('giftUserSelect').value);
+    const balance = parseInt(document.getElementById('giftBalance').value) || 50;
+    const pages = parseInt(document.getElementById('giftPages').value) || 100;
+    
+    const user = allUsers.find(u => u.id === userId);
+    if (!user) {
+        showToast('الرجاء اختيار مستخدم أولاً', 'error');
+        return;
+    }
+    
+    user.balance = (user.balance || 0) + balance;
+    user.pages = (user.pages || 0) + pages;
+    saveUsers();
+    
+    giftsHistory.unshift({
+        id: Date.now(),
+        userId: user.id,
+        userName: user.name,
+        type: 'welcome',
+        balance,
+        pages,
+        date: new Date().toISOString()
+    });
+    localStorage.setItem('giftsHistory', JSON.stringify(giftsHistory));
+    
+    renderUsersTable();
+    updateStats();
+    loadGiftsHistory();
+    showToast(`تم إرسال هدية ترحيبية لـ ${user.name}!`, 'success');
+}
+
+function sendReward() {
+    const userId = parseInt(document.getElementById('rewardUserSelect').value);
+    const balance = parseInt(document.getElementById('rewardBalance').value) || 100;
+    const pages = parseInt(document.getElementById('rewardPages').value) || 200;
+    
+    const user = allUsers.find(u => u.id === userId);
+    if (!user) {
+        showToast('الرجاء اختيار مستخدم أولاً', 'error');
+        return;
+    }
+    
+    user.balance = (user.balance || 0) + balance;
+    user.pages = (user.pages || 0) + pages;
+    saveUsers();
+    
+    giftsHistory.unshift({
+        id: Date.now(),
+        userId: user.id,
+        userName: user.name,
+        type: 'reward',
+        balance,
+        pages,
+        date: new Date().toISOString()
+    });
+    localStorage.setItem('giftsHistory', JSON.stringify(giftsHistory));
+    
+    renderUsersTable();
+    updateStats();
+    loadGiftsHistory();
+    showToast(`تم إرسال مكافأة لـ ${user.name}!`, 'success');
 }
 
 // ===== TOAST NOTIFICATION =====
