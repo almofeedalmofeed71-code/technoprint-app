@@ -1,15 +1,14 @@
-// ===== TECHNO-PRINT AUTH LOGIC - FULL DATABASE SYNC =====
+// ===== TECHNO-PRINT AUTH LOGIC - SERVER-API LINKED VERSION =====
 // Session: localStorage → technoprintSession
 
 // Session Keys
 const SESSION_KEY = 'technoprintSession';
 const USER_KEY = 'technoprintUser';
 
-// Supabase Config
-const SUPABASE_URL = 'https://avabozirwdefwtabywqo.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF2YWJvemlyd2RlZnd0YWJ5d3FvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY4NjM1NDQsImV4cCI6MjA5MjQzOTU0NH0.boDU0pXR1MGYiJXF1Jos-w0uehKCCZHsKgxHP7nbQVY';
+// Server API Base
+const API_BASE = ''; // Use relative path - server handles all
 
-// Welcome gift amount
+// Welcome gift
 const WELCOME_PAGES = 1000;
 const WELCOME_BALANCE = 0;
 
@@ -42,7 +41,7 @@ function getCurrentUser() {
     return null;
 }
 
-// LOGIN with Username + Password (NO EMAIL)
+// LOGIN via Server API (USERNAME AUTH - NO EMAIL)
 async function login(username, password) {
     if (!username || !password) {
         showAuthError('الرجاء إدخال اسم المستخدم وكلمة المرور');
@@ -50,36 +49,30 @@ async function login(username, password) {
     }
 
     try {
-        const response = await fetch(
-            `${SUPABASE_URL}/rest/v1/profiles?username=eq.${encodeURIComponent(username)}&select=*`,
-            {
-                headers: {
-                    'apikey': SUPABASE_KEY,
-                    'Authorization': `Bearer ${SUPABASE_KEY}`
-                }
-            }
-        );
+        const response = await fetch('/api/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, password })
+        });
 
-        const users = await response.json();
+        const data = await response.json();
 
-        if (!Array.isArray(users) || users.length === 0) {
-            showAuthError('❌ المستخدم غير موجود');
+        if (!response.ok) {
+            showAuthError(data.error || 'فشل تسجيل الدخول');
             return false;
         }
 
-        const user = users[0];
-
-        if (password.length >= 4) {
+        if (data.success && data.user) {
             const sessionData = {
-                id: user.id,
-                username: user.username,
-                fullName: user.full_name,
-                phone: user.phone || '',
-                governorate: user.governorate || '',
-                role: user.role || 'student',
-                category: user.category || '',
-                balance: user.balance_iqd || 0,
-                pages: user.pages_count || 0,
+                id: data.user.id,
+                username: data.user.username,
+                fullName: data.user.full_name,
+                phone: data.user.phone || '',
+                governorate: data.user.governorate || '',
+                role: data.user.role || 'student',
+                category: data.user.category || '',
+                balance: data.user.balance || 0,
+                pages: data.user.pages || 0,
                 loginTime: new Date().toISOString()
             };
 
@@ -91,7 +84,7 @@ async function login(username, password) {
             showToast('مرحباً بك ' + (sessionData.fullName || sessionData.username));
             return true;
         } else {
-            showAuthError('كلمة المرور غير صحيحة');
+            showAuthError(data.error || 'بيانات الدخول غير صحيحة');
             return false;
         }
 
@@ -102,7 +95,7 @@ async function login(username, password) {
     }
 }
 
-// REGISTER with FULL FIELDS - Username, Password, Phone, Province, Street, Category
+// REGISTER via Server API (USERNAME AUTH - NO EMAIL)
 async function register(formData) {
     const { fullName, username, password, phone, address, governorate, role, category } = formData;
 
@@ -117,68 +110,39 @@ async function register(formData) {
     }
 
     try {
-        // Check if username exists
-        const checkResponse = await fetch(
-            `${SUPABASE_URL}/rest/v1/profiles?username=eq.${encodeURIComponent(username)}&select=id`,
-            {
-                headers: {
-                    'apikey': SUPABASE_KEY,
-                    'Authorization': `Bearer ${SUPABASE_KEY}`
-                }
-            }
-        );
+        const response = await fetch('/api/register', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                username,
+                password,
+                full_name: fullName,
+                phone,
+                address,
+                governorate,
+                role,
+                category
+            })
+        });
 
-        const existing = await checkResponse.json();
-        if (Array.isArray(existing) && existing.length > 0) {
-            showAuthError('❌ اسم المستخدم موجود مسبقاً');
+        const data = await response.json();
+
+        if (!response.ok) {
+            showAuthError(data.error || 'فشل في إنشاء الحساب');
             return false;
         }
 
-        // Create new user with ALL FIELDS
-        const userId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-
-        const profileData = {
-            id: userId,
-            username: username,
-            full_name: fullName,
-            phone: phone,
-            address: address || '',
-            governorate: governorate || '',
-            role: role || 'student',
-            category: category, // NEW FIELD
-            balance_iqd: WELCOME_BALANCE,
-            pages_count: WELCOME_PAGES,
-            status: 'active',
-            created_at: new Date().toISOString()
-        };
-
-        console.log('Registering with data:', profileData);
-
-        const insertResponse = await fetch(
-            `${SUPABASE_URL}/rest/v1/profiles`,
-            {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'apikey': SUPABASE_KEY,
-                    'Authorization': `Bearer ${SUPABASE_KEY}`,
-                    'Prefer': 'return=representation'
-                },
-                body: JSON.stringify(profileData)
-            }
-        );
-
-        if (insertResponse.ok || insertResponse.status === 201) {
+        if (data.success && data.user) {
             const sessionData = {
-                id: userId,
-                username: username,
-                fullName: fullName,
-                phone: phone,
-                governorate: governorate || '',
-                role: role || 'student',
-                category: category,
-                balance: WELCOME_BALANCE,
-                pages: WELCOME_PAGES,
+                id: data.user.id,
+                username: data.user.username,
+                fullName: data.user.full_name,
+                phone: data.user.phone,
+                governorate: data.user.governorate || '',
+                role: data.user.role || 'student',
+                category: data.user.category,
+                balance: data.user.balance || 0,
+                pages: data.user.pages || 0,
                 loginTime: new Date().toISOString()
             };
 
@@ -187,13 +151,11 @@ async function register(formData) {
 
             closeModal('registerModal');
             showWelcomeGift(sessionData.fullName, sessionData.pages);
-            updateWalletUI(WELCOME_BALANCE, WELCOME_PAGES);
+            updateWalletUI(sessionData.balance, sessionData.pages);
             
             return true;
         } else {
-            const err = await insertResponse.text();
-            console.error('Registration failed:', err);
-            showAuthError('فشل في إنشاء الحساب: ' + err);
+            showAuthError(data.error || 'فشل في إنشاء الحساب');
             return false;
         }
 
@@ -227,36 +189,23 @@ function showAuthError(message) {
 function updateWalletUI(balance, pages) {
     const balanceEl = document.getElementById('walletBalanceDisplay');
     const pagesEl = document.getElementById('walletPagesDisplay');
-    const walletModalBalance = document.getElementById('walletModalBalance');
-    const walletModalPages = document.getElementById('walletModalPages');
     
     if (balanceEl) balanceEl.textContent = (balance || 0).toLocaleString() + ' IQD';
     if (pagesEl) pagesEl.textContent = (pages || 0).toLocaleString() + ' صفحة';
-    if (walletModalBalance) walletModalBalance.textContent = (balance || 0).toLocaleString() + ' IQD';
-    if (walletModalPages) walletModalPages.textContent = (pages || 0).toLocaleString() + ' صفحة';
 }
 
-// Sync wallet from database
+// Sync wallet from server
 async function syncWalletFromDatabase() {
     const user = getCurrentUser();
     if (!user) return;
     
     try {
-        const response = await fetch(
-            `${SUPABASE_URL}/rest/v1/profiles?id=eq.${user.id}&select=balance_iqd,pages_count`,
-            {
-                headers: {
-                    'apikey': SUPABASE_KEY,
-                    'Authorization': `Bearer ${SUPABASE_KEY}`
-                }
-            }
-        );
-        
+        const response = await fetch(`/api/wallet/${user.id}`);
         const data = await response.json();
-        if (Array.isArray(data) && data.length > 0) {
-            const dbUser = data[0];
-            user.balance = dbUser.balance_iqd || 0;
-            user.pages = dbUser.pages_count || 0;
+        
+        if (data.balance !== undefined) {
+            user.balance = data.balance;
+            user.pages = data.pages;
             
             localStorage.setItem(SESSION_KEY, JSON.stringify(user));
             updateWalletUI(user.balance, user.pages);
@@ -341,11 +290,9 @@ function closeWelcomePopup() {
 function updateUserUI() {
     const user = getCurrentUser();
     if (user) {
-        const userNameEl = document.getElementById('userName');
         const loginBtn = document.querySelector('.login-btn');
         const registerBtn = document.querySelector('.register-btn');
 
-        if (userNameEl) userNameEl.textContent = user.fullName || user.username;
         if (loginBtn) loginBtn.style.display = 'none';
         if (registerBtn) registerBtn.style.display = 'none';
         updateWalletUI(user.balance, user.pages);
