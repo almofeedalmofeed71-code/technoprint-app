@@ -5,404 +5,383 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TECHOPRINT 2026</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="css/ui-header.css">
-    <link rel="stylesheet" href="css/ui-modals.css">
-    <link rel="stylesheet" href="css/ui-cards.css">
-    <link rel="stylesheet" href="css/ui-glass.css">
-    <link rel="stylesheet" href="css/ui-colors.css">
-    <link rel="stylesheet" href="css/ui-buttons.css">
-    <link rel="stylesheet" href="css/ui-inputs.css">
-    <link rel="stylesheet" href="css/ui-ads-slider.css">
-    <link rel="stylesheet" href="css/animations.css">
-    <link rel="stylesheet" href="css/ui-responsive.css">
-    <link rel="stylesheet" href="css/ui-icons.css">
-    <style>
-:root{--gold:#D4AF37;--black:#0A0A0A;--dark:#1a1a2e;--white:#ffffff;--gold-light:#F4E4BC;--gold-dark:#B8960C}
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Cairo','Tajawal',sans-serif;background:var(--dark);color:var(--white);direction:rtl;overflow-x:hidden;min-height:100vh}
-a{text-decoration:none;color:inherit}
-
-/* Splash Screen */
-.splash{position:fixed;top:0;left:0;right:0;bottom:0;background:linear-gradient(135deg,#0A0A0A 0%,#1a1a2e 50%,#0A0A0A 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:99999;transition:opacity 0.5s}
-.splash-logo{width:120px;height:120px;background:linear-gradient(135deg,var(--gold),var(--gold-dark));border-radius:30px;display:flex;align-items:center;justify-content:center;font-size:60px;font-weight:900;color:var(--black);animation:logoFloat 3s ease-in-out infinite;box-shadow:0 20px 60px rgba(212,175,55,0.4)}
-.splash-text{color:var(--gold);font-size:28px;font-weight:700;margin-top:30px;animation:fadeIn 1s 0.5s both}
-.splash-sub{color:var(--gold-light);font-size:16px;margin-top:10px;animation:fadeIn 1s 1s both}
-@keyframes logoFloat{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-15px) rotate(5deg)}}
-@keyframes fadeIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
-
-/* Glassmorphism Header */
-.glass-header{position:fixed;top:0;left:0;right:0;z-index:1000;padding:15px 25px;display:flex;justify-content:space-between;align-items:center;background:rgba(10,10,10,0.85);backdrop-filter:blur(20px);border-bottom:1px solid rgba(212,175,55,0.3)}
-.header-brand{display:flex;align-items:center;gap:15px}
-.header-logo{width:50px;height:50px;background:linear-gradient(135deg,var(--gold),var(--gold-dark));border-radius:15px;display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:900;color:var(--black)}
-.header-title{color:var(--gold);font-size:22px;font-weight:700;letter-spacing:1px}
-.header-actions{display:flex;gap:10px}
-.gold-btn{background:linear-gradient(135deg,var(--gold),var(--gold-dark));color:var(--black);border:none;padding:12px 25px;border-radius:12px;font-weight:700;font-size:14px;cursor:pointer;transition:all 0.3s;box-shadow:0 5px 20px rgba(212,175,55,0.3)}
-.gold-btn:hover{transform:translateY(-3px);box-shadow:0 10px 30px rgba(212,175,55,0.5)}
-.glass-btn{background:rgba(255,255,255,0.1);border:1px solid rgba(212,175,55,0.3);color:var(--gold);padding:12px 25px;border-radius:12px;font-weight:600;cursor:pointer;transition:all 0.3s}
-.glass-btn:hover{background:rgba(212,175,55,0.2)}
-
-/* Ad Slider */
-.ad-slider{position:relative;margin:90px 20px 20px;overflow:hidden;border-radius:20px;border:2px solid rgba(212,175,55,0.5);box-shadow:0 10px 40px rgba(0,0,0,0.5)}
-.slider-frame{position:relative;width:100%;aspect-ratio:16/7;overflow:hidden}
-.slider-track{display:flex;transition:transform 0.5s cubic-bezier(0.4,0,0.2,1);height:100%}
-.slide{width:100%;flex-shrink:0;position:relative}
-.slide img{width:100%;height:100%;object-fit:cover}
-.slide-overlay{position:absolute;bottom:0;left:0;right:0;padding:40px 30px 30px;background:linear-gradient(transparent,rgba(0,0,0,0.9));direction:ltr}
-.slide-title{color:var(--gold);font-size:24px;font-weight:700;margin-bottom:5px}
-.slide-desc{color:var(--white);font-size:14px}
-.slider-dots{position:absolute;bottom:15px;left:50%;transform:translateX(-50%);display:flex;gap:8px;z-index:10}
-.slider-dot{width:12px;height:12px;border-radius:50%;background:rgba(255,255,255,0.4);cursor:pointer;transition:all 0.3s}
-.slider-dot.active{background:var(--gold);transform:scale(1.3)}
-.slider-arrows{position:absolute;top:50%;transform:translateY(-50%);width:50px;height:50px;background:rgba(10,10,10,0.8);border:2px solid var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--gold);cursor:pointer;z-index:10;transition:all 0.3s}
-.slider-arrows:hover{background:var(--gold);color:var(--black)}
-.slider-prev{left:15px}
-.slider-next{right:15px}
-
-/* Welcome Card */
-.welcome-card{margin:20px;background:linear-gradient(135deg,rgba(26,26,46,0.9),rgba(22,33,62,0.9));border:2px solid rgba(212,175,55,0.4);border-radius:25px;padding:25px;text-align:center;position:relative;overflow:hidden}
-.welcome-card::before{content:'';position:absolute;top:-50%;right:-50%;width:200%;height:200%;background:linear-gradient(45deg,transparent,rgba(212,175,55,0.1),transparent);animation:shimmer 3s infinite}
-@keyframes shimmer{0%{transform:translateX(-100%) rotate(45deg)}100%{transform:translateX(100%) rotate(45deg)}}
-.welcome-greet{color:var(--gold);font-size:20px;font-weight:700;margin-bottom:10px}
-.welcome-pages{font-size:36px;font-weight:900;color:var(--gold);text-shadow:0 0 30px rgba(212,175,55,0.5)}
-.welcome-label{color:var(--gold-light);font-size:14px;margin-top:5px}
-.welcome-btn{margin-top:15px;display:inline-block;background:var(--gold);color:var(--black);padding:12px 30px;border-radius:25px;font-weight:700}
-
-/* Portal Grid */
-.portal-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:15px;padding:20px;margin-top:10px}
-.portal-card{background:linear-gradient(135deg,rgba(26,26,46,0.9),rgba(22,33,62,0.9));border:1px solid rgba(212,175,55,0.3);border-radius:20px;padding:25px 15px;text-align:center;cursor:pointer;transition:all 0.4s cubic-bezier(0.4,0,0.2,1);position:relative;overflow:hidden}
-.portal-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--gold),var(--gold-light));transform:scaleX(0);transition:transform 0.3s;transform-origin:left}
-.portal-card:hover{transform:translateY(-8px);border-color:var(--gold);box-shadow:0 15px 40px rgba(212,175,55,0.3)}
-.portal-card:hover::before{transform:scaleX(1)}
-.portal-icon{font-size:45px;margin-bottom:12px;display:block}
-.portal-title{color:var(--gold);font-size:16px;font-weight:700;margin-bottom:5px}
-.portal-sub{color:rgba(255,255,255,0.6);font-size:12px}
-
-/* Service Grid */
-.service-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;padding:20px}
-.service-card{background:rgba(26,26,46,0.8);border:1px solid rgba(212,175,55,0.2);border-radius:15px;padding:20px;text-align:center;cursor:pointer;transition:all 0.3s}
-.service-card:hover{border-color:var(--gold);transform:scale(1.05)}
-.service-icon{font-size:28px;margin-bottom:8px}
-.service-name{color:var(--gold);font-size:12px;font-weight:600}
-
-/* Section Title */
-.section-header{display:flex;align-items:center;justify-content:space-between;padding:20px 20px 10px}
-.section-title{color:var(--gold);font-size:20px;font-weight:700;display:flex;align-items:center;gap:10px}
-.section-title::before{content:'';width:4px;height:25px;background:var(--gold);border-radius:2px}
-.more-link{color:var(--gold);font-size:13px;cursor:pointer}
-
-/* Cards Grid */
-.cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:15px;padding:10px 20px}
-.card-item{background:linear-gradient(135deg,rgba(26,26,46,0.95),rgba(22,33,62,0.95));border:2px solid rgba(212,175,55,0.3);border-radius:20px;padding:20px;text-align:center;transition:all 0.3s;cursor:pointer}
-.card-item:hover{border-color:var(--gold);transform:translateY(-5px);box-shadow:0 15px 40px rgba(212,175,55,0.2)}
-.card-icon{font-size:40px;margin-bottom:10px}
-.card-title{color:var(--gold);font-size:14px;font-weight:700;margin-bottom:5px}
-.card-desc{color:rgba(255,255,255,0.6);font-size:11px;margin-bottom:10px}
-.card-price{color:#2ECC71;font-size:18px;font-weight:700}
-.card-btn{display:block;width:100%;margin-top:12px;background:var(--gold);color:var(--black);border:none;padding:10px;border-radius:10px;font-weight:700;cursor:pointer}
-
-/* Wallet Display */
-.wallet-card{margin:15px 20px;background:linear-gradient(135deg,rgba(26,26,46,0.9),#16213e);border:2px solid rgba(212,175,55,0.4);border-radius:20px;padding:25px;text-align:center}
-.wallet-icon{font-size:50px;margin-bottom:10px}
-.wallet-balance{font-size:32px;font-weight:900;color:var(--gold)}
-.wallet-pages{font-size:18px;color:#2ECC71;margin-top:5px}
-
-/* Bottom Nav */
-.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:rgba(10,10,10,0.95);backdrop-filter:blur(20px);display:flex;justify-content:space-around;padding:12px 5px;border-top:1px solid rgba(212,175,55,0.3);z-index:1000}
-.nav-item{background:none;border:none;color:rgba(255,255,255,0.5);display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer;padding:8px 15px;border-radius:12px;transition:all 0.3s}
-.nav-item.active{color:var(--gold)}
-.nav-item i{font-size:22px}
-.nav-item span{font-size:10px}
-
-/* Modals */
-.modal-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.9);z-index:9999;align-items:center;justify-content:center;padding:20px}
-.modal-overlay.active{display:flex}
-.modal-box{background:linear-gradient(135deg,var(--dark),#16213e);border:2px solid var(--gold);border-radius:25px;padding:30px;width:100%;max-width:450px;position:relative;max-height:90vh;overflow-y:auto}
-.modal-close{position:absolute;top:15px;left:15px;width:40px;height:40px;background:rgba(212,175,55,0.2);border:1px solid var(--gold);border-radius:50%;color:var(--gold);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center}
-.modal-close:hover{background:var(--gold);color:var(--black)}
-.modal-title{text-align:center;color:var(--gold);font-size:22px;font-weight:700;margin-bottom:25px}
-
-/* Forms */
-.form-group{margin-bottom:18px}
-.form-label{color:var(--gold);font-size:14px;font-weight:600;margin-bottom:8px;display:block}
-.form-input{width:100%;padding:14px 16px;background:rgba(10,10,10,0.8);border:1px solid rgba(212,175,55,0.3);border-radius:12px;color:var(--white);font-size:15px;transition:all 0.3s}
-.form-input:focus{outline:none;border-color:var(--gold);box-shadow:0 0 15px rgba(212,175,55,0.2)}
-.form-select{width:100%;padding:14px 16px;background:rgba(10,10,10,0.8);border:1px solid rgba(212,175,55,0.3);border-radius:12px;color:var(--white);font-size:15px;cursor:pointer}
-.form-select:focus{outline:none;border-color:var(--gold)}
-.form-submit{width:100%;padding:15px;background:linear-gradient(135deg,var(--gold),var(--gold-dark));color:var(--black);border:none;border-radius:12px;font-size:16px;font-weight:700;cursor:pointer;transition:all 0.3s;margin-top:10px}
-.form-submit:hover{transform:scale(1.03);box-shadow:0 10px 30px rgba(212,175,55,0.4)}
-.form-link{text-align:center;margin-top:15px;color:var(--gold);font-size:14px;cursor:pointer}
-
-/* Toast */
-.toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:var(--gold);color:var(--black);padding:15px 35px;border-radius:30px;font-weight:700;font-size:15px;z-index:99999;box-shadow:0 10px 30px rgba(212,175,55,0.5);animation:toastIn 0.5s}
-@keyframes toastIn{from{transform:translateX(-50%) translateY(100px);opacity:0}to{transform:translateX(-50%) translateY(0);opacity:1}}
-
-/* Loading */
-.loading-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.9);display:none;align-items:center;justify-content:center;z-index:99998}
-.loading-overlay.active{display:flex}
-.spinner{width:50px;height:50px;border:4px solid var(--gold);border-top:4px solid transparent;border-radius:50%;animation:spin 1s linear infinite}
-@keyframes spin{to{transform:rotate(360deg)}}
-
-/* Content Area */
-.main-content{padding-bottom:100px;padding-top:90px}
-
-/* Welcome Gift Popup */
-.gift-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.95);z-index:99999;display:none;align-items:center;justify-content:center}
-.gift-overlay.active{display:flex}
-.gift-box{text-align:center;animation:giftPop 0.5s}
-@keyframes giftPop{from{transform:scale(0.5);opacity:0}to{transform:scale(1);opacity:1}}
-.gift-icon{font-size:80px;animation:pulse 2s infinite}
-.gift-title{color:var(--gold);font-size:28px;font-weight:700;margin:20px 0}
-.gift-card{background:linear-gradient(135deg,var(--dark),#16213e);border:2px solid var(--gold);border-radius:25px;padding:30px;max-width:350px}
-.gift-number{font-size:50px;font-weight:900;color:var(--gold)}
-.gift-label{color:var(--gold-light);font-size:14px}
-.gift-btn{margin-top:20px;background:var(--gold);color:var(--black);border:none;padding:15px 40px;border-radius:25px;font-size:16px;font-weight:700;cursor:pointer}
-
-/* Section Display */
-.section-page{display:none;padding:90px 15px 100px}
-.section-page.active{display:block}
-
-/* Page Header */
-.page-header{display:flex;align-items:center;gap:15px;padding:20px;background:rgba(10,10,10,0.5)}
-.back-btn{width:45px;height:45px;background:rgba(212,175,55,0.2);border:1px solid var(--gold);border-radius:12px;display:flex;align-items:center;justify-content:center;color:var(--gold);font-size:18px;cursor:pointer}
-.page-title{color:var(--gold);font-size:20px;font-weight:700}
-
-/* Profile Section */
-.profile-card{margin:20px;background:linear-gradient(135deg,var(--dark),#16213e);border:2px solid var(--gold);border-radius:25px;padding:30px;text-align:center}
-.profile-avatar{width:90px;height:90px;background:linear-gradient(135deg,var(--gold),var(--gold-dark));border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:45px;margin:0 auto 15px}
-.profile-name{color:var(--white);font-size:22px;font-weight:700}
-.profile-cat{color:var(--gold);font-size:14px;margin-top:5px}
-.profile-info{margin-top:20px;padding-top:20px;border-top:1px solid rgba(212,175,55,0.3)}
-.profile-row{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.1)}
-.profile-key{color:var(--gold)}
-.profile-val{color:var(--white)}
-
-/* Utility Buttons */
-.utility-row{display:flex;justify-content:center;gap:15px;padding:20px;flex-wrap:wrap}
-.utility-btn{width:80px;background:rgba(26,26,46,0.8);border:1px solid rgba(212,175,55,0.3);border-radius:15px;padding:15px;text-align:center;cursor:pointer}
-.utility-btn i{font-size:24px;color:var(--gold);display:block;margin-bottom:8px}
-.utility-btn span{font-size:11px;color:var(--gold)}
-
-/* Order List */
-.order-list{padding:15px}
-.order-item{background:rgba(26,26,46,0.8);border:1px solid rgba(212,175,55,0.3);border-radius:15px;padding:15px;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center}
-.order-info h4{color:var(--gold);font-size:14px;margin-bottom:5px}
-.order-info p{color:rgba(255,255,255,0.6);font-size:12px}
-.order-status{padding:6px 15px;border-radius:20px;font-size:12px;font-weight:600}
-.order-status.pending{background:rgba(243,156,18,0.2);color:#F39C12}
-.order-status.done{background:rgba(46,204,113,0.2);color:#2ECC71}
-.order-status.cancel{background:rgba(231,76,60,0.2);color:#E74C3C}
-
-/* Messages */
-.msg-list{padding:15px;max-height:400px;overflow-y:auto}
-.msg-bubble{max-width:85%;padding:12px 18px;border-radius:15px;margin-bottom:12px;font-size:14px}
-.msg-sent{background:var(--gold);color:var(--black);margin-right:auto;border-bottom-right-radius:4px}
-.msg-received{background:rgba(26,46,78,0.9);border:1px solid rgba(212,175,55,0.3);margin-left:auto;border-bottom-left-radius:4px}
-
-/* Footer Ad */
-.footer-ad{margin:20px;padding:15px;background:linear-gradient(135deg,rgba(212,175,55,0.2),rgba(184,150,12,0.1));border:1px solid var(--gold);border-radius:15px;text-align:center}
-.footer-ad p{color:var(--gold);font-size:14px}
-
-/* Hide on load */
-.hidden{display:none}
-/* Animation utility */
-.animate{animation:fadeSlide 0.5s}
-@keyframes fadeSlide{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
-    </style>
 </head>
 <body>
-    <!-- Splash Screen -->
-    <div class="splash" id="splashScreen">
-        <div class="splash-logo">T</div>
-        <div class="splash-text">TECHOPRINT 2026</div>
-        <div class="splash-sub">الطباعة الاحترافية</div>
+    <!-- PRELOADER -->
+    <div class="preloader" id="preloader">
+        <div class="loader-content">
+            <div class="logo-icon">T</div>
+            <h1>TECHOPRINT</h1>
+            <p>الطباعة الاحترافية</p>
+            <div class="progress-bar"><div class="progress-fill"></div></div>
+        </div>
     </div>
 
-    <!-- Header -->
-    <header class="glass-header" id="mainHeader">
-        <div class="header-brand">
-            <div class="header-logo">T</div>
-            <span class="header-title">TECHOPRINT</span>
+    <!-- SPLASH SCREEN -->
+    <div class="splash-screen" id="splashScreen" style="display:none;">
+        <div class="splash-content">
+            <div class="splash-logo">T</div>
+            <div class="splash-text">TECHOPRINT</div>
         </div>
-        <div class="header-actions">
-            <button class="glass-btn" onclick="showSection('profile')"><i class="fas fa-user"></i></button>
-            <button class="gold-btn" onclick="showSection('register')"><i class="fas fa-user-plus"></i> تسجيل</button>
-        </div>
-    </header>
-
-    <!-- Ad Slider -->
-    <div class="ad-slider" id="adSlider">
-        <div class="slider-frame">
-            <div class="slider-track" id="sliderTrack">
-                <div class="slide">
-                    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 350'%3E%3Crect fill='%231a1a2e' width='800' height='350'/%3E%3Ctext x='400' y='150' text-anchor='middle' fill='%23D4AF37' font-size='40' font-weight='bold'%3ETECHOPRINT 2026%3C/text%3E%3Ctext x='400' y='200' text-anchor='middle' fill='%23ffffff' font-size='20'%3Eخدمات الطباعة الاحترافية%3C/text%3E%3Ctext x='400' y='240' text-anchor='middle' fill='%23D4AF37' font-size='16'%3E🎓 بطاقة طالب | 🏢 بطاقة مكتب | 🔬 بطاقة مختبر%3C/text%3E%3C/svg%3E" alt="Banner 1">
-                    <div class="slide-overlay"><div class="slide-title">مرحباً بكم في TECHOPRINT 2026</div><div class="slide-desc">أفضل خدمات الطباعة والتصميم</div></div>
-                </div>
-                <div class="slide">
-                    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 350'%3E%3Crect fill='%230A0A0A' width='800' height='350'/%3E%3Ctext x='400' y='150' text-anchor='middle' fill='%23D4AF37' font-size='36' font-weight='bold'%3Eخصم 50% للطلاب!%3C/text%3E%3Ctext x='400' y='200' text-anchor='middle' fill='%23ffffff' font-size='20'%3Eاحصل على خصم خاص مع بطاقة الطالب%3C/text%3E%3C/svg%3E" alt="Banner 2">
-                    <div class="slide-overlay"><div class="slide-title">خصم 50% للطلاب!</div><div class="slide-desc">سجل الآن واحصل على خصم خاص</div></div>
-                </div>
-                <div class="slide">
-                    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 350'%3E%3Crect fill='%231a1a2e' width='800' height='350'/%3E%3Ctext x='400' y='150' text-anchor='middle' fill='%23D4AF37' font-size='36' font-weight='bold'%3E1000 صفحة مجانية!%3C/text%3E%3Ctext x='400' y='200' text-anchor='middle' fill='%23ffffff' font-size='20'%3Eتسجيل جديد + هدية 1000 صفحة%3C/text%3E%3C/svg%3E" alt="Banner 3">
-                    <div class="slide-overlay"><div class="slide-title">🎁 1000 صفحة مجانية!</div><div class="slide-desc">تسجيل جديد + هدية 1000 صفحة</div></div>
-                </div>
-            </div>
-        </div>
-        <div class="slider-dots" id="sliderDots"></div>
-        <div class="slider-arrows slider-prev" onclick="slidePrev()"><i class="fas fa-chevron-right"></i></div>
-        <div class="slider-arrows slider-next" onclick="slideNext()"><i class="fas fa-chevron-left"></i></div>
     </div>
 
-    <!-- Main Content -->
-    <main class="main-content" id="mainContent">
-        <!-- Dashboard Section -->
-        <div class="dashboard-page active" id="dashboardPage">
-            <!-- Welcome Card -->
-            <div class="welcome-card" id="welcomeCard">
-                <div class="welcome-greet">👋 مرحباً بك!</div>
-                <div class="welcome-pages" id="pagesDisplay">1000</div>
-                <div class="welcome-label">صفحة طباعة مجانية</div>
-            </div>
-
-            <!-- Portal Grid -->
-            <div class="portal-grid">
-                <div class="portal-card" onclick="showSection('cards')">
-                    <span class="portal-icon">🪪</span>
-                    <div class="portal-title">البطاقات</div>
-                    <div class="portal-sub">طلب بطاقات</div>
+    <!-- MAIN APP CONTAINER -->
+    <div class="app-container" id="appContainer" style="display:none;">
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <span class="crown">👑</span>
+                    <span class="logo-text">TECHOPRINT</span>
                 </div>
-                <div class="portal-card" onclick="showSection('wallet')">
-                    <span class="portal-icon">💰</span>
-                    <div class="portal-title">المحفظة</div>
-                    <div class="portal-sub">الرصيد والصفحات</div>
+                <span class="version">v3.0</span>
+            </div>
+
+            <nav class="nav-menu">
+                <div class="nav-item active" onclick="showPage('home')">
+                    <i class="fas fa-home nav-icon"></i>
+                    <span class="nav-text">الرئيسية</span>
                 </div>
-                <div class="portal-card" onclick="showSection('orders')">
-                    <span class="portal-icon">📦</span>
-                    <div class="portal-title">طلباتي</div>
-                    <div class="portal-sub">تتبع الطلبات</div>
+                <div class="nav-item" onclick="showPage('portals')">
+                    <i class="fas fa-th-large nav-icon"></i>
+                    <span class="nav-text">البوابات</span>
                 </div>
-                <div class="portal-card" onclick="showSection('contact')">
-                    <span class="portal-icon">💬</span>
-                    <div class="portal-title">تواصل</div>
-                    <div class="portal-sub">اتصل بنا</div>
+                <div class="nav-item" onclick="showPage('wallet')">
+                    <i class="fas fa-wallet nav-icon"></i>
+                    <span class="nav-text">المحفظة</span>
+                </div>
+                <div class="nav-item" onclick="showPage('orders')">
+                    <i class="fas fa-box nav-icon"></i>
+                    <span class="nav-text">طلباتي</span>
+                </div>
+            </nav>
+
+            <div class="admin-section">
+                <div class="section-title">سريع</div>
+                <div class="nav-item" onclick="showPage('cards')">
+                    <i class="fas fa-id-card nav-icon"></i>
+                    <span class="nav-text">البطاقات</span>
+                </div>
+                <div class="nav-item" onclick="showPage('settings')">
+                    <i class="fas fa-cog nav-icon"></i>
+                    <span class="nav-text">الإعدادات</span>
                 </div>
             </div>
 
-            <!-- Services -->
-            <div class="section-header">
-                <div class="section-title">⚡ الخدمات</div>
-            </div>
-            <div class="service-grid">
-                <div class="service-card"><span class="service-icon">📚</span><div class="service-name">المكتبة</div></div>
-                <div class="service-card"><span class="service-icon">🖨️</span><div class="service-name">الطباعة</div></div>
-                <div class="service-card"><span class="service-icon">🎨</span><div class="service-name">التصميم</div></div>
-                <div class="service-card"><span class="service-icon">📱</span><div class="service-name">التطبيقات</div></div>
-                <div class="service-card"><span class="service-icon">☁️</span><div class="service-name">الخدمات</div></div>
-                <div class="service-card"><span class="service-icon">🔧</span><div class="service-name">الدعم</div></div>
-            </div>
-
-            <!-- Cards Preview -->
-            <div class="section-header">
-                <div class="section-title">🪪 أنواع البطاقات</div>
-                <span class="more-link" onclick="showSection('cards')">المزيد ←</span>
-            </div>
-            <div class="cards-grid" id="cardsGridHome"></div>
-        </div>
-
-        <!-- Cards Section -->
-        <div class="section-page" id="cardsPage">
-            <div class="page-header">
-                <button class="back-btn" onclick="showSection('dashboard')"><i class="fas fa-arrow-right"></i></button>
-                <div class="page-title">🪪 البطاقات</div>
-            </div>
-            <div class="cards-grid" id="cardsGrid"></div>
-        </div>
-
-        <!-- Wallet Section -->
-        <div class="section-page" id="walletPage">
-            <div class="page-header">
-                <button class="back-btn" onclick="showSection('dashboard')"><i class="fas fa-arrow-right"></i></button>
-                <div class="page-title">💰 المحفظة</div>
-            </div>
-            <div class="wallet-card">
-                <div class="wallet-icon">💰</div>
-                <div class="wallet-balance" id="walletBalance">0 IQD</div>
-                <div class="wallet-pages" id="walletPages">0 صفحة</div>
-            </div>
-            <div class="utility-row">
-                <div class="utility-btn"><i class="fas fa-plus"></i><span>شحن</span></div>
-                <div class="utility-btn"><i class="fas fa-history"></i><span>سجل</span></div>
-                <div class="utility-btn"><i class="fas fa-gift"></i><span>تحويل</span></div>
-            </div>
-        </div>
-
-        <!-- Orders Section -->
-        <div class="section-page" id="ordersPage">
-            <div class="page-header">
-                <button class="back-btn" onclick="showSection('dashboard')"><i class="fas fa-arrow-right"></i></button>
-                <div class="page-title">📦 طلباتي</div>
-            </div>
-            <div class="order-list" id="orderList">
-                <p style="text-align:center;color:rgba(255,255,255,0.5);padding:40px;">لا توجد طلبات حالياً</p>
-            </div>
-        </div>
-
-        <!-- Profile Section -->
-        <div class="section-page" id="profilePage">
-            <div class="page-header">
-                <button class="back-btn" onclick="showSection('dashboard')"><i class="fas fa-arrow-right"></i></button>
-                <div class="page-title">👤 حسابي</div>
-            </div>
-            <div class="profile-card" id="profileCard">
-                <div class="profile-avatar">👤</div>
-                <div class="profile-name" id="profileName">زائر</div>
-                <div class="profile-cat" id="profileCat">سجل الآن</div>
+            <!-- User Profile -->
+            <div class="user-profile">
+                <div class="profile-image">👤</div>
                 <div class="profile-info">
-                    <div class="profile-row"><span class="profile-key">المستخدم</span><span class="profile-val" id="profileUser">-</span></div>
-                    <div class="profile-row"><span class="profile-key">الهاتف</span><span class="profile-val" id="profilePhone">-</span></div>
-                    <div class="profile-row"><span class="profile-key">المحافظة</span><span class="profile-val" id="profileGov">-</span></div>
-                    <div class="profile-row"><span class="profile-key">الفئة</span><span class="profile-val" id="profileCategory">-</span></div>
+                    <span class="user-name" id="userName">زائر</span>
+                    <span class="user-role" id="userRole">غير مسجل</span>
                 </div>
             </div>
-            <button class="gold-btn" style="display:block;margin:0 auto;width:calc(100% - 40px);" onclick="showSection('login')"><i class="fas fa-sign-in-alt"></i> تسجيل الدخول</button>
-        </div>
+        </aside>
 
-        <!-- Contact Section -->
-        <div class="section-page" id="contactPage">
-            <div class="page-header">
-                <button class="back-btn" onclick="showSection('dashboard')"><i class="fas fa-arrow-right"></i></button>
-                <div class="page-title">💬 تواصل معنا</div>
-            </div>
-            <div style="padding:20px;">
-                <div class="service-card" style="margin-bottom:15px;"><span class="service-icon">📱</span><div class="service-name">0770 123 4567</div></div>
-                <div class="service-card" style="margin-bottom:15px;"><span class="service-icon">💬</span><div class="service-name">واتساب</div></div>
-                <div class="service-card"><span class="service-icon">📧</span><div class="service-name">info@technoprint.com</div></div>
-            </div>
-        </div>
+        <!-- MAIN CONTENT -->
+        <main class="main-content">
+            <!-- HEADER -->
+            <header class="header">
+                <div class="header-left">
+                    <!-- Language Switcher -->
+                    <div class="language-switcher">
+                        <button class="lang-btn active" onclick="switchLang('ar')">
+                            <span class="flag">🇮🇶</span>
+                            <span class="lang-name">عربي</span>
+                        </button>
+                        <button class="lang-btn" onclick="switchLang('en')">
+                            <span class="flag">🇬🇧</span>
+                            <span class="lang-name">English</span>
+                        </button>
+                    </div>
+                    <button class="notifications-btn">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-badge" id="notifBadge">3</span>
+                    </button>
+                </div>
+                <div class="header-center">
+                    <h1 class="page-title">TECHOPRINT 2026</h1>
+                </div>
+                <div class="header-right">
+                    <div class="balance-display" onclick="showPage('wallet')">
+                        <i class="fas fa-coins wallet-icon"></i>
+                        <div>
+                            <span class="balance-label">الرصيد</span>
+                            <span class="balance-value" id="headerBalance">0</span>
+                            <span class="wallet-currency">IQD</span>
+                        </div>
+                    </div>
+                    <button class="menu-toggle">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            </header>
 
-        <!-- Register Section -->
-        <div class="section-page" id="registerPage">
-            <div class="page-header">
-                <button class="back-btn" onclick="showSection('dashboard')"><i class="fas fa-arrow-right"></i></button>
-                <div class="page-title">📝 إنشاء حساب</div>
+            <!-- PAGE CONTENT -->
+            <div class="page-content">
+                <!-- HOME PAGE -->
+                <div class="page active" id="homePage">
+                    <!-- Welcome Banner -->
+                    <div class="welcome-banner glass-panel">
+                        <div class="welcome-text">
+                            <h2>مرحباً بك <span class="gold-text" id="welcomeName">في TECHOPRINT</span></h2>
+                            <p>خدمات الطباعة الاحترافية بأعلى جودة</p>
+                        </div>
+                        <div class="welcome-stats">
+                            <div class="stat-item">
+                                <span class="stat-value" id="statPages">0</span>
+                                <span class="stat-label">صفحة</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-value" id="statOrders">0</span>
+                                <span class="stat-label">طلب</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- AD SLIDER - REAL SLIDER -->
+                    <div class="ad-slider-container" style="margin: 24px 0; position: relative;">
+                        <div class="slider-frame" style="border-radius: 16px; overflow: hidden; border: 2px solid var(--gold-royal);">
+                            <div class="slider-track" id="homeSliderTrack" style="display: flex; transition: transform 0.5s ease;">
+                                <div class="slide" style="min-width: 100%;">
+                                    <div style="background: linear-gradient(135deg, #1a1a2e 0%, #0A0A0A 100%); height: 250px; display: flex; align-items: center; justify-content: center; flex-direction: column;">
+                                        <div style="font-size: 80px; margin-bottom: 20px;">🖨️</div>
+                                        <h3 style="color: var(--gold-royal); font-size: 28px; margin-bottom: 10px;">TECHOPRINT 2026</h3>
+                                        <p style="color: var(--text-secondary);">أفضل خدمات الطباعة والتصميم</p>
+                                    </div>
+                                </div>
+                                <div class="slide" style="min-width: 100%;">
+                                    <div style="background: linear-gradient(135deg, #0A0A0A 0%, #1a1a2e 100%); height: 250px; display: flex; align-items: center; justify-content: center; flex-direction: column;">
+                                        <div style="font-size: 80px; margin-bottom: 20px;">🎓</div>
+                                        <h3 style="color: var(--gold-royal); font-size: 28px; margin-bottom: 10px;">خصم 50% للطلاب!</h3>
+                                        <p style="color: var(--text-secondary);">احصل على خصم خاص مع بطاقة الطالب</p>
+                                    </div>
+                                </div>
+                                <div class="slide" style="min-width: 100%;">
+                                    <div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); height: 250px; display: flex; align-items: center; justify-content: center; flex-direction: column;">
+                                        <div style="font-size: 80px; margin-bottom: 20px;">🎁</div>
+                                        <h3 style="color: var(--gold-royal); font-size: 28px; margin-bottom: 10px;">1000 صفحة مجانية!</h3>
+                                        <p style="color: var(--text-secondary);">تسجيل جديد + هدية 1000 صفحة</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="slider-dots" id="sliderDots" style="position: absolute; bottom: 15px; left: 50%; transform: translateX(-50%); display: flex; gap: 8px;"></div>
+                        <div class="slider-arrows slider-prev" onclick="slidePrev()" style="position: absolute; top: 50%; left: 15px; transform: translateY(-50%); width: 40px; height: 40px; background: rgba(10,10,11,0.8); border: 2px solid var(--gold-royal); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--gold-royal); cursor: pointer;">
+                            <i class="fas fa-chevron-right"></i>
+                        </div>
+                        <div class="slider-arrows slider-next" onclick="slideNext()" style="position: absolute; top: 50%; right: 15px; transform: translateY(-50%); width: 40px; height: 40px; background: rgba(10,10,11,0.8); border: 2px solid var(--gold-royal); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--gold-royal); cursor: pointer;">
+                            <i class="fas fa-chevron-left"></i>
+                        </div>
+                    </div>
+
+                    <!-- Quick Actions -->
+                    <div class="quick-actions">
+                        <button class="action-btn glass-panel" onclick="showPage('cards')">
+                            <i class="fas fa-id-card" style="font-size: 2rem; color: var(--gold-royal);"></i>
+                            <span>طلب بطاقة</span>
+                        </button>
+                        <button class="action-btn glass-panel" onclick="showPage('wallet')">
+                            <i class="fas fa-wallet" style="font-size: 2rem; color: var(--gold-royal);"></i>
+                            <span>شحن المحفظة</span>
+                        </button>
+                        <button class="action-btn glass-panel" onclick="showRegister()">
+                            <i class="fas fa-user-plus" style="font-size: 2rem; color: var(--gold-royal);"></i>
+                            <span>تسجيل جديد</span>
+                        </button>
+                    </div>
+
+                    <!-- Portal Grid - Clean Home Screen -->
+                    <h2 style="color: var(--gold-royal); font-family: var(--font-title); margin: 32px 0 16px; font-size: 1.5rem;">
+                        <i class="fas fa-th-large"></i> البوابات الرئيسية
+                    </h2>
+                    <div class="gates-grid">
+                        <div class="gate-card glass-panel" onclick="showPage('student')">
+                            <span class="gate-icon">🎓</span>
+                            <h3>بوابة الطالب</h3>
+                            <p>خدمات الطالب والطباعة</p>
+                            <span class="gate-role">طالب</span>
+                        </div>
+                        <div class="gate-card glass-panel" onclick="showPage('library')">
+                            <span class="gate-icon">📚</span>
+                            <h3>بوابة المكتبة</h3>
+                            <p>الكتب والمراجع</p>
+                            <span class="gate-role">مكتبة</span>
+                        </div>
+                        <div class="gate-card glass-panel" onclick="showPage('cards')">
+                            <span class="gate-icon">🪪</span>
+                            <h3>بوابة البطاقات</h3>
+                            <p>طلب بطاقات متعددة</p>
+                            <span class="gate-role">بطاقات</span>
+                        </div>
+                        <div class="gate-card glass-panel" onclick="showPage('services')">
+                            <span class="gate-icon">⚙️</span>
+                            <h3>بوابة الخدمات</h3>
+                            <p>خدمات التصميم والطباعة</p>
+                            <span class="gate-role">خدمات</span>
+                        </div>
+                        <div class="gate-card glass-panel" onclick="showPage('projects')">
+                            <span class="gate-icon">🎂</span>
+                            <h3>بوابة المشاريع</h3>
+                            <p>المشاريع والتصاميم</p>
+                            <span class="gate-role">مشاريع</span>
+                        </div>
+                        <div class="gate-card glass-panel" onclick="showPage('tracking')">
+                            <span class="gate-icon">📍</span>
+                            <h3>بوابة التتبع</h3>
+                            <p>تتبع الطلبات والشحنات</p>
+                            <span class="gate-role">تتبع</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PORTALS PAGE - Clean internal portal pages -->
+                <div class="page" id="portalsPage">
+                    <h2 style="color: var(--gold-royal); font-family: var(--font-title); margin-bottom: 24px;">
+                        <i class="fas fa-th-large"></i> البوابات
+                    </h2>
+                    <div class="gates-grid" id="portalsGrid">
+                        <!-- Dynamically populated -->
+                    </div>
+                </div>
+
+                <!-- CARDS PAGE - Internal page, not on home -->
+                <div class="page" id="cardsPage">
+                    <button class="back-home-btn" onclick="showPage('home')">
+                        <i class="fas fa-arrow-right"></i>
+                        <span class="back-text">العودة للرئيسية</span>
+                    </button>
+                    <h2 style="color: var(--gold-royal); font-family: var(--font-title); margin: 24px 0;">
+                        <i class="fas fa-id-card"></i> البطاقات
+                    </h2>
+                    <div class="cards-grid" id="cardsGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; padding: 20px;">
+                        <!-- Cards will be rendered here -->
+                    </div>
+                </div>
+
+                <!-- WALLET PAGE -->
+                <div class="page" id="walletPage">
+                    <button class="back-home-btn" onclick="showPage('home')">
+                        <i class="fas fa-arrow-right"></i>
+                        <span class="back-text">العودة للرئيسية</span>
+                    </button>
+                    <h2 style="color: var(--gold-royal); font-family: var(--font-title); margin: 24px 0;">
+                        <i class="fas fa-wallet"></i> المحفظة
+                    </h2>
+                    <div class="wallet-card glass-panel" style="padding: 40px; text-align: center; margin: 20px 0;">
+                        <i class="fas fa-coins" style="font-size: 60px; color: var(--gold-royal); margin-bottom: 20px;"></i>
+                        <div style="font-size: 36px; font-weight: 700; color: var(--gold-royal);" id="walletBalanceMain">0 IQD</div>
+                        <div style="color: var(--success); font-size: 18px; margin-top: 10px;" id="walletPagesMain">0 صفحة</div>
+                    </div>
+                    <div class="quick-actions">
+                        <button class="action-btn glass-panel"><i class="fas fa-plus"></i> شحن</button>
+                        <button class="action-btn glass-panel"><i class="fas fa-history"></i> سجل</button>
+                        <button class="action-btn glass-panel"><i class="fas fa-gift"></i> تحويل</button>
+                    </div>
+                </div>
+
+                <!-- STUDENT PORTAL PAGE -->
+                <div class="page" id="studentPage">
+                    <button class="back-home-btn" onclick="showPage('home')">
+                        <i class="fas fa-arrow-right"></i>
+                        <span class="back-text">العودة للرئيسية</span>
+                    </button>
+                    <h2 style="color: var(--gold-royal); font-family: var(--font-title); margin: 24px 0;">
+                        <i class="fas fa-graduation-cap"></i> فضاء الطالب
+                    </h2>
+                    <div class="gates-grid">
+                        <div class="card-item glass-panel" style="padding: 30px; text-align: center;">
+                            <i class="fas fa-book" style="font-size: 50px; color: var(--gold-royal); margin-bottom: 15px;"></i>
+                            <h3>المكتبة</h3>
+                            <p>الكتب والمراجع الدراسية</p>
+                        </div>
+                        <div class="card-item glass-panel" style="padding: 30px; text-align: center;">
+                            <i class="fas fa-print" style="font-size: 50px; color: var(--gold-royal); margin-bottom: 15px;"></i>
+                            <h3>الطباعة</h3>
+                            <p>خدمات الطباعة السريعة</p>
+                        </div>
+                        <div class="card-item glass-panel" style="padding: 30px; text-align: center;">
+                            <i class="fas fa-file-alt" style="font-size: 50px; color: var(--gold-royal); margin-bottom: 15px;"></i>
+                            <h3>التقارير</h3>
+                            <p>طباعة التقارير والأوراق</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ORDERS PAGE -->
+                <div class="page" id="ordersPage">
+                    <button class="back-home-btn" onclick="showPage('home')">
+                        <i class="fas fa-arrow-right"></i>
+                        <span class="back-text">العودة للرئيسية</span>
+                    </button>
+                    <h2 style="color: var(--gold-royal); font-family: var(--font-title); margin: 24px 0;">
+                        <i class="fas fa-box"></i> طلباتي
+                    </h2>
+                    <div id="ordersList" style="padding: 20px;">
+                        <p style="text-align: center; color: var(--text-muted); padding: 60px;">لا توجد طلبات حالياً</p>
+                    </div>
+                </div>
+
+                <!-- SETTINGS PAGE -->
+                <div class="page" id="settingsPage">
+                    <button class="back-home-btn" onclick="showPage('home')">
+                        <i class="fas fa-arrow-right"></i>
+                        <span class="back-text">العودة للرئيسية</span>
+                    </button>
+                    <h2 style="color: var(--gold-royal); font-family: var(--font-title); margin: 24px 0;">
+                        <i class="fas fa-cog"></i> الإعدادات
+                    </h2>
+                    <div class="glass-panel" style="padding: 30px; margin: 20px 0;">
+                        <div class="profile-row" style="display: flex; justify-content: space-between; padding: 15px 0; border-bottom: 1px solid var(--glass-border);">
+                            <span style="color: var(--gold-royal);">اسم المستخدم</span>
+                            <span id="settingUsername">-</span>
+                        </div>
+                        <div class="profile-row" style="display: flex; justify-content: space-between; padding: 15px 0; border-bottom: 1px solid var(--glass-border);">
+                            <span style="color: var(--gold-royal);">الهاتف</span>
+                            <span id="settingPhone">-</span>
+                        </div>
+                        <div class="profile-row" style="display: flex; justify-content: space-between; padding: 15px 0; border-bottom: 1px solid var(--glass-border);">
+                            <span style="color: var(--gold-royal);">المحافظة</span>
+                            <span id="settingGov">-</span>
+                        </div>
+                        <div class="profile-row" style="display: flex; justify-content: space-between; padding: 15px 0; border-bottom: 1px solid var(--glass-border);">
+                            <span style="color: var(--gold-royal);">الفئة</span>
+                            <span id="settingCategory">-</span>
+                        </div>
+                    </div>
+                    <button class="gold-btn" style="width: 100%; margin-top: 20px;" onclick="showLogin()">
+                        <i class="fas fa-sign-in-alt"></i> تسجيل الدخول
+                    </button>
+                </div>
             </div>
-            <form id="registerForm" style="padding:20px;">
+        </main>
+    </div>
+
+    <!-- REGISTER MODAL - Luxury form -->
+    <div class="modal-overlay" id="registerModal">
+        <div class="modal-box" style="max-width: 500px;">
+            <button class="modal-close" onclick="closeModal('registerModal')">✕</button>
+            <h2 style="text-align: center; color: var(--gold-royal); font-family: var(--font-title); font-size: 28px; margin-bottom: 30px;">
+                <i class="fas fa-user-plus"></i> إنشاء حساب جديد
+            </h2>
+            <form id="registerForm">
                 <div class="form-group">
-                    <label class="form-label">👤 اسم المستخدم</label>
+                    <label class="form-label"><i class="fas fa-user"></i> اسم المستخدم</label>
                     <input type="text" class="form-input" name="username" placeholder="اختر اسم مستخدم فريد" required>
                 </div>
                 <div class="form-group">
-                    <label class="form-label">🔑 كلمة المرور</label>
+                    <label class="form-label"><i class="fas fa-lock"></i> كلمة المرور</label>
                     <input type="password" class="form-input" name="password" placeholder="6 أحرف على الأقل" required>
                 </div>
                 <div class="form-group">
-                    <label class="form-label">📱 رقم الهاتف</label>
+                    <label class="form-label"><i class="fas fa-phone"></i> رقم الهاتف</label>
                     <input type="tel" class="form-input" name="phone" placeholder="771 123 4567" required>
                 </div>
                 <div class="form-group">
-                    <label class="form-label">🗺️ المحافظة</label>
+                    <label class="form-label"><i class="fas fa-map-marker-alt"></i> المحافظة</label>
                     <select class="form-select" name="governorate" required>
                         <option value="">-- اختر المحافظة --</option>
                         <option value="baghdad">بغداد</option>
@@ -420,11 +399,11 @@ a{text-decoration:none;color:inherit}
                     </select>
                 </div>
                 <div class="form-group">
-                    <label class="form-label">🏠 العنوان/الشارع</label>
+                    <label class="form-label"><i class="fas fa-home"></i> العنوان/الشارع</label>
                     <input type="text" class="form-input" name="address" placeholder="المنطقة والشارع" required>
                 </div>
                 <div class="form-group">
-                    <label class="form-label">📋 الفئة (مطلوب)</label>
+                    <label class="form-label"><i class="fas fa-tag"></i> الفئة (مطلوب)</label>
                     <select class="form-select" name="category" required>
                         <option value="">-- اختر الفئة --</option>
                         <option value="student">🎓 طالب</option>
@@ -438,59 +417,44 @@ a{text-decoration:none;color:inherit}
                         <option value="other">📋 أخرى</option>
                     </select>
                 </div>
-                <button type="submit" class="form-submit">📝 تسجيل</button>
+                <button type="submit" class="form-submit">
+                    <i class="fas fa-check"></i> تسجيل
+                </button>
             </form>
+            <p style="text-align: center; margin-top: 20px; color: var(--gold-royal); cursor: pointer;" onclick="closeModal('registerModal'); showLogin();">
+                لديك حساب؟ ← تسجيل الدخول
+            </p>
         </div>
-
-        <!-- Login Section -->
-        <div class="section-page" id="loginPage">
-            <div class="page-header">
-                <button class="back-btn" onclick="showSection('dashboard')"><i class="fas fa-arrow-right"></i></button>
-                <div class="page-title">🔐 تسجيل الدخول</div>
-            </div>
-            <form id="loginForm" style="padding:20px;">
-                <div class="form-group">
-                    <label class="form-label">👤 اسم المستخدم</label>
-                    <input type="text" class="form-input" id="loginUsername" placeholder="أدخل اسم المستخدم" required>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">🔑 كلمة المرور</label>
-                    <input type="password" class="form-input" id="loginPassword" placeholder="أدخل كلمة المرور" required>
-                </div>
-                <button type="submit" class="form-submit">🔐 دخول</button>
-                <p class="form-link" onclick="showSection('register')">ليس لديك حساب؟ ← تسجيل جديد</p>
-            </form>
-        </div>
-    </main>
-
-    <!-- Bottom Navigation -->
-    <nav class="bottom-nav">
-        <button class="nav-item active" onclick="showSection('dashboard')"><i class="fas fa-home"></i><span>الرئيسية</span></button>
-        <button class="nav-item" onclick="showSection('cards')"><i class="fas fa-id-card"></i><span>البطاقات</span></button>
-        <button class="nav-item" onclick="showSection('wallet')"><i class="fas fa-wallet"></i><span>المحفظة</span></button>
-        <button class="nav-item" onclick="showSection('profile')"><i class="fas fa-user"></i><span>حسابي</span></button>
-    </nav>
-
-    <!-- Loading Overlay -->
-    <div class="loading-overlay" id="loadingOverlay">
-        <div class="spinner"></div>
     </div>
 
-    <!-- Toast -->
-    <div id="toast" class="toast" style="display:none;"></div>
-
-    <!-- Welcome Gift Popup -->
-    <div class="gift-overlay" id="giftOverlay">
-        <div class="gift-box">
-            <div class="gift-icon">🎁</div>
-            <h2 class="gift-title">أهلاً بك!</h2>
-            <div class="gift-card">
-                <div class="gift-number" id="giftPages">1000</div>
-                <div class="gift-label">صفحة طباعة مجانية</div>
-            </div>
-            <button class="gift-btn" onclick="closeGift()">🚀 ابدأ الآن</button>
+    <!-- LOGIN MODAL -->
+    <div class="modal-overlay" id="loginModal">
+        <div class="modal-box">
+            <button class="modal-close" onclick="closeModal('loginModal')">✕</button>
+            <h2 style="text-align: center; color: var(--gold-royal); font-family: var(--font-title); font-size: 28px; margin-bottom: 30px;">
+                <i class="fas fa-sign-in-alt"></i> تسجيل الدخول
+            </h2>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label class="form-label"><i class="fas fa-user"></i> اسم المستخدم</label>
+                    <input type="text" id="loginUsername" class="form-input" placeholder="أدخل اسم المستخدم" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label"><i class="fas fa-lock"></i> كلمة المرور</label>
+                    <input type="password" id="loginPassword" class="form-input" placeholder="أدخل كلمة المرور" required>
+                </div>
+                <button type="submit" class="form-submit">
+                    <i class="fas fa-key"></i> دخول
+                </button>
+            </form>
+            <p style="text-align: center; margin-top: 20px; color: var(--gold-royal); cursor: pointer;" onclick="closeModal('loginModal'); showRegister();">
+                ليس لديك حساب؟ ← تسجيل جديد
+            </p>
         </div>
     </div>
+
+    <!-- TOAST -->
+    <div id="toast" class="toast" style="display: none;"></div>
 
     <!-- Scripts -->
     <script>
@@ -501,13 +465,29 @@ a{text-decoration:none;color:inherit}
     // ===== HELPERS =====
     const getSession = () => JSON.parse(localStorage.getItem(SESSION_KEY) || 'null');
     const setSession = (user) => localStorage.setItem(SESSION_KEY, JSON.stringify(user));
-    const toast = (msg) => { const t = document.getElementById('toast'); t.textContent = msg; t.style.display = 'block'; setTimeout(() => t.style.display = 'none', 3000); };
+    
+    const showToast = (msg) => {
+        const t = document.getElementById('toast');
+        t.textContent = msg;
+        t.style.display = 'block';
+        setTimeout(() => t.style.display = 'none', 3000);
+    };
 
-    // ===== SECTIONS =====
-    function showSection(name) {
-        document.querySelectorAll('.dashboard-page, .section-page').forEach(p => p.classList.remove('active'));
-        document.getElementById(name + 'Page')?.classList.add('active') || document.getElementById('dashboardPage').classList.add('active');
-        document.querySelectorAll('.nav-item').forEach((n, i) => { n.classList.remove('active'); if(i === 0 && name === 'dashboard') n.classList.add('active'); });
+    const openModal = (id) => document.getElementById(id).classList.add('active');
+    const closeModal = (id) => document.getElementById(id).classList.remove('active');
+    const showRegister = () => openModal('registerModal');
+    const showLogin = () => openModal('loginModal');
+
+    // ===== PAGE NAVIGATION =====
+    function showPage(page) {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.getElementById(page + 'Page')?.classList.add('active') || document.getElementById('homePage').classList.add('active');
+        
+        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+        const navMap = { home: 0, portals: 1, wallet: 2, orders: 3, cards: 4, settings: 5 };
+        const navItems = document.querySelectorAll('.nav-item');
+        if (navItems[navMap[page]]) navItems[navMap[page]].classList.add('active');
+        
         window.scrollTo(0, 0);
     }
 
@@ -516,9 +496,10 @@ a{text-decoration:none;color:inherit}
     const totalSlides = 3;
     function initSlider() {
         const dots = document.getElementById('sliderDots');
-        for(let i = 0; i < totalSlides; i++) {
+        for (let i = 0; i < totalSlides; i++) {
             const dot = document.createElement('div');
             dot.className = 'slider-dot' + (i === 0 ? ' active' : '');
+            dot.style.cssText = 'width: 12px; height: 12px; border-radius: 50%; background: rgba(255,255,255,0.4); cursor: pointer;';
             dot.onclick = () => goToSlide(i);
             dots.appendChild(dot);
         }
@@ -528,112 +509,159 @@ a{text-decoration:none;color:inherit}
     function slidePrev() { goToSlide((slideIndex - 1 + totalSlides) % totalSlides); }
     function goToSlide(idx) {
         slideIndex = idx;
-        document.getElementById('sliderTrack').style.transform = `translateX(${idx * 100}%)`;
-        document.querySelectorAll('.slider-dot').forEach((d, i) => d.classList.toggle('active', i === idx));
+        document.getElementById('homeSliderTrack').style.transform = `translateX(${idx * 100}%)`;
+        document.querySelectorAll('.slider-dot').forEach((d, i) => {
+            d.style.background = i === idx ? 'var(--gold-royal)' : 'rgba(255,255,255,0.4)';
+        });
     }
 
-    // ===== CARDS =====
+    // ===== LANGUAGE =====
+    function switchLang(lang) {
+        document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+        event?.target?.closest('.lang-btn')?.classList.add('active');
+        document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+        document.documentElement.lang = lang;
+    }
+
+    // ===== CARDS DATA =====
     const cardsData = [
-        { id:1, name:'بطاقة طالب', price:5000, desc:'بطاقة طالب رسمية', icon:'🎓' },
-        { id:2, name:'بطاقة مكتب', price:15000, desc:'بطاقة تعريف مكتب', icon:'🏢' },
-        { id:3, name:'بطاقة مختبر', price:12000, desc:'بطاقة مختبر طبي', icon:'🔬' },
-        { id:4, name:'بطاقة مدرسة', price:8000, desc:'بطاقة موظف مدرسة', icon:'🏫' },
-        { id:5, name:'بطاقة جامعة', price:10000, desc:'بطاقة طالب جامعي', icon:'🎓' },
-        { id:6, name:'بطاقة خاصة', price:20000, desc:'تصميم مخصص', icon:'✨' }
+        { id: 1, name: 'بطاقة طالب', price: 5000, desc: 'بطاقة طالب رسمية', icon: '🎓' },
+        { id: 2, name: 'بطاقة مكتب', price: 15000, desc: 'بطاقة تعريف مكتب', icon: '🏢' },
+        { id: 3, name: 'بطاقة مختبر', price: 12000, desc: 'بطاقة مختبر طبي', icon: '🔬' },
+        { id: 4, name: 'بطاقة مدرسة', price: 8000, desc: 'بطاقة موظف مدرسة', icon: '🏫' },
+        { id: 5, name: 'بطاقة جامعة', price: 10000, desc: 'بطاقة طالب جامعي', icon: '🎓' },
+        { id: 6, name: 'بطاقة خاصة', price: 20000, desc: 'تصميم مخصص', icon: '✨' }
     ];
-    function renderCards(containerId) {
-        const c = document.getElementById(containerId);
-        if (!c) return;
-        c.innerHTML = cardsData.map(card => `
-            <div class="card-item">
-                <div class="card-icon">${card.icon}</div>
-                <div class="card-title">${card.name}</div>
-                <div class="card-desc">${card.desc}</div>
-                <div class="card-price">${card.price.toLocaleString()} IQD</div>
-                <button class="card-btn" onclick="orderCard('${card.name}')">طلب</button>
+    
+    function renderCards() {
+        const grid = document.getElementById('cardsGrid');
+        if (!grid) return;
+        grid.innerHTML = cardsData.map(card => `
+            <div class="card-item glass-panel" style="padding: 25px; text-align: center; border: 1px solid var(--glass-border); border-radius: 16px; transition: all 0.3s; cursor: pointer;">
+                <div style="font-size: 50px; margin-bottom: 15px;">${card.icon}</div>
+                <h3 style="color: var(--gold-royal); margin-bottom: 10px;">${card.name}</h3>
+                <p style="color: var(--text-secondary); font-size: 14px; margin-bottom: 15px;">${card.desc}</p>
+                <div style="color: var(--success); font-size: 20px; font-weight: 700;">${card.price.toLocaleString()} IQD</div>
+                <button onclick="orderCard('${card.name}')" style="margin-top: 15px; padding: 10px 25px; background: var(--gold-royal); color: #000; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; width: 100%;">طلب</button>
             </div>
         `).join('');
     }
+
     function orderCard(name) {
         const session = getSession();
-        if (!session) { toast('الرجاء تسجيل الدخول أولاً'); showSection('login'); return; }
-        toast('تم إرسال طلب ' + name);
+        if (!session) { showToast('الرجاء تسجيل الدخول أولاً'); showLogin(); return; }
+        showToast('تم إرسال طلب ' + name);
     }
 
     // ===== AUTH =====
     async function handleRegister(e) {
         e.preventDefault();
         const form = e.target;
-        const data = { username: form.username.value.trim(), password: form.password.value, phone: form.phone.value.trim(), governorate: form.governorate.value, address: form.address.value.trim(), category: form.category.value };
-        if (!data.username || !data.password || !data.phone || !data.governorate || !data.address || !data.category) { toast('الرجاء ملء جميع الحقول'); return; }
+        const data = {
+            username: form.username.value.trim(),
+            password: form.password.value,
+            phone: form.phone.value.trim(),
+            governorate: form.governorate.value,
+            address: form.address.value.trim(),
+            category: form.category.value
+        };
+        
+        if (!data.username || !data.password || !data.phone || !data.governorate || !data.address || !data.category) {
+            showToast('الرجاء ملء جميع الحقول المطلوبة');
+            return;
+        }
+        
         try {
-            const res = await fetch(API + '/register', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(data) });
+            const res = await fetch(API + '/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
             const json = await res.json();
+            
             if (json.success && json.user) {
                 setSession(json.user);
-                toast('🎉 تم إنشاء الحساب بنجاح!');
-                showGift(json.user.pages || 1000);
-                updateProfileUI(json.user);
-                showSection('dashboard');
-            } else { toast(json.error || 'فشل التسجيل'); }
-        } catch { toast('حدث خطأ - حاول لاحقاً'); }
+                closeModal('registerModal');
+                showToast('🎉 تم إنشاء الحساب بنجاح! هدية: ' + (json.user.pages || 1000) + ' صفحة');
+                updateUI(json.user);
+            } else {
+                showToast(json.error || 'فشل التسجيل');
+            }
+        } catch (e) {
+            showToast('حدث خطأ - حاول لاحقاً');
+        }
     }
 
     async function handleLogin(e) {
         e.preventDefault();
         const username = document.getElementById('loginUsername').value.trim();
         const password = document.getElementById('loginPassword').value;
-        if (!username || !password) { toast('الرجاء إدخال البيانات'); return; }
+        
+        if (!username || !password) {
+            showToast('الرجاء إدخال البيانات');
+            return;
+        }
+        
         try {
-            const res = await fetch(API + '/login', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ username, password }) });
+            const res = await fetch(API + '/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, password })
+            });
             const json = await res.json();
+            
             if (json.success && json.user) {
                 setSession(json.user);
-                toast('مرحباً ' + json.user.username);
-                updateProfileUI(json.user);
-                showSection('dashboard');
-            } else { toast(json.error || 'فشل تسجيل الدخول'); }
-        } catch { toast('حدث خطأ - حاول لاحقاً'); }
+                closeModal('loginModal');
+                showToast('مرحباً ' + json.user.username);
+                updateUI(json.user);
+            } else {
+                showToast(json.error || 'فشل تسجيل الدخول');
+            }
+        } catch (e) {
+            showToast('حدث خطأ - حاول لاحقاً');
+        }
     }
 
-    function updateProfileUI(user) {
+    function updateUI(user) {
         if (!user) return;
-        document.getElementById('profileName').textContent = user.username;
-        document.getElementById('profileCat').textContent = user.category || '-';
-        document.getElementById('profileUser').textContent = user.username;
-        document.getElementById('profilePhone').textContent = user.phone || '-';
-        document.getElementById('profileGov').textContent = user.governorate || '-';
-        document.getElementById('profileCategory').textContent = user.category || '-';
-        document.getElementById('walletBalance').textContent = (user.balance || 0).toLocaleString() + ' IQD';
-        document.getElementById('walletPages').textContent = (user.pages || 0).toLocaleString() + ' صفحة';
-        document.getElementById('pagesDisplay').textContent = (user.pages || 0).toLocaleString();
+        
+        // Update header
+        document.getElementById('userName').textContent = user.username;
+        document.getElementById('userRole').textContent = user.category || 'مستخدم';
+        document.getElementById('welcomeName').textContent = user.username;
+        document.getElementById('headerBalance').textContent = (user.balance || 0).toLocaleString();
+        document.getElementById('statPages').textContent = (user.pages || 0).toLocaleString();
+        document.getElementById('walletBalanceMain').textContent = (user.balance || 0).toLocaleString() + ' IQD';
+        document.getElementById('walletPagesMain').textContent = (user.pages || 0).toLocaleString() + ' صفحة';
+        
+        // Update settings
+        document.getElementById('settingUsername').textContent = user.username;
+        document.getElementById('settingPhone').textContent = user.phone || '-';
+        document.getElementById('settingGov').textContent = user.governorate || '-';
+        document.getElementById('settingCategory').textContent = user.category || '-';
     }
-
-    function showGift(pages) {
-        document.getElementById('giftPages').textContent = pages.toLocaleString();
-        document.getElementById('giftOverlay').classList.add('active');
-    }
-    function closeGift() { document.getElementById('giftOverlay').classList.remove('active'); }
 
     // ===== INIT =====
     document.addEventListener('DOMContentLoaded', () => {
-        initSlider();
-        renderCards('cardsGrid');
-        renderCards('cardsGridHome');
-        
-        // Check session
-        const session = getSession();
-        if (session) updateProfileUI(session);
+        // Hide preloader
+        setTimeout(() => {
+            document.getElementById('preloader').classList.add('hidden');
+            document.getElementById('appContainer').style.display = 'grid';
+            initSlider();
+            renderCards();
+            
+            // Check session
+            const session = getSession();
+            if (session) updateUI(session);
+        }, 2500);
         
         // Form handlers
         document.getElementById('registerForm').onsubmit = handleRegister;
         document.getElementById('loginForm').onsubmit = handleLogin;
-        
-        // Hide splash
-        setTimeout(() => { document.getElementById('splashScreen').style.opacity = '0'; setTimeout(() => document.getElementById('splashScreen').style.display = 'none', 500); }, 1500);
     });
 
-    // Sync wallet every 30s
+    // Sync wallet
     setInterval(async () => {
         const session = getSession();
         if (!session) return;
@@ -644,7 +672,7 @@ a{text-decoration:none;color:inherit}
                 session.balance = data.balance;
                 session.pages = data.pages;
                 setSession(session);
-                updateProfileUI(session);
+                updateUI(session);
             }
         } catch {}
     }, 30000);
