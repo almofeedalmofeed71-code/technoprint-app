@@ -542,15 +542,43 @@
                 <h3 style="color: var(--gold-royal); margin-bottom: 10px;">${card.name}</h3>
                 <p style="color: var(--text-secondary); font-size: 14px; margin-bottom: 15px;">${card.desc}</p>
                 <div style="color: var(--success); font-size: 20px; font-weight: 700;">${card.price.toLocaleString()} IQD</div>
-                <button onclick="orderCard('${card.name}')" style="margin-top: 15px; padding: 10px 25px; background: var(--gold-royal); color: #000; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; width: 100%;">طلب</button>
+                <button onclick="orderCard('${card.name}', ${card.id})" style="margin-top: 15px; padding: 10px 25px; background: var(--gold-royal); color: #000; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; width: 100%;">طلب</button>
             </div>
         `).join('');
     }
 
-    function orderCard(name) {
+    async function orderCard(cardName, cardId) {
         const session = getSession();
         if (!session) { showToast('الرجاء تسجيل الدخول أولاً'); showLogin(); return; }
-        showToast('تم إرسال طلب ' + name);
+        
+        const card = cardsData.find(c => c.name === cardName);
+        if (!card) return;
+        
+        try {
+            const res = await fetch('/api/orders', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    userId: session.id,
+                    cardType: cardId,
+                    cardName: card.name,
+                    price: card.price
+                })
+            });
+            const data = await res.json();
+            
+            if (data.success) {
+                showToast('✅ ' + data.message);
+                // Update session
+                session.balance = Math.max(0, (session.balance || 0) - card.price);
+                setSession(session);
+                updateUI(session);
+            } else {
+                showToast(data.error || 'فشل الطلب');
+            }
+        } catch (e) {
+            showToast('حدث خطأ - حاول لاحقاً');
+        }
     }
 
     // ===== AUTH =====

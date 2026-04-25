@@ -98,6 +98,35 @@ async function updateUserOnServer(userId, updates) {
     }
 }
 
+// ==================== ORDERS ====================
+
+// Fetch orders from server
+async function fetchOrdersFromServer() {
+    try {
+        const response = await fetch('/api/admin/orders');
+        const data = await response.json();
+        return data || [];
+    } catch (e) {
+        console.error('Orders fetch error:', e);
+        return [];
+    }
+}
+
+// Update order status
+async function updateOrderStatus(orderId, status) {
+    try {
+        const response = await fetch(`/api/admin/orders/${orderId}`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ status })
+        });
+        return await response.json();
+    } catch (e) {
+        console.error('Order update error:', e);
+        return null;
+    }
+}
+
 // ==================== INITIALIZATION ====================
 
 document.addEventListener('DOMContentLoaded', async () => {

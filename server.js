@@ -449,6 +449,119 @@ app.get('/api/profile/:userId', async (req, res) => {
     }
 });
 
+// ==================== CARD ORDERS ====================
+
+// Create new card order
+app.post('/api/orders', async (req, res) => {
+    try {
+        const { userId, cardType, cardName, price } = req.body;
+        
+        if (!userId || !cardType || !cardName) {
+            return res.status(400).json({ error: 'بيانات غير مكتملة' });
+        }
+        
+        // Check user balance
+        const { data: user } = await supabaseRequest(`profiles?id=eq.${userId}&select=balance_iqd,pages_count`);
+        
+        if (!user || !user[0]) {
+            return res.status(404).json({ error: 'المستخدم غير موجود' });
+        }
+        
+        const userBalance = user[0].balance_iqd || 0;
+        
+        // Check if user has enough balance (if price > 0)
+        if (price > 0 && userBalance < price) {
+            return res.status(400).json({ error: 'الرصيد غير كافي' });
+        }
+        
+        // Create order
+        const orderId = 'order_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        
+        const orderData = {
+            id: orderId,
+            user_id: userId,
+            card_type: cardType,
+            card_name: cardName,
+            price: price || 0,
+            status: 'pending',
+            created_at: new Date().toISOString()
+        };
+        
+        await supabaseRequest('orders', 'POST', orderData);
+        
+        // Deduct balance if price > 0
+        if (price > 0) {
+            await supabaseRequest(`profiles?id=eq.${userId}`, 'PATCH', {
+                balance_iqd: userBalance - price,
+                updated_at: new Date().toISOString()
+            });
+        }
+        
+        res.json({ 
+            success: true, 
+            orderId,
+            message: 'تم تقديم الطلب بنجاح! بانتظار الموافقة'
+        });
+    } catch (err) {
+        console.error('Order error:', err);
+        res.status(500).json({ error: 'خطأ في الطلب' });
+    }
+});
+
+// Get user orders
+app.get('/api/orders/:userId', async (req, res) => {
+    try {
+        const { userId } = req.params;
+        const { data } = await supabaseRequest(`orders?user_id=eq.${userId}&order=created_at.desc`);
+        res.json(data || []);
+    } catch (err) {
+        res.status(500).json({ error: 'Server error' });
+    }
+});
+
+// ==================== ADMIN: ORDERS ====================
+
+// Get all orders (for admin)
+app.get('/api/admin/orders', async (req, res) => {
+    try {
+        const { data: orders } = await supabaseRequest('orders?order=created_at.desc&select=*');
+        const { data: profiles } = await supabaseRequest('profiles?select=id,username,full_name');
+        
+        const profilesMap = {};
+        (profiles || []).forEach(p => profilesMap[p.id] = p);
+        
+        const enrichedOrders = (orders || []).map(order => ({
+            ...order,
+            user: profilesMap[order.user_id] || {}
+        }));
+        
+        res.json(enrichedOrders);
+    } catch (err) {
+        res.status(500).json({ error: 'Server error' });
+    }
+});
+
+// Update order status (approve/reject)
+app.patch('/api/admin/orders/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { status } = req.body;
+        
+        if (!['pending', 'approved', 'rejected'].includes(status)) {
+            return res.status(400).json({ error: 'حالة غير صالحة' });
+        }
+        
+        await supabaseRequest(`orders?id=eq.${id}`, 'PATCH', {
+            status,
+            updated_at: new Date().toISOString()
+        });
+        
+        res.json({ success: true });
+    } catch (err) {
+        res.status(500).json({ error: 'Server error' });
+    }
+});
+
 // ==================== HEALTH CHECK ====================
 app.get('/api/health', (req, res) => {
     res.json({ 
