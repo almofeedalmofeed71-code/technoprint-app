@@ -1,88 +1,59 @@
-// ===== TECHNO-CONTROL ADMIN LOGIN SCRIPT v4 =====
-// IMMEDIATE BYPASS - Owner Access Guaranteed
+// ===== TECHNO-CONTROL ADMIN LOGIN - EMERGENCY BYPASS =====
 
-const API_URL = 'https://technoprint-app.vercel.app';
+// FORCE CLEAR old sessions
+localStorage.removeItem('adminToken');
+localStorage.removeItem('adminUser');
 
-// Check if already logged in
-const adminToken = localStorage.getItem('adminToken');
-const adminUser = localStorage.getItem('adminUser');
+// Immediate check - if token exists and is owner session, go directly
+const existingToken = localStorage.getItem('adminToken');
+const existingUser = localStorage.getItem('adminUser');
 
-if (adminToken && adminUser) {
-    try {
-        const userData = JSON.parse(adminUser);
-        if (userData.isAdmin) {
-            console.log('✅ Already logged in - redirecting to dashboard');
-            window.location.href = 'admin-dashboard.html';
-            return;
-        }
-    } catch (e) {
-        localStorage.removeItem('adminToken');
-        localStorage.removeItem('adminUser');
-    }
+if (existingToken === 'owner-session-2024' && existingUser) {
+    window.location.href = 'admin-dashboard.html';
 }
 
-// Handle login - IMMEDIATE BYPASS for owner
-document.addEventListener('DOMContentLoaded', () => {
-    const loginForm = document.getElementById('loginForm');
-    const loginError = document.getElementById('loginError');
+// MAIN LOGIN HANDLER
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('loginForm');
+    if (!form) {
+        alert('Form not found!');
+        return;
+    }
     
-    if (!loginForm) return;
-    
-    // ✅ IMMEDIATE BYPASS - Always work for owner
-    const username = document.getElementById('adminUsername');
-    const password = document.getElementById('adminPassword');
-    
-    loginForm.addEventListener('submit', (e) => {
+    form.addEventListener('submit', function(e) {
         e.preventDefault();
         
-        const u = username?.value?.trim() || '';
-        const p = password?.value?.trim() || '';
+        const usernameInput = document.getElementById('adminUsername');
+        const passwordInput = document.getElementById('adminPassword');
         
-        if (!u || !p) {
-            showError(loginError, 'أدخل اسم المستخدم وكلمة المرور');
+        if (!usernameInput || !passwordInput) {
+            alert('Input fields not found!');
             return;
         }
         
-        console.log('🔵 Login attempt:', u);
+        const username = usernameInput.value.trim();
+        const password = passwordInput.value.trim();
         
-        // ✅✅✅ IMMEDIATE BYPASS FOR OWNER
-        if (u === 'admin' && p === 'technoprint2024') {
-            console.log('✅✅✅ OWNER BYPASS - No DB check needed');
-            
-            // Set localStorage - IMMEDIATE ACCESS
+        // === EMERGENCY BYPASS - FIRST PRIORITY ===
+        if (username === 'admin' && password === 'technoprint2024') {
             localStorage.setItem('adminToken', 'owner-session-2024');
             localStorage.setItem('adminUser', JSON.stringify({
                 username: 'admin',
                 role: 'admin',
                 name: 'المالك',
                 isAdmin: true,
-                isLoggedIn: true,
-                isOwner: true
+                isOwner: true,
+                isLoggedIn: true
             }));
-            
-            // Call admin-init API in background (optional - doesn't block login)
-            fetch(`${API_URL}/api/admin-init`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ secret: 'technoprint-admin-secret-2024' })
-            }).then(r => r.json()).then(data => {
-                console.log('📥 Admin init result:', data);
-            }).catch(err => console.log('Admin init skipped:', err));
-            
-            console.log('🚀 Redirecting to dashboard...');
             window.location.href = 'admin-dashboard.html';
-            return;
+            return; // STOP HERE - NO OTHER CHECKS
         }
         
-        // For other credentials - show error
-        showError(loginError, 'بيانات الدخول غير صحيحة');
+        // For other users - show error
+        const errorDiv = document.getElementById('loginError');
+        if (errorDiv) {
+            errorDiv.textContent = 'اسم المستخدم أو كلمة المرور غير صحيحة';
+            errorDiv.style.display = 'block';
+        }
     });
 });
-
-function showError(element, message) {
-    if (element) {
-        element.textContent = message;
-        element.style.display = 'block';
-        setTimeout(() => element.style.display = 'none', 5000);
-    }
-}

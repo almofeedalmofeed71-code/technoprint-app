@@ -331,29 +331,37 @@ function logout() {
 // ==================== INITIALIZATION ====================
 
 document.addEventListener('DOMContentLoaded', async () => {
-    // ✅ GUARANTEED ACCESS - Check localStorage first
+    // ✅ GUARANTEED ACCESS - Allow owner session
     const token = localStorage.getItem('adminToken');
     const userStr = localStorage.getItem('adminUser');
     
+    // ✅ OWNER SESSION - ALLOW IMMEDIATELY
+    if (token === 'owner-session-2024' || token === 'admin-session-2024-technoprint') {
+        console.log('✅ Owner session detected - ACCESS GRANTED');
+        initDashboard();
+        return;
+    }
+    
+    // For other sessions
     if (!token || !userStr) {
-        console.log('❌ No session - redirect to login');
         window.location.href = 'admin-login.html';
         return;
     }
     
     try {
         const user = JSON.parse(userStr);
-        if (!user.isAdmin && user.role !== 'admin' && user.role !== 'staff') {
-            console.log('❌ Not authorized - redirect to login');
+        if (user.isAdmin || user.role === 'admin' || user.role === 'staff') {
+            console.log('✅ Access granted for:', user.username);
+            initDashboard();
+        } else {
             window.location.href = 'admin-login.html';
-            return;
         }
-        console.log('✅ Access granted for:', user.username);
     } catch (e) {
         window.location.href = 'admin-login.html';
-        return;
     }
-    
+});
+
+async function initDashboard() {
     // Load cached data
     const cachedUsers = localStorage.getItem('adminCachedUsers');
     if (cachedUsers) {
