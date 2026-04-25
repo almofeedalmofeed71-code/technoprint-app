@@ -456,29 +456,15 @@
     <!-- TOAST -->
     <div id="toast" class="toast" style="display: none;"></div>
 
-    <!-- Scripts -->
+    <!-- Scripts - Modular Architecture -->
+    <script src="js/config.js"></script>
+    <script src="js/core-auth.js"></script>
+    <script src="js/services-engine.js"></script>
+    <script src="js/language-switch.js"></script>
     <script>
-    // ===== CONFIG =====
-    const API = '/api';
-    const SESSION_KEY = 'technoprintSession';
-
-    // ===== HELPERS =====
-    const getSession = () => JSON.parse(localStorage.getItem(SESSION_KEY) || 'null');
-    const setSession = (user) => localStorage.setItem(SESSION_KEY, JSON.stringify(user));
+    // ===== CORE NAVIGATION & SLIDER (Locked in index.html) =====
     
-    const showToast = (msg) => {
-        const t = document.getElementById('toast');
-        t.textContent = msg;
-        t.style.display = 'block';
-        setTimeout(() => t.style.display = 'none', 3000);
-    };
-
-    const openModal = (id) => document.getElementById(id).classList.add('active');
-    const closeModal = (id) => document.getElementById(id).classList.remove('active');
-    const showRegister = () => openModal('registerModal');
-    const showLogin = () => openModal('loginModal');
-
-    // ===== PAGE NAVIGATION =====
+    // Page Navigation
     function showPage(page) {
         document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
         document.getElementById(page + 'Page')?.classList.add('active') || document.getElementById('homePage').classList.add('active');
@@ -491,14 +477,14 @@
         window.scrollTo(0, 0);
     }
 
-    // ===== SLIDER =====
+    // Ad Slider
     let slideIndex = 0;
     const totalSlides = 3;
     function initSlider() {
         const dots = document.getElementById('sliderDots');
         for (let i = 0; i < totalSlides; i++) {
             const dot = document.createElement('div');
-            dot.className = 'slider-dot' + (i === 0 ? ' active' : '');
+            dot.className = 'slider-dot';
             dot.style.cssText = 'width: 12px; height: 12px; border-radius: 50%; background: rgba(255,255,255,0.4); cursor: pointer;';
             dot.onclick = () => goToSlide(i);
             dots.appendChild(dot);
@@ -515,195 +501,37 @@
         });
     }
 
-    // ===== LANGUAGE =====
+    // Language Switch (Legacy support)
     function switchLang(lang) {
         document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
         event?.target?.closest('.lang-btn')?.classList.add('active');
         document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
         document.documentElement.lang = lang;
+        window.Lang?.switchLang(lang);
     }
 
-    // ===== CARDS DATA =====
-    const cardsData = [
-        { id: 1, name: 'بطاقة طالب', price: 5000, desc: 'بطاقة طالب رسمية', icon: '🎓' },
-        { id: 2, name: 'بطاقة مكتب', price: 15000, desc: 'بطاقة تعريف مكتب', icon: '🏢' },
-        { id: 3, name: 'بطاقة مختبر', price: 12000, desc: 'بطاقة مختبر طبي', icon: '🔬' },
-        { id: 4, name: 'بطاقة مدرسة', price: 8000, desc: 'بطاقة موظف مدرسة', icon: '🏫' },
-        { id: 5, name: 'بطاقة جامعة', price: 10000, desc: 'بطاقة طالب جامعي', icon: '🎓' },
-        { id: 6, name: 'بطاقة خاصة', price: 20000, desc: 'تصميم مخصص', icon: '✨' }
-    ];
+    // Toast (Legacy support)
+    function showToast(msg) {
+        const t = document.getElementById('toast');
+        if (!t) return;
+        t.textContent = msg;
+        t.style.display = 'block';
+        setTimeout(() => t.style.display = 'none', 3000);
+    }
     
-    function renderCards() {
-        const grid = document.getElementById('cardsGrid');
-        if (!grid) return;
-        grid.innerHTML = cardsData.map(card => `
-            <div class="card-item glass-panel" style="padding: 25px; text-align: center; border: 1px solid var(--glass-border); border-radius: 16px; transition: all 0.3s; cursor: pointer;">
-                <div style="font-size: 50px; margin-bottom: 15px;">${card.icon}</div>
-                <h3 style="color: var(--gold-royal); margin-bottom: 10px;">${card.name}</h3>
-                <p style="color: var(--text-secondary); font-size: 14px; margin-bottom: 15px;">${card.desc}</p>
-                <div style="color: var(--success); font-size: 20px; font-weight: 700;">${card.price.toLocaleString()} IQD</div>
-                <button onclick="orderCard('${card.name}', ${card.id})" style="margin-top: 15px; padding: 10px 25px; background: var(--gold-royal); color: #000; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; width: 100%;">طلب</button>
-            </div>
-        `).join('');
-    }
-
-    async function orderCard(cardName, cardId) {
-        const session = getSession();
-        if (!session) { showToast('الرجاء تسجيل الدخول أولاً'); showLogin(); return; }
-        
-        const card = cardsData.find(c => c.name === cardName);
-        if (!card) return;
-        
-        try {
-            const res = await fetch('/api/orders', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    userId: session.id,
-                    cardType: cardId,
-                    cardName: card.name,
-                    price: card.price
-                })
-            });
-            const data = await res.json();
-            
-            if (data.success) {
-                showToast('✅ ' + data.message);
-                // Update session
-                session.balance = Math.max(0, (session.balance || 0) - card.price);
-                setSession(session);
-                updateUI(session);
-            } else {
-                showToast(data.error || 'فشل الطلب');
-            }
-        } catch (e) {
-            showToast('حدث خطأ - حاول لاحقاً');
-        }
-    }
-
-    // ===== AUTH =====
-    async function handleRegister(e) {
-        e.preventDefault();
-        const form = e.target;
-        const data = {
-            username: form.username.value.trim(),
-            password: form.password.value,
-            phone: form.phone.value.trim(),
-            governorate: form.governorate.value,
-            address: form.address.value.trim(),
-            category: form.category.value
-        };
-        
-        if (!data.username || !data.password || !data.phone || !data.governorate || !data.address || !data.category) {
-            showToast('الرجاء ملء جميع الحقول المطلوبة');
-            return;
-        }
-        
-        try {
-            const res = await fetch(API + '/register', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(data)
-            });
-            const json = await res.json();
-            
-            if (json.success && json.user) {
-                setSession(json.user);
-                closeModal('registerModal');
-                showToast('🎉 تم إنشاء الحساب بنجاح! هدية: ' + (json.user.pages || 1000) + ' صفحة');
-                updateUI(json.user);
-            } else {
-                showToast(json.error || 'فشل التسجيل');
-            }
-        } catch (e) {
-            showToast('حدث خطأ - حاول لاحقاً');
-        }
-    }
-
-    async function handleLogin(e) {
-        e.preventDefault();
-        const username = document.getElementById('loginUsername').value.trim();
-        const password = document.getElementById('loginPassword').value;
-        
-        if (!username || !password) {
-            showToast('الرجاء إدخال البيانات');
-            return;
-        }
-        
-        try {
-            const res = await fetch(API + '/login', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ username, password })
-            });
-            const json = await res.json();
-            
-            if (json.success && json.user) {
-                setSession(json.user);
-                closeModal('loginModal');
-                showToast('مرحباً ' + json.user.username);
-                updateUI(json.user);
-            } else {
-                showToast(json.error || 'فشل تسجيل الدخول');
-            }
-        } catch (e) {
-            showToast('حدث خطأ - حاول لاحقاً');
-        }
-    }
-
-    function updateUI(user) {
-        if (!user) return;
-        
-        // Update header
-        document.getElementById('userName').textContent = user.username;
-        document.getElementById('userRole').textContent = user.category || 'مستخدم';
-        document.getElementById('welcomeName').textContent = user.username;
-        document.getElementById('headerBalance').textContent = (user.balance || 0).toLocaleString();
-        document.getElementById('statPages').textContent = (user.pages || 0).toLocaleString();
-        document.getElementById('walletBalanceMain').textContent = (user.balance || 0).toLocaleString() + ' IQD';
-        document.getElementById('walletPagesMain').textContent = (user.pages || 0).toLocaleString() + ' صفحة';
-        
-        // Update settings
-        document.getElementById('settingUsername').textContent = user.username;
-        document.getElementById('settingPhone').textContent = user.phone || '-';
-        document.getElementById('settingGov').textContent = user.governorate || '-';
-        document.getElementById('settingCategory').textContent = user.category || '-';
-    }
+    // Modal helpers
+    function showRegister() { document.getElementById('registerModal')?.classList.add('active'); }
+    function showLogin() { document.getElementById('loginModal')?.classList.add('active'); }
+    function closeModal(id) { document.getElementById(id)?.classList.remove('active'); }
 
     // ===== INIT =====
     document.addEventListener('DOMContentLoaded', () => {
-        // Hide preloader
         setTimeout(() => {
-            document.getElementById('preloader').classList.add('hidden');
+            document.getElementById('preloader')?.classList.add('hidden');
             document.getElementById('appContainer').style.display = 'grid';
             initSlider();
-            renderCards();
-            
-            // Check session
-            const session = getSession();
-            if (session) updateUI(session);
         }, 2500);
-        
-        // Form handlers
-        document.getElementById('registerForm').onsubmit = handleRegister;
-        document.getElementById('loginForm').onsubmit = handleLogin;
     });
-
-    // Sync wallet
-    setInterval(async () => {
-        const session = getSession();
-        if (!session) return;
-        try {
-            const res = await fetch(API + '/wallet/' + session.id);
-            const data = await res.json();
-            if (data.balance !== undefined) {
-                session.balance = data.balance;
-                session.pages = data.pages;
-                setSession(session);
-                updateUI(session);
-            }
-        } catch {}
-    }, 30000);
     </script>
 </body>
 </html>
