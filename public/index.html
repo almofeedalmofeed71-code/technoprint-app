@@ -307,32 +307,24 @@
         <div class="modal-box" style="width:90%;max-width:500px;">
             <button class="modal-close" onclick="closeModal('registerModal')"><i class="fas fa-times"></i></button>
             <h2>إنشاء حساب جديد</h2>
-            <form onsubmit="return handleRegister(this)">
+            <form id="registerForm">
                 <div class="input-group">
-                    <label>الاسم (عربي)</label>
-                    <input type="text" name="fullName" class="input-field" placeholder="محمد أحمد" required>
+                    <label>اسم المستخدم *</label>
+                    <input type="text" name="username" class="input-field" placeholder="اختر اسم مستخدم فريد" required>
                 </div>
                 <div class="input-group">
-                    <label>اسم المستخدم</label>
-                    <input type="text" name="username" class="input-field" placeholder="Username" required>
+                    <label>كلمة المرور *</label>
+                    <input type="password" name="password" class="input-field" placeholder="6 أحرف على الأقل" required>
                 </div>
                 <div class="input-group">
-                    <label>كلمة المرور</label>
-                    <input type="password" name="password" class="input-field" placeholder="••••••••" required>
-                </div>
-                <div class="input-group">
-                    <label>رقم الهاتف 🇮🇶</label>
+                    <label>رقم الهاتف 🇮🇶 *</label>
                     <div class="phone-input">
                         <span class="phone-code">+964</span>
                         <input type="tel" name="phone" class="input-field" placeholder="771 123 4567" required>
                     </div>
                 </div>
                 <div class="input-group">
-                    <label>العنوان</label>
-                    <input type="text" name="address" class="input-field" placeholder="المنطقة/الشارع" required>
-                </div>
-                <div class="input-group">
-                    <label>المحافظة</label>
+                    <label>المحافظة *</label>
                     <select name="governorate" class="input-field" required>
                         <option value="">اختر المحافظة</option>
                         <option value="baghdad">بغداد</option>
@@ -354,7 +346,24 @@
                         <option value="karbala">كربلاء</option>
                     </select>
                 </div>
-                <button type="submit" class="btn-gold" style="width:100%;margin-top:10px;">تسجيل</button>
+                <div class="input-group">
+                    <label>العنوان *</label>
+                    <input type="text" name="address" class="input-field" placeholder="المنطقة/الشارع" required>
+                </div>
+                <div class="input-group">
+                    <label>الفئة *</label>
+                    <select name="category" class="input-field" required>
+                        <option value="">اختر الفئة</option>
+                        <option value="طالب">طالب</option>
+                        <option value="مكتب">مكتب</option>
+                        <option value="مختبر">مختبر</option>
+                        <option value="مدرسة">مدرسة</option>
+                        <option value="جامعة">جامعة</option>
+                        <option value="شركة">شركة</option>
+                        <option value="فردي">فردي</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn-gold" style="width:100%;margin-top:15px;">إنشاء الحساب</button>
             </form>
             <p style="text-align:center;margin-top:15px;color:#D4AF37;cursor:pointer;" onclick="toggleRegister()">لديك حساب؟</p>
         </div>
@@ -364,6 +373,34 @@
     <script src="js/eng-navigation.js?v=2026"></script>
     <script src="js/eng-slider.js?v=2026"></script>
     <script src="js/eng-auth.js?v=2026"></script>
+    <script>
+        // Handle Registration Form
+        document.getElementById('registerForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const data = {
+                username: formData.get('username'),
+                password: formData.get('password'),
+                phone: formData.get('phone'),
+                governorate: formData.get('governorate'),
+                address: formData.get('address'),
+                category: formData.get('category')
+            };
+            console.log('📝 Form data:', data);
+            await Auth.register(data);
+        });
+        
+        // Handle Login Form (using username, not email)
+        document.querySelector('#loginModal form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const username = this.querySelector('[name="email"]').value;
+            const password = this.querySelector('[name="password"]').value;
+            Auth.login(username, password);
+        });
+        
+        // Fix login modal to use username placeholder
+        document.querySelector('#loginModal input[name="email"]').placeholder = 'اسم المستخدم';
+    </script>
     <script>
         window.setLang = function(lang) {
             document.documentElement.lang = lang;

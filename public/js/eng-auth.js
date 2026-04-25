@@ -1,97 +1,139 @@
 /* TECHOPRINT 2026 - ENG AUTH */
-/* Login/Register with Server-side storage */
+/* Direct Supabase connection via server.js */
 
 const Auth = {
-    API_URL: '/api/auth',
-    user: null,
-    
-    // Register with full data
+    // Register with 6 mandatory fields
     async register(data) {
-        const { fullName, username, password, phone, governorate, address } = data;
+        const { username, password, phone, governorate, address, category } = data;
         
-        if (!fullName || !username || !password || !phone) {
-            alert('Please fill all required fields');
+        console.log('🔵 Registration attempt:', data);
+        
+        if (!username || !password || !phone || !governorate || !address || !category) {
+            alert('جميع الحقول المطلوبة: المستخدم، كلمة المرور، الهاتف، المحافظة، العنوان، الفئة');
             return false;
         }
         
         try {
-            const res = await fetch(`${this.API_URL}/register`, {
+            const res = await fetch('/api/register', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ fullName, username, password, phone, governorate, address })
+                body: JSON.stringify({ username, password, phone, governorate, address, category })
             });
             
             const result = await res.json();
+            console.log('📥 Server response:', result);
             
             if (result.success) {
-                alert('Registration successful! Please login.');
+                alert('تم إنشاء الحساب بنجاح! 🎉');
+                // Close register modal and show login
+                closeModal('registerModal');
+                openModal('loginModal');
                 return true;
             } else {
-                alert(result.message || 'Registration failed');
+                alert(result.error || 'فشل في إنشاء الحساب');
+                console.error('Registration failed:', result.error);
                 return false;
             }
         } catch (err) {
-            console.error('Register error:', err);
-            alert('Connection error');
+            console.error('❌ Register error:', err);
+            alert('خطأ في الاتصال - تأكد من الإنترنت');
             return false;
         }
     },
     
-    // Login and fetch user data
-    async login(email, password) {
+    // Login using USERNAME (no email)
+    async login(username, password) {
+        console.log('🔵 Login attempt for:', username);
+        
+        if (!username || !password) {
+            alert('الرجاء إدخال اسم المستخدم وكلمة المرور');
+            return false;
+        }
+        
         try {
-            const res = await fetch(`${this.API_URL}/login`, {
+            const res = await fetch('/api/login', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, password })
+                body: JSON.stringify({ username, password })
             });
             
             const result = await res.json();
+            console.log('📥 Login response:', result);
             
-            if (result.success) {
-                this.user = result.user;
-                this.fetchUserData();
+            if (result.success && result.user) {
+                // Store user in localStorage
+                localStorage.setItem('technoprintUser', JSON.stringify(result.user));
+                
+                // Update wallet display
+                this.updateWallet(result.user);
+                
+                // Close modal and redirect
+                closeModal('loginModal');
+                alert('مرحباً ' + result.user.full_name + '! 🎉');
                 return true;
             } else {
-                alert(result.message || 'Login failed');
+                alert(result.error || 'فشل في تسجيل الدخول');
                 return false;
             }
         } catch (err) {
-            console.error('Login error:', err);
-            alert('Connection error');
+            console.error('❌ Login error:', err);
+            alert('خطأ في الاتصال');
             return false;
         }
     },
     
-    // Fetch user's wallet, orders, profile
-    async fetchUserData() {
-        if (!this.user?.id) return;
+    // Update wallet display from stored user
+    updateWallet(user) {
+        if (!user) {
+            const stored = localStorage.getItem('technoprintUser');
+            user = stored ? JSON.parse(stored) : null;
+        }
         
-        try {
-            const res = await fetch(`${this.API_URL}/user/${this.user.id}`);
-            const data = await res.json();
-            
-            if (data.success) {
-                this.user = { ...this.user, ...data };
-                this.updateUI();
+        if (user) {
+            // Update header balance
+            const balanceEl = document.getElementById('headerBalance');
+            if (balanceEl) {
+                balanceEl.textContent = (user.balance || 0).toLocaleString() + ' IQD';
             }
-        } catch (err) {
-            console.error('Fetch user data error:', err);
+            
+            // Update wallet modal if open
+            const walletBalance = document.getElementById('walletBalance');
+            if (walletBalance) {
+                walletBalance.textContent = (user.balance || 0).toLocaleString() + ' IQD';
+            }
+            
+            const walletPages = document.getElementById('walletPages');
+            if (walletPages) {
+                walletPages.textContent = (user.pages || 0).toLocaleString() + ' صفحة';
+            }
         }
     },
     
-    // Update wallet balance in header
-    updateUI() {
-        const balanceEl = document.getElementById('headerBalance');
-        if (balanceEl && this.user?.balance) {
-            balanceEl.textContent = this.user.balance.toLocaleString() + ' IQD';
-        }
+    // Check if user is logged in
+    isLoggedIn() {
+        const stored = localStorage.getItem('technoprintUser');
+        return stored ? JSON.parse(stored) : null;
     },
     
+    // Logout
     logout() {
-        this.user = null;
-        this.updateUI();
+        localStorage.removeItem('technoprintUser');
+        alert('تم تسجيل الخروج');
+        location.reload();
+    },
+    
+    // Get current user
+    getUser() {
+        return this.isLoggedIn();
     }
 };
 
 window.Auth = Auth;
+
+// Load user on page load
+document.addEventListener('DOMContentLoaded', () => {
+    const user = Auth.isLoggedIn();
+    if (user) {
+        Auth.updateWallet(user);
+    }
+});
