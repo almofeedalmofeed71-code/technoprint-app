@@ -45,9 +45,6 @@
         const container = getServiceContainer();
         container.style.display = 'block';
         
-        // Hide main content
-        document.getElementById('appContainer')?.style.setProperty('display', 'none', 'important');
-        
         // Render based on service
         switch(serviceName) {
             case 'cards':
@@ -57,7 +54,7 @@
                 renderProjectsPage(container);
                 break;
             default:
-                container.innerHTML = '<p style="color:#fff;text-align:center;">قريباً...</p>';
+                container.innerHTML = '<p style="color:#fff;text-align:center;padding-top:100px;">قريباً...</p>';
         }
     }
     
@@ -66,9 +63,6 @@
         const container = getServiceContainer();
         container.style.display = 'none';
         activeService = null;
-        
-        // Show main content
-        document.getElementById('appContainer')?.style.setProperty('display', 'grid', 'important');
     }
     
     // ===== RENDER CARDS PAGE =====
