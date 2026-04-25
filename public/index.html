@@ -14,16 +14,12 @@
     <link rel="stylesheet" href="css/ui-header.css?v=2026">
     <link rel="stylesheet" href="css/ui-modals.css?v=2026">
     <link rel="stylesheet" href="css/animations.css?v=2026">
-    <style>
-    /* FORCE EVERYTHING VISIBLE - NO SPLASH LOCK */
-    .splash { display: none !important; }
-    .dashboard-section { display: block !important; }
-    .portal-card { display: flex !important; }
-    .slider-section { display: block !important; }
-    </style>
 </head>
 <body>
-    <!-- Splash screen will be removed after 2 seconds -->
+    <div id="splash" class="splash">
+        <div class="splash-logo">T</div>
+        <p class="splash-text">TECHOPRINT 2026</p>
+    </div>
 
     <header class="app-header">
         <div class="brand">
@@ -298,8 +294,8 @@
         <div class="modal-box">
             <button class="modal-close" onclick="closeModal('loginModal')"><i class="fas fa-times"></i></button>
             <h2>تسجيل الدخول</h2>
-            <form onsubmit="return Auth.login(this.username.value, this.password.value)">
-                <input type="text" name="username" class="input-field" placeholder="اسم المستخدم" required>
+            <form onsubmit="return Auth.login(this.email.value, this.password.value)">
+                <input type="email" name="email" class="input-field" placeholder="البريد الإلكتروني" required>
                 <input type="password" name="password" class="input-field" placeholder="كلمة المرور" required>
                 <button type="submit" class="btn-gold">دخول</button>
             </form>
@@ -364,237 +360,19 @@
         </div>
     </div>
 
-    <script src="js/config.js"></script>
-    <script src="js/eng-auth.js?v=2026"></script>
+    <script src="js/eng-main.js?v=2026"></script>
+    <script src="js/eng-navigation.js?v=2026"></script>
     <script src="js/eng-slider.js?v=2026"></script>
+    <script src="js/eng-auth.js?v=2026"></script>
     <script>
-    // ===== SUPABASE CONFIG =====
-    const SUPABASE_URL = 'https://avabozirwdefwtabywqo.supabase.co';
-    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF2YWJvemlyd2RlZnd0YWJ5d3FvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY4NjM1NDQsImV4cCI6MjA5MjQzOTU0NH0.boDU0pXR1MGYiJXF1Jos-w0uehKCCZHsKgxHP7nbQVY';
-    
-    // ===== NAVIGATION WITH REAL LOGIC =====
-    window.Nav = {
-        go: function(page) {
-            // Hide all sections
-            document.querySelectorAll('.dashboard-section').forEach(s => s.style.display = 'none');
-            // Show target section
-            const section = document.getElementById(page + 'Section');
-            if (section) {
-                section.style.display = 'block';
-                // Load section data
-                this.loadSection(page);
-            }
-            // Update bottom nav
-            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-            const navMap = { dashboard: 0, orders: 1, wallet: 2 };
-            if (navMap[page] !== undefined) {
-                document.querySelectorAll('.nav-btn')[navMap[page]]?.classList.add('active');
-            }
-        },
-        loadSection: function(page) {
-            switch(page) {
-                case 'student': this.loadStudentSection(); break;
-                case 'library': this.loadLibrarySection(); break;
-                case 'general': this.loadGeneralSection(); break;
-                case 'wallet': this.loadWallet(); break;
-                case 'orders': this.loadOrders(); break;
-            }
-        },
-        loadStudentSection: function() {
-            const section = document.getElementById('studentSection');
-            const grid = section.querySelector('.service-grid');
-            grid.innerHTML = `
-                <div class="glass-card" onclick="Cards.open()"><p>🪪 طلب بطاقة</p></div>
-                <div class="glass-card" onclick="Services.open('projects')"><p>🎨 المشاريع</p></div>
-                <div class="glass-card"><p>📦 طلباتي</p></div>
-                <div class="glass-card" onclick="Wallet.show()"><p>💰 محفظتي</p></div>
-                <div class="glass-card"><p>📚 المكتبة</p></div>
-                <div class="glass-card"><p>🖨️ الطباعة</p></div>
-                <div class="glass-card"><p>📍 التتبع</p></div>
-                <div class="glass-card"><p>📅 جدولي</p></div>
-                <div class="glass-card"><p>⚙️ الإعدادات</p></div>
-            `;
-        },
-        loadLibrarySection: function() {
-            const section = document.getElementById('librarySection');
-            const grid = section.querySelector('.service-grid');
-            grid.innerHTML = `
-                <div class="glass-card"><p>📖 كتب دراسية</p></div>
-                <div class="glass-card"><p>📝 ملازم</p></div>
-                <div class="glass-card"><p>📋 أبحاث</p></div>
-                <div class="glass-card"><p>🎥 فيديوهات</p></div>
-                <div class="glass-card"><p>🔬 علوم</p></div>
-                <div class="glass-card"><p>🧮 رياضيات</p></div>
-                <div class="glass-card"><p>🌍 لغات</p></div>
-                <div class="glass-card"><p>💡 شروحات</p></div>
-                <div class="glass-card"><p>📊 نتائج</p></div>
-            `;
-        },
-        loadGeneralSection: function() {
-            const section = document.getElementById('generalSection');
-            const grid = section.querySelector('.service-grid');
-            grid.innerHTML = `
-                <div class="glass-card" onclick="Cards.open()"><p>🪪 كروت أعمال</p></div>
-                <div class="glass-card" onclick="Services.open('projects')"><p>🎨 تصميم</p></div>
-                <div class="glass-card"><p>🖨️ طباعة</p></div>
-                <div class="glass-card"><p>📄 نسخ</p></div>
-                <div class="glass-card"><p>📁 سكانر</p></div>
-                <div class="glass-card"><p>📦 تغليف</p></div>
-                <div class="glass-card"><p>🖼️ بوستر</p></div>
-                <div class="glass-card"><p>📸 تصوير</p></div>
-                <div class="glass-card"><p>📨 توصيل</p></div>
-            `;
-        },
-        loadWallet: function() {
-            // Load wallet from localStorage or API
-            const session = JSON.parse(localStorage.getItem('technoprintSession') || '{}');
-            const balance = session.balance || 0;
-            const section = document.getElementById('walletSection');
-            section.querySelector('.glass-card').innerHTML = `
-                <p style="font-size:4rem;">💰</p>
-                <p style="font-size:2rem;color:#D4AF37;font-weight:bold;" id="walletBalanceDisplay">${balance.toLocaleString()} IQD</p>
-                <div style="display:flex;gap:10px;justify-content:center;margin-top:20px;">
-                    <button class="btn-gold" onclick="Wallet.deposit()">إيداع</button>
-                    <button class="btn-gold" onclick="Wallet.withdraw()">سحب</button>
-                </div>
-            `;
-        },
-        loadOrders: function() {
-            const section = document.getElementById('ordersSection');
-            section.querySelector('.service-grid').innerHTML = '<p style="color:#D4AF37;text-align:center;">جاري تحميل طلباتك...</p>';
-            // Fetch orders from API
-            fetch('/api/orders')
-                .then(r => r.json())
-                .then(data => {
-                    const grid = section.querySelector('.service-grid');
-                    if (data.length === 0) {
-                        grid.innerHTML = '<p style="color:#888;text-align:center;">لا توجد طلبات</p>';
-                    } else {
-                        grid.innerHTML = data.map(o => `<div class="glass-card"><p>📦 ${o.name} - ${o.status}</p></div>`).join('');
-                    }
-                })
-                .catch(() => {
-                    section.querySelector('.service-grid').innerHTML = '<p style="color:#888;text-align:center;">فشل تحميل الطلبات</p>';
-                });
-        }
-    };
-    
-    // ===== CARDS SERVICE =====
-    window.Cards = {
-        open: function() {
-            const section = document.getElementById('studentSection');
-            section.style.display = 'block';
-            section.querySelector('h2').textContent = '🪪 طلب بطاقة';
-            section.querySelector('.service-grid').innerHTML = `
-                <div class="glass-card" style="padding:30px;">
-                    <h3 style="color:#D4AF37;margin-bottom:15px;">🪪 أنواع البطاقات</h3>
-                    <div class="card-type" onclick="Cards.order('student')">
-                        <p>🎓 بطاقة طالب</p>
-                        <p style="color:#888;">5,000 IQD</p>
-                    </div>
-                    <div class="card-type" onclick="Cards.order('office')">
-                        <p>🏢 بطاقة مكتب</p>
-                        <p style="color:#888;">15,000 IQD</p>
-                    </div>
-                    <div class="card-type" onclick="Cards.order('lab')">
-                        <p>🔬 بطاقة مختبر</p>
-                        <p style="color:#888;">12,000 IQD</p>
-                    </div>
-                    <div class="card-type" onclick="Cards.order('school')">
-                        <p>🏫 بطاقة مدرسة</p>
-                        <p style="color:#888;">8,000 IQD</p>
-                    </div>
-                    <div class="card-type" onclick="Cards.order('university')">
-                        <p>🎓 بطاقة جامعة</p>
-                        <p style="color:#888;">10,000 IQD</p>
-                    </div>
-                    <button class="btn-gold" onclick="Nav.go('student')">العودة</button>
-                </div>
-            `;
-        },
-        order: function(type) {
-            alert('تم إضافة ' + type + ' إلى طلباتك!');
-        }
-    };
-    
-    // ===== SERVICES =====
-    window.Services = {
-        open: function(type) {
-            const section = document.getElementById('studentSection');
-            section.style.display = 'block';
-            section.querySelector('h2').textContent = type === 'projects' ? '🎨 المشاريع' : 'الخدمات';
-            section.querySelector('.service-grid').innerHTML = `
-                <div class="glass-card" style="padding:30px;">
-                    <h3 style="color:#D4AF37;margin-bottom:15px;">${type === 'projects' ? '🎨 المشاريع المتاحة' : '⚙️ الخدمات'}</h3>
-                    <div class="glass-card" onclick="Services.select('design')"><p>🎨 تصميم شعار</p><p style="color:#888;">25,000 IQD</p></div>
-                    <div class="glass-card" onclick="Services.select('card')"><p>💳 تصميم كارت</p><p style="color:#888;">15,000 IQD</p></div>
-                    <div class="glass-card" onclick="Services.select('brochure')"><p>📄 تصميم بروشور</p><p style="color:#888;">20,000 IQD</p></div>
-                    <div class="glass-card" onclick="Services.select('social')"><p>📱 منشور سوشال</p><p style="color:#888;">10,000 IQD</p></div>
-                    <button class="btn-gold" onclick="Nav.go('student')">العودة</button>
-                </div>
-            `;
-        },
-        select: function(service) {
-            alert('تم اختيار: ' + service);
-        }
-    };
-    
-    // ===== WALLET =====
-    window.Wallet = {
-        show: function() { Nav.go('wallet'); },
-        deposit: function() { alert('شاشة الإيداع'); },
-        withdraw: function() { alert('شاشة السحب'); }
-    };
-    
-    // ===== AUTH =====
-    window.Auth = {
-        login: function(username, password) {
-            if (!username || !password) { alert('الرجاء إدخال البيانات'); return false; }
-            fetch('/api/login', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ username, password })
-            })
-            .then(r => r.json())
-            .then(data => {
-                if (data.success) {
-                    localStorage.setItem('technoprintSession', JSON.stringify(data.user));
-                    alert('مرحباً ' + data.user.username);
-                    closeModal('loginModal');
-                    Nav.go('dashboard');
-                } else {
-                    alert(data.error || 'فشل تسجيل الدخول');
-                }
-            })
-            .catch(() => alert('خطأ في الاتصال'));
-            return false;
-        }
-    };
-    
-    // ===== MODALS =====
-    window.openModal = function(id) { document.getElementById(id).style.display = 'flex'; };
-    window.closeModal = function(id) { document.getElementById(id).style.display = 'none'; };
-    window.toggleRegister = function() {
-        closeModal('loginModal');
-        openModal('registerModal');
-    };
-    
-    // ===== LANGUAGE =====
-    window.setLang = function(lang) {
-        document.documentElement.lang = lang;
-        document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
-        localStorage.setItem('lang', lang);
-        closeModal('langModal');
-    };
-    
-    // ===== INIT =====
-    window.addEventListener('DOMContentLoaded', () => {
-        // Force hide splash screen
-        const splash = document.getElementById('splash');
-        if (splash) splash.style.display = 'none';
-        // Show main content
-        Nav.go('dashboard');
-    });
+        window.setLang = function(lang) {
+            document.documentElement.lang = lang;
+            document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+            localStorage.setItem('lang', lang);
+            closeModal('langModal');
+            alert('Language changed to: ' + (lang === 'ar' ? 'عربي' : lang === 'ku' ? 'کوردی' : 'English'));
+        };
+        window.I18n = { set: function(l) { setLang(l); } };
     </script>
 </body>
 </html>
