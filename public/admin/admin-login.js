@@ -1,17 +1,11 @@
-// ===== TECHNO-CONTROL ADMIN LOGIN v5 - DIRECT DB ROLE CHECK =====
+// ===== TECHNO-CONTROL ADMIN LOGIN v6 - ANY ADMIN USER =====
 
-const API_URL = 'https://technoprint-app.vercel.app';
 const SUPABASE_URL = 'https://rqzsokvhgjlftkouhphb.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJxenNva3ZoZ2psZnRrb3VocGhiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU0NjUyNDcsImV4cCI6MjA5MTA0MTI0N30.2VJpfOpCUp_Mr9ot00qH0nhLmIIfUy3Rr5TQ5GOgjbY';
 
-// FORCE CLEAR on load
+// Clear old sessions
 localStorage.removeItem('adminToken');
 localStorage.removeItem('adminUser');
-
-// Auto redirect if already owner session
-if (localStorage.getItem('adminToken') === 'owner-session-2024') {
-    window.location.href = 'admin-dashboard.html';
-}
 
 document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('loginForm');
@@ -28,7 +22,9 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
         
-        // === PRIORITY 1: HARDCODE BYPASS ===
+        console.log('🔵 Login attempt:', username);
+        
+        // === PRIORITY 1: HARDCODE for 'admin' user ===
         if (username === 'admin' && password === 'technoprint2024') {
             localStorage.setItem('adminToken', 'owner-session-2024');
             localStorage.setItem('adminUser', JSON.stringify({
@@ -42,7 +38,7 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
         
-        // === PRIORITY 2: CHECK DB FOR ROLE ===
+        // === PRIORITY 2: CHECK DATABASE FOR ANY ADMIN USER ===
         try {
             const res = await fetch(
                 `${SUPABASE_URL}/rest/v1/profiles?username=eq.${encodeURIComponent(username)}&select=id,username,password,role`,
@@ -55,6 +51,7 @@ document.addEventListener('DOMContentLoaded', function() {
             );
             
             const users = await res.json();
+            console.log('📋 DB Response:', users);
             
             if (!users || users.length === 0) {
                 showError('المستخدم غير موجود');
@@ -62,28 +59,36 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             
             const user = users[0];
+            console.log('👤 User found:', user.username, '| Role:', user.role);
             
-            // Check password
+            // Verify password
             if (user.password !== password) {
                 showError('كلمة المرور غير صحيحة');
                 return;
             }
             
-            // Check role === 'admin' OR role === 'staff'
-            if (user.role === 'admin' || user.role === 'staff') {
-                localStorage.setItem('adminToken', 'db-session-' + user.id);
+            // CHECK IF ROLE IS 'admin' - ANY ADMIN USER WORKS!
+            if (user.role === 'admin') {
+                console.log('✅ Admin role confirmed for:', user.username);
+                
+                localStorage.setItem('adminToken', 'db-admin-session-' + user.id);
                 localStorage.setItem('adminUser', JSON.stringify({
                     id: user.id,
                     username: user.username,
                     role: user.role,
-                    isAdmin: user.role === 'admin'
+                    name: 'مدير النظام',
+                    isAdmin: true,
+                    isOwner: false
                 }));
+                
+                console.log('🚀 Redirecting to dashboard...');
                 window.location.href = 'admin-dashboard.html';
             } else {
-                showError('ليس لديك صلاحية الدخول للوحة التحكم');
+                showError(`ليس لديك صلاحية - دورك: ${user.role || 'غير محدد'}`);
             }
             
         } catch (err) {
+            console.error('❌ Error:', err);
             showError('خطأ في الاتصال - حاول لاحقاً');
         }
     });
