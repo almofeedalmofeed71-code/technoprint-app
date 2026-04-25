@@ -1,4 +1,4 @@
-// ===== TECHNO-PRINT AUTH LOGIC - SERVER-API LINKED VERSION =====
+// ===== TECHNO-PRINT AUTH LOGIC - FULL INTEGRATION v2026 =====
 // Session: localStorage → technoprintSession
 
 // Session Keys
@@ -6,13 +6,13 @@ const SESSION_KEY = 'technoprintSession';
 const USER_KEY = 'technoprintUser';
 
 // Server API Base
-const API_BASE = ''; // Use relative path - server handles all
+const API_BASE = '';
 
 // Welcome gift
 const WELCOME_PAGES = 1000;
 const WELCOME_BALANCE = 0;
 
-// Check if user is already logged in
+// Check if user is already logged in (Remember Me)
 function checkExistingSession() {
     const session = localStorage.getItem(SESSION_KEY);
     if (session) {
@@ -66,9 +66,10 @@ async function login(username, password) {
             const sessionData = {
                 id: data.user.id,
                 username: data.user.username,
-                fullName: data.user.full_name,
+                fullName: data.user.full_name || username,
                 phone: data.user.phone || '',
                 governorate: data.user.governorate || '',
+                address: data.user.address || '',
                 role: data.user.role || 'student',
                 category: data.user.category || '',
                 balance: data.user.balance || 0,
@@ -76,6 +77,7 @@ async function login(username, password) {
                 loginTime: new Date().toISOString()
             };
 
+            // Save to localStorage for Remember Me
             localStorage.setItem(SESSION_KEY, JSON.stringify(sessionData));
             localStorage.setItem(USER_KEY, JSON.stringify(sessionData));
 
@@ -95,12 +97,13 @@ async function login(username, password) {
     }
 }
 
-// REGISTER via Server API (USERNAME AUTH - NO EMAIL)
+// REGISTER via Server API - ALL 6 REQUIRED FIELDS
 async function register(formData) {
-    const { fullName, username, password, phone, address, governorate, role, category } = formData;
+    const { username, password, phone, governorate, address, category } = formData;
 
-    if (!fullName || !username || !password || !phone || !category) {
-        showAuthError('الرجاء ملء جميع الحقول المطلوبة');
+    // Validate ALL 6 required fields
+    if (!username || !password || !phone || !governorate || !address || !category) {
+        showAuthError('الرجاء ملء جميع الحقول المطلوبة (6 حقول)');
         return false;
     }
 
@@ -114,14 +117,13 @@ async function register(formData) {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                username,
-                password,
-                full_name: fullName,
-                phone,
-                address,
-                governorate,
-                role,
-                category
+                username: username,
+                password: password,
+                phone: phone,
+                governorate: governorate,
+                address: address,
+                category: category,
+                role: 'student' // Default role
             })
         });
 
@@ -136,21 +138,23 @@ async function register(formData) {
             const sessionData = {
                 id: data.user.id,
                 username: data.user.username,
-                fullName: data.user.full_name,
+                fullName: data.user.full_name || username,
                 phone: data.user.phone,
-                governorate: data.user.governorate || '',
+                governorate: data.user.governorate || governorate,
+                address: address,
                 role: data.user.role || 'student',
                 category: data.user.category,
                 balance: data.user.balance || 0,
-                pages: data.user.pages || 0,
+                pages: data.user.pages || 1000, // Welcome gift
                 loginTime: new Date().toISOString()
             };
 
+            // Save to localStorage for Remember Me
             localStorage.setItem(SESSION_KEY, JSON.stringify(sessionData));
             localStorage.setItem(USER_KEY, JSON.stringify(sessionData));
 
             closeModal('registerModal');
-            showWelcomeGift(sessionData.fullName, sessionData.pages);
+            showWelcomeGift(sessionData.fullName || username, sessionData.pages);
             updateWalletUI(sessionData.balance, sessionData.pages);
             
             return true;
@@ -300,13 +304,14 @@ function updateUserUI() {
     }
 }
 
-// Initialize
+// Initialize - Auto login if session exists
 document.addEventListener('DOMContentLoaded', () => {
     if (checkExistingSession()) {
         const user = getCurrentUser();
-        console.log('Welcome back, ' + (user?.fullName || user?.username));
+        console.log('Welcome back, ' + (user?.fullName || user?.username) + ' [Session Remembered]');
         updateUserUI();
     }
+    // Auto-sync wallet every 30 seconds
     setInterval(syncWalletFromDatabase, 30000);
 });
 
@@ -319,7 +324,7 @@ function showToast(message) {
     setTimeout(() => toast.remove(), 3000);
 }
 
-// Export
+// Export for global use
 window.Auth = {
     login,
     register,

@@ -54,7 +54,7 @@
         </div>
     </section>
 
-    <div class="ad-text">📢 مساحة إعلانية - أعلن هنا</div>
+    <div class="ad-text">📢 مساحة إعلانية -علن هنا</div>
 
     <main class="main-container">
         <section id="dashboardSection" class="dashboard-section">
@@ -311,38 +311,37 @@
         </div>
     </div>
 
-    <!-- REGISTER MODAL - USERNAME AUTH ONLY -->
+    <!-- REGISTER MODAL - 6 REQUIRED FIELDS INCLUDING CATEGORY -->
     <div id="registerModal" class="modal" style="display:none;">
         <div class="modal-box" style="width:90%;max-width:500px;">
             <button class="modal-close" onclick="closeModal('registerModal')"><i class="fas fa-times"></i></button>
             <h2>📝 إنشاء حساب جديد</h2>
             <div id="registerError" style="display:none;color:#E63946;padding:10px;background:rgba(230,57,70,0.1);border-radius:8px;margin-bottom:15px;text-align:center;"></div>
             <form id="registerForm">
+                <!-- Field 1: Username -->
                 <div class="input-group" style="margin-bottom:12px;">
-                    <label style="color:#D4AF37;">الاسم (عربي)</label>
-                    <input type="text" name="fullName" class="input-field" placeholder="محمد أحمد" required style="width:100%;padding:12px;border-radius:8px;border:1px solid #333;background:#1a1a2e;color:#fff;">
-                </div>
-                <div class="input-group" style="margin-bottom:12px;">
-                    <label style="color:#D4AF37;">اسم المستخدم</label>
+                    <label style="color:#D4AF37;">👤 اسم المستخدم</label>
                     <input type="text" name="username" class="input-field" placeholder="اختر اسم مستخدم فريد" required style="width:100%;padding:12px;border-radius:8px;border:1px solid #333;background:#1a1a2e;color:#fff;">
                 </div>
+                
+                <!-- Field 2: Password -->
                 <div class="input-group" style="margin-bottom:12px;">
-                    <label style="color:#D4AF37;">كلمة المرور</label>
+                    <label style="color:#D4AF37;">🔑 كلمة المرور</label>
                     <input type="password" name="password" class="input-field" placeholder="6 أحرف على الأقل" required style="width:100%;padding:12px;border-radius:8px;border:1px solid #333;background:#1a1a2e;color:#fff;">
                 </div>
+                
+                <!-- Field 3: Phone -->
                 <div class="input-group" style="margin-bottom:12px;">
-                    <label style="color:#D4AF37;">رقم الهاتف 🇮🇶</label>
-                    <div class="phone-input">
-                        <span class="phone-code">+964</span>
+                    <label style="color:#D4AF37;">📱 رقم الهاتف 🇮🇶</label>
+                    <div class="phone-input" style="display:flex;gap:5px;">
+                        <span style="background:#333;color:#D4AF37;padding:12px;border-radius:8px;display:flex;align-items:center;">+964</span>
                         <input type="tel" name="phone" class="input-field" placeholder="771 123 4567" required style="flex:1;padding:12px;border-radius:8px;border:1px solid #333;background:#1a1a2e;color:#fff;">
                     </div>
                 </div>
+                
+                <!-- Field 4: Province/Governorate -->
                 <div class="input-group" style="margin-bottom:12px;">
-                    <label style="color:#D4AF37;">العنوان</label>
-                    <input type="text" name="address" class="input-field" placeholder="المنطقة/الشارع" required style="width:100%;padding:12px;border-radius:8px;border:1px solid #333;background:#1a1a2e;color:#fff;">
-                </div>
-                <div class="input-group" style="margin-bottom:15px;">
-                    <label style="color:#D4AF37;">المحافظة</label>
+                    <label style="color:#D4AF37;">🗺️ المحافظة</label>
                     <select name="governorate" class="input-field" required style="width:100%;padding:12px;border-radius:8px;border:1px solid #333;background:#1a1a2e;color:#fff;">
                         <option value="">اختر المحافظة</option>
                         <option value="baghdad">بغداد</option>
@@ -364,7 +363,31 @@
                         <option value="karbala">كربلاء</option>
                     </select>
                 </div>
-                <button type="submit" class="btn-gold" style="width:100%;padding:15px;font-size:1.1rem;">تسجيل</button>
+                
+                <!-- Field 5: Street/Address -->
+                <div class="input-group" style="margin-bottom:12px;">
+                    <label style="color:#D4AF37;">🏠 الشارع/المنطقة</label>
+                    <input type="text" name="address" class="input-field" placeholder="المنطقة والشارع" required style="width:100%;padding:12px;border-radius:8px;border:1px solid #333;background:#1a1a2e;color:#fff;">
+                </div>
+                
+                <!-- Field 6: User Category (الفئة) - MANDATORY -->
+                <div class="input-group" style="margin-bottom:15px;">
+                    <label style="color:#D4AF37;">📋 الفئة (مطلوب)</label>
+                    <select name="category" class="input-field" required style="width:100%;padding:12px;border-radius:8px;border:1px solid #333;background:#1a1a2e;color:#fff;">
+                        <option value="">-- اختر الفئة --</option>
+                        <option value="student">🎓 طالب</option>
+                        <option value="office">🏢 مكتب</option>
+                        <option value="lab">🔬 مختبر</option>
+                        <option value="school">🏫 مدرسة</option>
+                        <option value="university">🎓 جامعة</option>
+                        <option value="company">🏗️ شركة</option>
+                        <option value="designer">🎨 مصمم</option>
+                        <option value="teacher">👨‍🏫 معلم</option>
+                        <option value="other">📋 أخرى</option>
+                    </select>
+                </div>
+                
+                <button type="submit" class="btn-gold" style="width:100%;padding:15px;font-size:1.1rem;">📝 تسجيل</button>
             </form>
             <p style="text-align:center;margin-top:15px;color:#D4AF37;cursor:pointer;" onclick="closeModal('registerModal');openModal('loginModal')">⬅️ لديك حساب؟ تسجيل الدخول</p>
         </div>
@@ -376,15 +399,15 @@
     <script src="js/eng-navigation.js?v=2026"></script>
     <script src="js/eng-slider.js?v=2026"></script>
     <script>
+        // Modal helpers
+        function openModal(id) { document.getElementById(id).style.display='flex'; }
+        function closeModal(id) { document.getElementById(id).style.display='none'; }
+        
         // Session Persistence - Check if user is already logged in
         window.addEventListener('DOMContentLoaded', function() {
-            // Check session on load
             if (window.Auth && window.Auth.checkExistingSession && window.Auth.checkExistingSession()) {
-                // User is logged in - just update UI
                 console.log('Session found - user is already logged in');
-                if (window.Auth.updateUserUI) {
-                    window.Auth.updateUserUI();
-                }
+                if (window.Auth.updateUserUI) window.Auth.updateUserUI();
             }
         });
         
@@ -393,7 +416,6 @@
             e.preventDefault();
             const username = document.getElementById('loginUsername').value.trim();
             const password = document.getElementById('loginPassword').value;
-            
             if (window.Auth && window.Auth.login) {
                 window.Auth.login(username, password);
             } else {
@@ -401,17 +423,38 @@
             }
         });
         
-        // Register form handler
+        // Register form handler - COLLECTS ALL 6 FIELDS
         document.getElementById('registerForm').addEventListener('submit', function(e) {
             e.preventDefault();
             const formData = {
-                fullName: e.target.fullName.value,
-                username: e.target.username.value,
+                username: e.target.username.value.trim(),
                 password: e.target.password.value,
-                phone: e.target.phone.value,
-                address: e.target.address.value,
-                governorate: e.target.governorate.value
+                phone: e.target.phone.value.trim(),
+                governorate: e.target.governorate.value,
+                address: e.target.address.value.trim(),
+                category: e.target.category.value
             };
+            
+            // Validation
+            if (!formData.username || !formData.password || !formData.phone || !formData.governorate || !formData.address || !formData.category) {
+                const errorEl = document.getElementById('registerError');
+                if (errorEl) {
+                    errorEl.textContent = 'الرجاء ملء جميع الحقول المطلوبة';
+                    errorEl.style.display = 'block';
+                    setTimeout(() => { errorEl.style.display = 'none'; }, 5000);
+                }
+                return;
+            }
+            
+            if (formData.password.length < 6) {
+                const errorEl = document.getElementById('registerError');
+                if (errorEl) {
+                    errorEl.textContent = 'كلمة المرور يجب أن تكون 6 أحرف على الأقل';
+                    errorEl.style.display = 'block';
+                    setTimeout(() => { errorEl.style.display = 'none'; }, 5000);
+                }
+                return;
+            }
             
             if (window.Auth && window.Auth.register) {
                 window.Auth.register(formData);
@@ -428,6 +471,8 @@
             alert('Language changed to: ' + (lang === 'ar' ? 'عربي' : lang === 'ku' ? 'کوردی' : 'English'));
         };
         window.I18n = { set: function(l) { setLang(l); } };
+        window.openModal = openModal;
+        window.closeModal = closeModal;
     </script>
 </body>
 </html>

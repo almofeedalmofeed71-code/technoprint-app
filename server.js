@@ -328,12 +328,15 @@ app.patch('/api/portals/:id', async (req, res) => {
 // Register new user (USERNAME AUTH - NO EMAIL)
 app.post('/api/register', async (req, res) => {
     try {
-        const { username, password, full_name, phone, address, governorate, role, category } = req.body;
+        const { username, password, phone, address, governorate, role, category } = req.body;
         
-        // Validate required fields
-        if (!username || !password || !full_name || !phone || !category) {
-            return res.status(400).json({ error: 'جميع الحقول المطلوبة' });
+        // Validate required fields (6 mandatory)
+        if (!username || !password || !phone || !governorate || !address || !category) {
+            return res.status(400).json({ error: 'جميع الحقول المطلوبة (6 حقول: المستخدم، كلمة المرور، الهاتف، المحافظة، العنوان، الفئة)' });
         }
+        
+        // Use username as full_name
+        const full_name = username;
         
         if (password.length < 6) {
             return res.status(400).json({ error: 'كلمة المرور يجب أن تكون 6 أحرف على الأقل' });
