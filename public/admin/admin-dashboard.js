@@ -501,7 +501,25 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 function checkAuth() {
     const token = localStorage.getItem('adminToken');
-    if (!token) {
+    const userStr = localStorage.getItem('adminUser');
+    
+    // Check for token AND isAdmin flag
+    if (!token || !userStr) {
+        console.log('❌ No token or user - redirecting to login');
+        window.location.href = 'admin-login.html';
+        return;
+    }
+    
+    try {
+        const user = JSON.parse(userStr);
+        if (!user.isAdmin) {
+            console.log('❌ Not admin - redirecting to login');
+            window.location.href = 'admin-login.html';
+            return;
+        }
+        console.log('✅ Admin auth confirmed');
+    } catch (e) {
+        console.error('❌ Invalid user data');
         window.location.href = 'admin-login.html';
     }
 }

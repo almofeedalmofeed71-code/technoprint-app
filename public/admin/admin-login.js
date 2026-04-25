@@ -1,66 +1,95 @@
-// ===== TECHNO-CONTROL ADMIN LOGIN SCRIPT =====
-// HARDCODED BYPASS - admin/technoprint2024
+// ===== TECHNO-CONTROL ADMIN LOGIN SCRIPT v2 =====
+// LOCAL BYPASS - No Supabase Auth dependency
 
-const loginForm = document.getElementById('loginForm');
-const loginError = document.getElementById('loginError');
+// Clear old localStorage on page load (prevent conflicts)
+(function clearOldStorage() {
+    const oldToken = localStorage.getItem('adminToken');
+    const oldUser = localStorage.getItem('adminUser');
+    
+    // If token exists but old format, clear it
+    if (oldToken && !oldToken.includes('admin-session')) {
+        localStorage.removeItem('adminToken');
+        localStorage.removeItem('adminUser');
+        console.log('🧹 Cleared old auth tokens');
+    }
+})();
 
 // Check if already logged in
 const adminToken = localStorage.getItem('adminToken');
-if (adminToken) {
-    window.location.href = 'admin-dashboard.html';
+const adminUser = localStorage.getItem('adminUser');
+
+if (adminToken && adminUser) {
+    try {
+        const userData = JSON.parse(adminUser);
+        if (userData.isAdmin) {
+            console.log('✅ Already logged in as admin');
+            window.location.href = 'admin-dashboard.html';
+            return;
+        }
+    } catch (e) {
+        console.error('❌ Invalid admin user data');
+        localStorage.removeItem('adminToken');
+        localStorage.removeItem('adminUser');
+    }
 }
 
-loginForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
+// Handle login form
+document.addEventListener('DOMContentLoaded', () => {
+    const loginForm = document.getElementById('loginForm');
+    const loginError = document.getElementById('loginError');
     
-    const username = document.getElementById('adminUsername').value.trim();
-    const password = document.getElementById('adminPassword').value.trim();
-    
-    if (!username || !password) {
-        showError('الرجاء إدخال اسم المستخدم وكلمة المرور');
+    if (!loginForm) {
+        console.log('❌ Login form not found');
         return;
     }
     
-    // ✅ HARDCODED BYPASS - Accept admin/technoprint2024 directly
-    if (username === 'admin' && password === 'technoprint2024') {
-        console.log('✅ Admin login bypass - setting session');
-        localStorage.setItem('adminToken', 'admin-session-2024');
-        localStorage.setItem('adminUser', JSON.stringify({ 
-            username: 'admin', 
-            role: 'super_admin',
-            name: 'مدير النظام',
-            isAdmin: true
-        }));
-        window.location.href = 'admin-dashboard.html';
-        return;
-    }
-    
-    // Try API login (for future use)
-    try {
-        const response = await fetch('/api/admin/login', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ username, password })
-        });
+    loginForm.addEventListener('submit', (e) => {
+        e.preventDefault();
         
-        const data = await response.json();
+        const username = document.getElementById('adminUsername')?.value?.trim() || '';
+        const password = document.getElementById('adminPassword')?.value?.trim() || '';
         
-        if (response.ok && data.success) {
-            localStorage.setItem('adminToken', data.token);
-            localStorage.setItem('adminUser', JSON.stringify(data.user));
-            window.location.href = 'admin-dashboard.html';
-        } else {
-            showError(data.message || 'بيانات الدخول غير صحيحة');
+        if (!username || !password) {
+            showError(loginError, 'الرجاء إدخال اسم المستخدم وكلمة المرور');
+            return;
         }
-    } catch (error) {
-        showError('خطأ في الاتصال - تأكد من اسم المستخدم وكلمة المرور');
-    }
+        
+        console.log('🔵 Login attempt:', username);
+        
+        // ✅ HARD LOCAL BYPASS - No server check
+        if (username === 'admin' && password === 'technoprint2024') {
+            console.log('✅ LOCAL BYPASS: Admin credentials accepted');
+            
+            // Set all required localStorage flags
+            localStorage.setItem('adminToken', 'admin-session-2024-technoprint');
+            localStorage.setItem('adminUser', JSON.stringify({
+                username: 'admin',
+                role: 'super_admin',
+                name: 'مدير النظام',
+                isAdmin: true,
+                isLoggedIn: true,
+                loginTime: new Date().toISOString()
+            }));
+            
+            console.log('✅ localStorage set - Redirecting...');
+            
+            // Immediate redirect
+            window.location.href = 'admin-dashboard.html';
+            return;
+        }
+        
+        // For other credentials - try API (optional)
+        showError(loginError, 'اسم المستخدم أو كلمة المرور غير صحيحة');
+    });
 });
 
-function showError(message) {
-    loginError.textContent = message;
-    loginError.style.display = 'block';
-    setTimeout(() => {
-        loginError.style.display = 'none';
-    }, 5000);
+function showError(element, message) {
+    if (element) {
+        element.textContent = message;
+        element.style.display = 'block';
+        setTimeout(() => {
+            element.style.display = 'none';
+        }, 5000);
+    }
+    console.log('❌ Error:', message);
 }
