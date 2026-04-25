@@ -5,10 +5,10 @@
 
 const bcrypt = require('bcryptjs');
 
-// NEW SUPABASE CREDENTIALS
+// NEW SUPABASE CREDENTIALS - rqzsokvhgjlftkouhphb
 const SUPABASE_URL = process.env.SUPABASE_URL || 'https://rqzsokvhgjlftkouhphb.supabase.co';
 const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJxenNva3ZoZ2psZnRrb3VocGhiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU0NjUyNDcsImV4cCI6MjA5MTA0MTI0N30.2VJpfOpCUp_Mr9ot00qH0nhLmIIfUy3Rr5TQ5GOgjbY';
-const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJxenNva3ZoZ2psZnRrb3VocGhiIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NTQ2NTI0NywiZXhwIjoxOTAzMTI1MjQ3fQ.SECRET_SERVICE_KEY_HERE';
+const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJxenNva3ZoZ2psZnRrb3VocGhiIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NTQ2NTI0NywiZXhwIjoyMDkxMDQxMjQ3fQ.NuAG8xhCkYqsb-vZ-8K6Voe6p9oqBUIuVVrQrijpT7Y';
 
 module.exports = async function handler(req, res) {
 
@@ -78,7 +78,7 @@ module.exports = async function handler(req, res) {
             created_at: new Date().toISOString()
         };
 
-        console.log('📤 New Project:', SUPABASE_URL);
+        console.log('📤 NEW Project:', SUPABASE_URL);
         console.log('📤 Profile:', profileData);
 
         // Insert using ANON for apikey + SERVICE for Authorization
