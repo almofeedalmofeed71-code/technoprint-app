@@ -1,20 +1,18 @@
 /**
  * TECHOPRINT 2026 - Registration API Route (Vercel Serverless)
- * FIXED VERSION - Correct Headers & Column Mapping
+ * NEW SUPABASE PROJECT - rqzsokvhgjlftkouhphb
  */
 
 const bcrypt = require('bcryptjs');
 
-// استدعاء المفاتيح من إعدادات Vercel
-const SUPABASE_URL = process.env.SUPABASE_URL;
-const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY; // مفتاح الباب
-const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY; // مفتاح الخزنة
-const ALLOWED_ORIGIN = process.env.ALLOWED_ORIGIN || 'https://technoprint-app.vercel.app';
+// NEW SUPABASE CREDENTIALS
+const SUPABASE_URL = process.env.SUPABASE_URL || 'https://rqzsokvhgjlftkouhphb.supabase.co';
+const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJxenNva3ZoZ2psZnRrb3VocGhiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU0NjUyNDcsImV4cCI6MjA5MTA0MTI0N30.2VJpfOpCUp_Mr9ot00qH0nhLmIIfUy3Rr5TQ5GOgjbY';
+const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJxenNva3ZoZ2psZnRrb3VocGhiIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NTQ2NTI0NywiZXhwIjoxOTAzMTI1MjQ3fQ.SECRET_SERVICE_KEY_HERE';
 
 module.exports = async function handler(req, res) {
 
-    // ✅ إعدادات CORS للسماح للموقع فقط بالاتصال
-    res.setHeader('Access-Control-Allow-Origin', ALLOWED_ORIGIN);
+    res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
@@ -26,20 +24,47 @@ module.exports = async function handler(req, res) {
         return res.status(405).json({ error: 'Method not allowed' });
     }
 
-    // ✅ التأكد من وجود المفاتيح في السيرفر
     if (!SUPABASE_URL || !SUPABASE_SERVICE_KEY || !SUPABASE_ANON_KEY) {
         console.error('❌ Missing environment variables');
-        return res.status(500).json({ success: false, error: 'إعدادات السيرفر ناقصة (المفاتيح)' });
+        return res.status(500).json({ success: false, error: 'إعدادات السيرفر ناقصة' });
     }
 
     try {
         const { username, password, phone, governorate, address, category } = req.body;
 
-        // 1. تشفير كلمة المرور للحماية
+        // Validate required fields
+        if (!username || !password || !phone || !governorate || !address || !category) {
+            return res.status(400).json({ 
+                success: false, 
+                error: 'جميع الحقول الستة مطلوبة' 
+            });
+        }
+
+        // Check if username exists
+        const checkRes = await fetch(
+            `${SUPABASE_URL}/rest/v1/profiles?username=eq.${encodeURIComponent(username)}&select=id`,
+            {
+                headers: {
+                    'apikey': SUPABASE_ANON_KEY,
+                    'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+                }
+            }
+        );
+        const existing = await checkRes.json();
+
+        if (existing && existing.length > 0) {
+            return res.status(400).json({ success: false, error: 'اسم المستخدم موجود مسبقاً' });
+        }
+
+        // Hash password
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        // 2. تجهيز البيانات لتطابق جداول السيرفر (Supabase)
+        // Generate UUID
+        const userId = crypto.randomUUID();
+
+        // Profile data - EXACT column names
         const profileData = {
+            id: userId,
             username: username,
             password: hashedPassword,
             phone: phone,
@@ -47,20 +72,21 @@ module.exports = async function handler(req, res) {
             address: address,
             category: category,
             role: 'user',
-            balance_iqd: 0,        // الاسم الصحيح للعمود
-            pages_count: 1000,     // الاسم الصحيح للعمود
+            balance_iqd: 0,
+            pages_count: 1000,
             status: 'active',
             created_at: new Date().toISOString()
         };
 
-        console.log('📤 Sending to Supabase Cloud...');
+        console.log('📤 New Project:', SUPABASE_URL);
+        console.log('📤 Profile:', profileData);
 
-        // 3. إرسال البيانات باستخدام المفاتيح الصحيحة (فصل الـ apikey عن الـ Authorization)
+        // Insert using ANON for apikey + SERVICE for Authorization
         const insertRes = await fetch(`${SUPABASE_URL}/rest/v1/profiles`, {
             method: 'POST',
             headers: {
-                'apikey': SUPABASE_ANON_KEY, // المفتاح العام لفتح الباب
-                'Authorization': `Bearer ${SUPABASE_SERVICE_KEY}`, // المفتاح القوي لتجاوز القفل
+                'apikey': SUPABASE_ANON_KEY,
+                'Authorization': `Bearer ${SUPABASE_SERVICE_KEY}`,
                 'Content-Type': 'application/json',
                 'Prefer': 'return=representation'
             },
@@ -68,12 +94,14 @@ module.exports = async function handler(req, res) {
         });
 
         const insertText = await insertRes.text();
+        console.log('📥 Insert response:', insertRes.status, insertText);
 
         if (insertRes.status === 201 || insertRes.status === 200) {
-            console.log('✅ Success! User saved in Cloud.');
+            console.log('✅ SUCCESS! User saved in NEW cloud.');
             return res.status(201).json({
                 success: true,
-                message: 'تم إنشاء الحساب بنجاح في السيرفر السحابي!'
+                message: 'تم إنشاء الحساب بنجاح!',
+                user: { id: userId, username, balance_iqd: 0, pages_count: 1000 }
             });
         } else {
             console.error('❌ Supabase Error:', insertText);
@@ -90,4 +118,4 @@ module.exports = async function handler(req, res) {
             error: 'خطأ داخلي: ' + err.message
         });
     }
-};س
+};

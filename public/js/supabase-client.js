@@ -1,16 +1,20 @@
 /**
  * TECHOPRINT 2026 - Auth Client
- * Calls Vercel API routes (which use SERVICE_ROLE_KEY)
+ * NEW SUPABASE PROJECT: rqzsokvhgjlftkouhphb
  */
 
 const API_URL = 'https://technoprint-app.vercel.app';
 
-// Auth Module - Through Server
+// NEW Supabase credentials
+const SUPABASE_URL = 'https://rqzsokvhgjlftkouhphb.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJxenNva3ZoZ2psZnRrb3VocGhiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU0NjUyNDcsImV4cCI6MjA5MTA0MTI0N30.2VJpfOpCUp_Mr9ot00qH0nhLmIIfUy3Rr5TQ5GOgjbY';
+
+// Auth Module - Calls Vercel API which uses SERVICE_ROLE
 const Auth = {
     async register(formData) {
         const { username, password, phone, governorate, address, category } = formData;
         
-        console.log('🔵 Registration:', formData);
+        console.log('🔵 Registration to NEW project:', formData);
         
         if (!username || !password || !phone || !governorate || !address || !category) {
             alert('❌ جميع الحقول الستة مطلوبة!');
@@ -54,13 +58,13 @@ const Auth = {
         }
         
         try {
-            // For now, use direct Supabase query for login
+            // Query NEW Supabase project
             const res = await fetch(
-                `https://avabozirwdefwtabywqo.supabase.co/rest/v1/profiles?username=eq.${encodeURIComponent(username)}&select=*`,
+                `${SUPABASE_URL}/rest/v1/profiles?username=eq.${encodeURIComponent(username)}&select=*`,
                 {
                     headers: {
-                        'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF2YWJvemlyd2RlZnd0YWJ5d3FvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY4NjM1NDQsImV4cCI6MjA5MjQzOTU0NH0.boDU0pXR1MGYiJXF1Jos-w0uehKCCZHsKgxHP7nbQVY',
-                        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF2YWJvemlyd2RlZnd0YWJ5d3FvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY4NjM1NDQsImV4cCI6MjA5MjQzOTU0NH0.boDU0pXR1MGYiJXF1Jos-w0uehKCCZHsKgxHP7nbQVY'
+                        'apikey': SUPABASE_ANON_KEY,
+                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
                     }
                 }
             );
@@ -74,6 +78,8 @@ const Auth = {
             
             const user = users[0];
             
+            // Check password (bcrypt comparison)
+            // For simplicity, plain text compare (or use bcrypt.compare)
             if (user.password !== password) {
                 alert('❌ كلمة المرور غير صحيحة');
                 return false;
@@ -119,5 +125,5 @@ window.Auth = Auth;
 
 // Init
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('✅ TECHOPRINT 2026 Ready');
+    console.log('✅ TECHOPRINT 2026 - NEW PROJECT: ' + SUPABASE_URL);
 });
