@@ -14,9 +14,9 @@ const fs = require('fs');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Supabase Config - USING SERVICE ROLE KEY FOR BACKEND OPERATIONS
-const SUPABASE_URL = process.env.SUPABASE_URL || 'https://avabozirwdefwtabywqo.supabase.co';
-const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF2YWJvemlyd2RlZnd0YWJ5d3FvIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3Njg2MzU0NCwiZXhwIjoyMDkyNDM5NTQ0fQ.8cK3pJQ2mK9L5nF1vW2xZ4yQ6sT8hR3dA0mB7eC9uI4';
+// Supabase Config - EXACT VALUES FROM USER (ANON KEY ONLY)
+const SUPABASE_URL = 'https://avabozirwdefwtabywqo.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF2YWJvemlyd2RlZnd0YWJ5d3FvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY4NjM1NDQsImV4cCI6MjA5MjQzOTU0NH0.boDU0pXR1MGYiJXF1Jos-w0uehKCCZHsKgxHP7nbQVY';
 
 // Multer config for file uploads
 const storage = multer.diskStorage({
@@ -37,14 +37,14 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-// Supabase REST API Helper - USING SERVICE ROLE KEY FOR FULL ACCESS
+// Supabase REST API Helper - USING ANON KEY (RLS DISABLED)
 async function supabaseRequest(endpoint, method = 'GET', body = null, headers = {}) {
     console.log('🔵 Supabase Request:', method, endpoint);
     const options = {
         method,
         headers: {
-            'apikey': SUPABASE_SERVICE_KEY,
-            'Authorization': `Bearer ${SUPABASE_SERVICE_KEY}`,
+            'apikey': SUPABASE_ANON_KEY,
+            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
             'Content-Type': 'application/json',
             'Prefer': method === 'POST' ? 'return=representation' : '',
             ...headers
