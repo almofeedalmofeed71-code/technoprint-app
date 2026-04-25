@@ -14,9 +14,16 @@
     <link rel="stylesheet" href="css/ui-header.css?v=2026">
     <link rel="stylesheet" href="css/ui-modals.css?v=2026">
     <link rel="stylesheet" href="css/animations.css?v=2026">
+    <style>
+    /* FORCE EVERYTHING VISIBLE - NO SPLASH LOCK */
+    .splash { display: none !important; }
+    .dashboard-section { display: block !important; }
+    .portal-card { display: flex !important; }
+    .slider-section { display: block !important; }
+    </style>
 </head>
 <body>
-    <div id="splash" class="splash">
+    <div id="splash" class="splash" style="display:none;">
         <div class="splash-logo">T</div>
         <p class="splash-text">TECHOPRINT 2026</p>
     </div>
