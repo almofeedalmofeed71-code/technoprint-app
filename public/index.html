@@ -550,6 +550,12 @@
         setTimeout(() => {
             document.getElementById('preloader')?.classList.add('hidden');
             initSlider();
+            
+            // Sync user session and wallet
+            if (window.Auth) {
+                Auth.init();
+                Auth.syncWallet();
+            }
         }, 800);
     });
     </script>
