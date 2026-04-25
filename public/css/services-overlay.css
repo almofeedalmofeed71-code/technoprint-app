@@ -11,9 +11,9 @@
     left: 0;
     right: 0;
     bottom: 0;
-    z-index: 999;
+    z-index: 999 !important;
     background: rgba(10, 10, 11, 0.95);
-    display: none;
+    display: none !important;
     overflow-y: auto;
     backdrop-filter: blur(10px);
 }

@@ -299,6 +299,11 @@ html[dir="rtl"] .header-right { justify-content: flex-start; }
     box-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
 }
 
+.slider {
+    z-index: 1 !important;
+    display: block !important;
+}
+
 .slider-frame { overflow: hidden; border-radius: 16px; }
 
 .slider-track {
