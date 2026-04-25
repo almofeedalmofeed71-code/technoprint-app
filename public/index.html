@@ -524,13 +524,21 @@
     function showLogin() { document.getElementById('loginModal')?.classList.add('active'); }
     function closeModal(id) { document.getElementById(id)?.classList.remove('active'); }
 
-    // ===== INIT =====
+    // ===== INIT - HOME UI VISIBLE IMMEDIATELY =====
     document.addEventListener('DOMContentLoaded', () => {
+        // Show Home UI immediately - NO WAITING
+        const appContainer = document.getElementById('appContainer');
+        if (appContainer) {
+            appContainer.style.display = 'grid';
+            appContainer.style.visibility = 'visible';
+            appContainer.style.opacity = '1';
+        }
+        
+        // Hide preloader after minimal delay (just for visual effect)
         setTimeout(() => {
             document.getElementById('preloader')?.classList.add('hidden');
-            document.getElementById('appContainer').style.display = 'grid';
             initSlider();
-        }, 2500);
+        }, 800);
     });
     </script>
 </body>
