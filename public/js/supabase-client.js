@@ -51,17 +51,28 @@ const Auth = {
             console.log('📥 Response:', result);
             
             if (result.success) {
-                // ✅ SUCCESS - Auto login and redirect!
-                alert('✅ تم إنشاء الحساب بنجاح!\n🎁 هدية: 1000 صفحة مجانية');
+                // ✅ SUCCESS - IMMEDIATELY save to localStorage and redirect!
+                alert('✅ تم إنشاء الحساب بنجاح!\n🎁 هدية: 1000 صفحة مجانية\n🎉 جاري الدخول تلقائياً...');
                 
-                // Auto-login after registration
-                const loginSuccess = await this.login(username, password);
+                // Save session IMMEDIATELY (no need for re-login)
+                const session = {
+                    id: result.user?.id || crypto.randomUUID(),
+                    username: username,
+                    phone: phone,
+                    governorate: governorate,
+                    address: address,
+                    category: category,
+                    role: 'user',
+                    balance_iqd: 0,
+                    pages_count: 1000
+                };
                 
-                if (loginSuccess) {
-                    closeModal('registerModal');
-                    // Redirect to dashboard - user is already authenticated!
-                    this.redirectToDashboard();
-                }
+                localStorage.setItem('technoprintSession', JSON.stringify(session));
+                console.log('✅ Session saved:', session);
+                
+                // Close modal and redirect
+                closeModal('registerModal');
+                this.redirectToDashboard();
                 
                 return true;
             } else {
