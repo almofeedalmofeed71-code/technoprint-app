@@ -335,11 +335,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     const token = localStorage.getItem('adminToken');
     const userStr = localStorage.getItem('adminUser');
     
-    // ✅ OWNER SESSION - ALLOW IMMEDIATELY
-    if (token === 'owner-session-2024' || 
-        token === 'admin-session-2024-technoprint' ||
+    // ✅ ADMIN SESSIONS - ALLOW ALL
+    if (token === 'owner-2024' || 
+        token === 'owner-session-2024' ||
+        token?.startsWith('admin-db-') ||
         token?.startsWith('db-admin-session-')) {
-        console.log('✅ Admin session detected - ACCESS GRANTED');
+        console.log('✅ Admin session - ACCESS GRANTED');
         initDashboard();
         return;
     }

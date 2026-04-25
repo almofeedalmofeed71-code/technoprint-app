@@ -1,11 +1,10 @@
-// ===== TECHNO-CONTROL ADMIN LOGIN v6 - ANY ADMIN USER =====
+// ===== TECHNO-CONTROL - SIMPLE LOGIN FOR HSEENOP33 =====
 
 const SUPABASE_URL = 'https://rqzsokvhgjlftkouhphb.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJxenNva3ZoZ2psZnRrb3VocGhiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU0NjUyNDcsImV4cCI6MjA5MTA0MTI0N30.2VJpfOpCUp_Mr9ot00qH0nhLmIIfUy3Rr5TQ5GOgjbY';
 
-// Clear old sessions
-localStorage.removeItem('adminToken');
-localStorage.removeItem('adminUser');
+// CLEAR EVERYTHING
+localStorage.clear();
 
 document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('loginForm');
@@ -18,87 +17,55 @@ document.addEventListener('DOMContentLoaded', function() {
         const password = document.getElementById('adminPassword')?.value?.trim() || '';
         
         if (!username || !password) {
-            showError('أدخل اسم المستخدم وكلمة المرور');
+            alert('أدخل الاسم وكلمة المرور');
             return;
         }
         
-        console.log('🔵 Login attempt:', username);
-        
-        // === PRIORITY 1: HARDCODE for 'admin' user ===
+        // HARDCODE BYPASS FOR ADMIN
         if (username === 'admin' && password === 'technoprint2024') {
-            localStorage.setItem('adminToken', 'owner-session-2024');
-            localStorage.setItem('adminUser', JSON.stringify({
-                username: 'admin',
-                role: 'admin',
-                name: 'المالك',
-                isAdmin: true,
-                isOwner: true
-            }));
+            localStorage.setItem('adminToken', 'owner-2024');
+            localStorage.setItem('adminUser', JSON.stringify({ username: 'admin', role: 'admin', isAdmin: true }));
             window.location.href = 'admin-dashboard.html';
             return;
         }
         
-        // === PRIORITY 2: CHECK DATABASE FOR ANY ADMIN USER ===
+        // CHECK DATABASE FOR hseenop33
         try {
             const res = await fetch(
-                `${SUPABASE_URL}/rest/v1/profiles?username=eq.${encodeURIComponent(username)}&select=id,username,password,role`,
-                {
-                    headers: {
-                        'apikey': SUPABASE_ANON_KEY,
-                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
-                    }
-                }
+                `${SUPABASE_URL}/rest/v1/profiles?username=eq.${encodeURIComponent(username)}&select=*`,
+                { headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${SUPABASE_ANON_KEY}` } }
             );
             
             const users = await res.json();
-            console.log('📋 DB Response:', users);
             
             if (!users || users.length === 0) {
-                showError('المستخدم غير موجود');
+                alert('المستخدم غير موجود');
                 return;
             }
             
             const user = users[0];
-            console.log('👤 User found:', user.username, '| Role:', user.role);
             
-            // Verify password
             if (user.password !== password) {
-                showError('كلمة المرور غير صحيحة');
+                alert('كلمة المرور غير صحيحة');
                 return;
             }
             
-            // CHECK IF ROLE IS 'admin' - ANY ADMIN USER WORKS!
+            // ✅ IF ROLE IS ADMIN - GRANT ACCESS
             if (user.role === 'admin') {
-                console.log('✅ Admin role confirmed for:', user.username);
-                
-                localStorage.setItem('adminToken', 'db-admin-session-' + user.id);
-                localStorage.setItem('adminUser', JSON.stringify({
+                localStorage.setItem('adminToken', 'admin-db-' + user.id);
+                localStorage.setItem('adminUser', JSON.stringify({ 
                     id: user.id,
-                    username: user.username,
-                    role: user.role,
-                    name: 'مدير النظام',
-                    isAdmin: true,
-                    isOwner: false
+                    username: user.username, 
+                    role: user.role, 
+                    isAdmin: true 
                 }));
-                
-                console.log('🚀 Redirecting to dashboard...');
                 window.location.href = 'admin-dashboard.html';
             } else {
-                showError(`ليس لديك صلاحية - دورك: ${user.role || 'غير محدد'}`);
+                alert('ليس لديك صلاحية الدخول. دورك: ' + (user.role || 'غير محدد'));
             }
             
         } catch (err) {
-            console.error('❌ Error:', err);
-            showError('خطأ في الاتصال - حاول لاحقاً');
+            alert('خطأ في الاتصال');
         }
     });
 });
-
-function showError(msg) {
-    const el = document.getElementById('loginError');
-    if (el) {
-        el.textContent = msg;
-        el.style.display = 'block';
-        setTimeout(() => el.style.display = 'none', 5000);
-    }
-}
