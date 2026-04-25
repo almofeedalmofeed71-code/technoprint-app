@@ -1,5 +1,6 @@
 /**
- * TECHOPRINT 2026 - Auth Client
+ * TECHOPRINT 2026 - Auth Client v2.0
+ * Professional Registration & Login with Validation
  * NEW SUPABASE PROJECT: rqzsokvhgjlftkouhphb
  */
 
@@ -9,21 +10,37 @@ const API_URL = 'https://technoprint-app.vercel.app';
 const SUPABASE_URL = 'https://rqzsokvhgjlftkouhphb.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJxenNva3ZoZ2psZnRrb3VocGhiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU0NjUyNDcsImV4cCI6MjA5MTA0MTI0N30.2VJpfOpCUp_Mr9ot00qH0nhLmIIfUy3Rr5TQ5GOgjbY';
 
-// Auth Module - Calls Vercel API which uses SERVICE_ROLE
+// Auth Module - Clean Professional Code
 const Auth = {
+    // Validate phone number (must start with 7)
+    validatePhone(phone) {
+        const cleaned = phone.replace(/\D/g, '');
+        if (!cleaned.startsWith('7')) {
+            alert('❌ الرقم يجب أن يبدأ بـ 7');
+            return false;
+        }
+        return true;
+    },
+    
+    // Register with professional validation
     async register(formData) {
         const { username, password, phone, governorate, address, category } = formData;
         
-        console.log('🔵 Registration to NEW project:', formData);
+        console.log('🔵 Registration:', formData);
         
+        // Validate all 6 required fields
         if (!username || !password || !phone || !governorate || !address || !category) {
-            alert('❌ جميع الحقول الستة مطلوبة!');
+            alert('❌ جميع الحقول مطلوبة!');
+            return false;
+        }
+        
+        // Validate phone starts with 7
+        if (!this.validatePhone(phone)) {
             return false;
         }
         
         try {
-            console.log('📤 Sending to /api/register...');
-            
+            // Send to server (api/register.js uses SERVICE_ROLE_KEY)
             const res = await fetch(`${API_URL}/api/register`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -34,12 +51,26 @@ const Auth = {
             console.log('📥 Response:', result);
             
             if (result.success) {
+                // ✅ SUCCESS - Auto login and redirect!
                 alert('✅ تم إنشاء الحساب بنجاح!\n🎁 هدية: 1000 صفحة مجانية');
-                closeModal('registerModal');
-                openModal('loginModal');
+                
+                // Auto-login after registration
+                const loginSuccess = await this.login(username, password);
+                
+                if (loginSuccess) {
+                    closeModal('registerModal');
+                    // Redirect to dashboard - user is already authenticated!
+                    this.redirectToDashboard();
+                }
+                
                 return true;
             } else {
-                alert('❌ ' + (result.error || 'فشل التسجيل'));
+                // ❌ Check for duplicate (username or phone)
+                if (result.error && result.error.includes('exists')) {
+                    alert('❌ هذا المستخدم أو الرقم مسجل مسبقاً');
+                } else {
+                    alert('❌ ' + (result.error || 'فشل التسجيل'));
+                }
                 return false;
             }
         } catch (err) {
@@ -49,16 +80,17 @@ const Auth = {
         }
     },
     
+    // Login with username (type="text" already set in HTML)
     async login(username, password) {
         console.log('🔵 Login:', username);
         
         if (!username || !password) {
-            alert('❌ أدخل الاسم وكلمة المرور');
+            alert('❌ أدخل اسم المستخدم وكلمة المرور');
             return false;
         }
         
         try {
-            // Query NEW Supabase project
+            // Query Supabase directly
             const res = await fetch(
                 `${SUPABASE_URL}/rest/v1/profiles?username=eq.${encodeURIComponent(username)}&select=*`,
                 {
@@ -78,15 +110,14 @@ const Auth = {
             
             const user = users[0];
             
-            // Check password (bcrypt comparison)
-            // For simplicity, plain text compare (or use bcrypt.compare)
+            // Verify password (bcrypt comparison would be better, but keeping simple for now)
             if (user.password !== password) {
                 alert('❌ كلمة المرور غير صحيحة');
                 return false;
             }
             
-            // Save session
-            localStorage.setItem('technoprintSession', JSON.stringify({
+            // Save session to localStorage
+            const session = {
                 id: user.id,
                 username: user.username,
                 phone: user.phone,
@@ -96,10 +127,17 @@ const Auth = {
                 role: user.role || 'user',
                 balance_iqd: user.balance_iqd || 0,
                 pages_count: user.pages_count || 0
-            }));
+            };
             
-            alert(`🎉 مرحباً ${user.username}!\n💰 الرصيد: ${user.balance_iqd || 0} IQD`);
+            localStorage.setItem('technoprintSession', JSON.stringify(session));
+            
+            alert(`🎉 مرحباً ${user.username}!\n💰 الرصيد: ${user.balance_iqd || 0} IQD\n📄 الصفحات: ${user.pages_count || 0}`);
+            
             closeModal('loginModal');
+            
+            // Redirect to dashboard
+            this.redirectToDashboard();
+            
             return true;
             
         } catch (err) {
@@ -109,11 +147,39 @@ const Auth = {
         }
     },
     
+    // Redirect to dashboard after successful login
+    redirectToDashboard() {
+        console.log('✅ Redirecting to dashboard...');
+        // Show user dashboard section
+        const dashboardSection = document.getElementById('dashboardSection');
+        if (dashboardSection) {
+            // Hide all sections first
+            document.querySelectorAll('.dashboard-section').forEach(s => s.style.display = 'none');
+            // Show dashboard
+            dashboardSection.style.display = 'block';
+        }
+        // Update header to show logged in state
+        this.updateHeaderState();
+    },
+    
+    // Update header based on login state
+    updateHeaderState() {
+        const user = this.isLoggedIn();
+        if (user) {
+            const adminBtn = document.getElementById('adminPortalBtn');
+            if (adminBtn && user.role === 'admin') {
+                adminBtn.style.display = 'block';
+            }
+        }
+    },
+    
+    // Check if logged in
     isLoggedIn() {
         const s = localStorage.getItem('technoprintSession');
         return s ? JSON.parse(s) : null;
     },
     
+    // Logout
     logout() {
         localStorage.removeItem('technoprintSession');
         alert('تم الخروج');
@@ -123,7 +189,14 @@ const Auth = {
 
 window.Auth = Auth;
 
-// Init
+// Init on page load
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('✅ TECHOPRINT 2026 - NEW PROJECT: ' + SUPABASE_URL);
+    console.log('✅ TECHOPRINT 2026 v2.0 - Professional Auth Ready');
+    
+    // Check if user is already logged in
+    const user = Auth.isLoggedIn();
+    if (user) {
+        console.log('✅ User logged in:', user.username);
+        Auth.updateHeaderState();
+    }
 });

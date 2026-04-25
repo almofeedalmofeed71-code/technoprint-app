@@ -40,9 +40,9 @@ module.exports = async function handler(req, res) {
             });
         }
 
-        // Check if username exists
+        // Check if username OR phone exists (duplication check)
         const checkRes = await fetch(
-            `${SUPABASE_URL}/rest/v1/profiles?username=eq.${encodeURIComponent(username)}&select=id`,
+            `${SUPABASE_URL}/rest/v1/profiles?or=(username.eq.${encodeURIComponent(username)},phone.eq.${encodeURIComponent(phone)})&select=id`,
             {
                 headers: {
                     'apikey': SUPABASE_ANON_KEY,
@@ -53,7 +53,7 @@ module.exports = async function handler(req, res) {
         const existing = await checkRes.json();
 
         if (existing && existing.length > 0) {
-            return res.status(400).json({ success: false, error: 'اسم المستخدم موجود مسبقاً' });
+            return res.status(400).json({ success: false, error: 'هذا المستخدم أو الرقم مسجل مسبقاً' });
         }
 
         // Hash password
