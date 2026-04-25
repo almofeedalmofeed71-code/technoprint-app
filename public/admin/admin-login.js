@@ -1,8 +1,8 @@
 // ===== TECHNO-CONTROL ADMIN LOGIN SCRIPT =====
+// HARDCODED BYPASS - admin/technoprint2024
 
 const loginForm = document.getElementById('loginForm');
 const loginError = document.getElementById('loginError');
-const loginScreen = document.getElementById('loginScreen');
 
 // Check if already logged in
 const adminToken = localStorage.getItem('adminToken');
@@ -21,6 +21,21 @@ loginForm.addEventListener('submit', async (e) => {
         return;
     }
     
+    // ✅ HARDCODED BYPASS - Accept admin/technoprint2024 directly
+    if (username === 'admin' && password === 'technoprint2024') {
+        console.log('✅ Admin login bypass - setting session');
+        localStorage.setItem('adminToken', 'admin-session-2024');
+        localStorage.setItem('adminUser', JSON.stringify({ 
+            username: 'admin', 
+            role: 'super_admin',
+            name: 'مدير النظام',
+            isAdmin: true
+        }));
+        window.location.href = 'admin-dashboard.html';
+        return;
+    }
+    
+    // Try API login (for future use)
     try {
         const response = await fetch('/api/admin/login', {
             method: 'POST',
@@ -38,18 +53,7 @@ loginForm.addEventListener('submit', async (e) => {
             showError(data.message || 'بيانات الدخول غير صحيحة');
         }
     } catch (error) {
-        // For demo purposes, allow fallback authentication
-        if (username === 'admin' && password === 'technoprint2024') {
-            localStorage.setItem('adminToken', 'demo-token');
-            localStorage.setItem('adminUser', JSON.stringify({ 
-                username: 'admin', 
-                role: 'super_admin',
-                name: 'مدير النظام'
-            }));
-            window.location.href = 'admin-dashboard.html';
-        } else {
-            showError('خطأ في الاتصال بالخادم');
-        }
+        showError('خطأ في الاتصال - تأكد من اسم المستخدم وكلمة المرور');
     }
 });
 
