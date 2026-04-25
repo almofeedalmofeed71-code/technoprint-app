@@ -1,4 +1,8 @@
-// ===== TECHNO-CONTROL ADMIN DASHBOARD V3 - SERVER-API LINKED =====
+// ===== TECHNO-CONTROL ADMIN DASHBOARD V3 - SUPABASE LINKED =====
+
+// NEW SUPABASE CREDENTIALS
+const SUPABASE_URL = 'https://rqzsokvhgjlftkouhphb.supabase.co';
+const SUPABASE_SERVICE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJxenNva3ZoZ2psZnRrb3VocGhiIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NTQ2NTI0NywiZXhwIjoyMDkxMDQxMjQ3fQ.NuAG8xhCkYqsb-vZ-8K6Voe6p9oqBUIuVVrQrijpT7Y';
 
 // State Management
 let allUsers = [];
@@ -18,19 +22,29 @@ let appSettings = {
 
 // ==================== SERVER-API LINKED FUNCTIONS ====================
 
-// Fetch users from server API
+// Fetch users DIRECTLY from Supabase using SERVICE_ROLE_KEY
 async function fetchUsersFromServer() {
     try {
-        const response = await fetch('/api/admin/profiles');
+        console.log('📤 Fetching users from Supabase...');
+        
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/profiles?select=*&order=created_at.desc`, {
+            headers: {
+                'apikey': SUPABASE_SERVICE_KEY,
+                'Authorization': `Bearer ${SUPABASE_SERVICE_KEY}`
+            }
+        });
+        
         const data = await response.json();
+        console.log('📥 Supabase response:', data);
+        
         if (Array.isArray(data)) {
             return data.map(u => ({
                 id: u.id,
-                name: u.full_name || 'مستخدم',
+                name: u.username || 'مستخدم',
                 username: u.username || '',
                 phone: u.phone || '',
                 governorate: u.governorate || '',
-                role: u.role || 'student',
+                role: u.role || 'user',
                 category: u.category || '',
                 balance: u.balance_iqd || 0,
                 pages: u.pages_count || 0,
@@ -39,7 +53,7 @@ async function fetchUsersFromServer() {
             }));
         }
     } catch (e) {
-        console.error('Server fetch error:', e);
+        console.error('Supabase fetch error:', e);
     }
     return [];
 }
