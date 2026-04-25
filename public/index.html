@@ -2,347 +2,157 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TECHOPRINT 2026</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="css/ui-colors.css?v=2026">
-    <link rel="stylesheet" href="css/ui-glass.css?v=2026">
-    <link rel="stylesheet" href="css/ui-ads-slider.css?v=2026">
-    <link rel="stylesheet" href="css/ui-cards.css?v=2026">
-    <link rel="stylesheet" href="css/ui-buttons.css?v=2026">
-    <link rel="stylesheet" href="css/ui-header.css?v=2026">
-    <link rel="stylesheet" href="css/ui-modals.css?v=2026">
-    <link rel="stylesheet" href="css/animations.css?v=2026">
+    <link rel="stylesheet" href="css/main.css?v=2026">
 </head>
 <body>
-    <div id="splash" class="splash">
-        <div class="splash-logo">T</div>
-        <p class="splash-text">TECHOPRINT 2026</p>
-    </div>
-
+    <!-- Header -->
     <header class="app-header">
         <div class="brand">
             <div class="brand-logo">T</div>
             <span class="brand-name">TECHOPRINT</span>
         </div>
         <button class="btn-gold register-btn" onclick="openModal('registerModal')">تسجيل</button>
-        <div class="header-actions">
-            <div class="header-notif" onclick="showNotification()"><i class="fas fa-bell"></i></div>
-            <div class="header-wallet" onclick="openWallet()"><i class="fas fa-wallet"></i></div>
-        </div>
     </header>
 
-    <section class="slider-section">
-        <div class="slider-frame">
-            <div class="slider-container">
-                <div class="slide" style="display:grid;">
-                    <div class="slide-block" style="grid-column:span 3;"><img src="https://picsum.photos/1200/600?random=1"></div>
-                </div>
-                <div class="slide">
-                    <div class="slide-block" style="grid-column:span 3;"><img src="https://picsum.photos/1200/600?random=2"></div>
-                </div>
-                <div class="slide">
-                    <div class="slide-block" style="grid-column:span 3;"><img src="https://picsum.photos/1200/600?random=3"></div>
-                </div>
-            </div>
-        </div>
-        <div class="slide-nav" style="margin-top:4px;">
-            <div class="slider-dot active"></div>
-            <div class="slider-dot"></div>
-            <div class="slider-dot"></div>
-        </div>
-    </section>
-
-    <div class="ad-text">📢 مساحة إعلانية -علن هنا</div>
-
+    <!-- Main Content -->
     <main class="main-container">
-        <section id="dashboardSection" class="dashboard-section">
+        <!-- Dashboard Section -->
+        <section id="dashboardSection" class="dashboard-section active">
+            <h2 class="section-title">🏠 الرئيسية</h2>
             <div class="portals-grid">
+                <div class="portal-card" onclick="Nav.go('cards')">
+                    <div class="portal-icon">🪪</div>
+                    <h3>البطاقات</h3>
+                    <p>طلب بطاقات</p>
+                </div>
                 <div class="portal-card" onclick="Nav.go('student')">
                     <div class="portal-icon">🎓</div>
-                    <h3>فضاء النجاح</h3>
-                    <p>مركز الطالب</p>
+                    <h3>فضاء الطالب</h3>
+                    <p>خدمات الطالب</p>
                 </div>
-                <div class="portal-card" onclick="Nav.go('teacher')">
-                    <div class="portal-icon">👨‍🏫</div>
-                    <h3>منبر الأساتذة</h3>
-                    <p>ديوان التدريسيين</p>
+                <div class="portal-card" onclick="Nav.go('wallet')">
+                    <div class="portal-icon">💰</div>
+                    <h3>المحفظة</h3>
+                    <p>الرصيد والصفحات</p>
                 </div>
-                <div class="portal-card" onclick="Nav.go('general')">
-                    <div class="portal-icon">🎨</div>
-                    <h3>بصمة الإبداع</h3>
-                    <p>الخدمات العامة</p>
-                </div>
-                <div class="portal-card" onclick="Nav.go('library')">
-                    <div class="portal-icon">📚</div>
-                    <h3>كنوز المعرفة</h3>
-                    <p>المكتبة الرقمية</p>
-                </div>
-                <div class="portal-card" onclick="Nav.go('ai')">
-                    <div class="portal-icon">🤖</div>
-                    <h3>العقل الرقمي</h3>
-                    <p>مساعد AI الذكي</p>
-                </div>
-                <div class="portal-card construction" onclick="Nav.go('academy')">
-                    <div class="portal-icon">🏫</div>
-                    <h3>أكاديمية تكنو</h3>
-                    <p>المعهد والدورات</p>
-                    <span class="construction-badge">قريباً</span>
+                <div class="portal-card" onclick="Nav.go('orders')">
+                    <div class="portal-icon">📦</div>
+                    <h3>طلباتي</h3>
+                    <p>تتبع الطلبات</p>
                 </div>
             </div>
+            
+            <!-- Wallet Display -->
+            <div class="wallet-balance">
+                <div id="walletBalance">0 IQD</div>
+                <div class="wallet-pages" id="walletPages">0 صفحة</div>
+            </div>
+        </section>
 
-            <div class="utility-row">
-                <button class="utility-btn" onclick="Nav.go('about')"><i class="fas fa-info-circle"></i><br><span>من نحن</span></button>
-                <button class="utility-btn" onclick="Nav.go('settings')"><i class="fas fa-cog"></i><br><span>الإعدادات</span></button>
-                <button class="utility-btn" onclick="Nav.go('support')"><i class="fas fa-headset"></i><br><span>الدعم</span></button>
-                <button class="utility-btn" onclick="openModal('langModal')"><i class="fas fa-globe"></i><br><span>اللغة</span></button>
+        <!-- Cards Section -->
+        <section id="cardsSection" class="dashboard-section">
+            <h2 class="section-title">🪪 البطاقات</h2>
+            <p style="text-align:center;color:#aaa;margin-bottom:20px;">اختر نوع البطاقة التي تريدها</p>
+            <div id="cardsGrid" class="cards-grid"></div>
+            <button class="btn-gold btn-back" onclick="Nav.go('dashboard')">العودة</button>
+        </section>
+
+        <!-- Student Section -->
+        <section id="studentSection" class="dashboard-section">
+            <h2 class="section-title">🎓 فضاء الطالب</h2>
+            <div class="service-grid">
+                <div class="glass-card"><p>📚 المكتبة</p></div>
+                <div class="glass-card"><p>🖨️ الطباعة</p></div>
+                <div class="glass-card"><p>📍 التتبع</p></div>
             </div>
+            <button class="btn-gold btn-back" onclick="Nav.go('dashboard')">العودة</button>
+        </section>
+
+        <!-- Wallet Section -->
+        <section id="walletSection" class="dashboard-section">
+            <h2 class="section-title">💰 المحفظة</h2>
+            <div class="glass-card" style="margin:20px;text-align:center;padding:40px;">
+                <div style="font-size:60px;">💰</div>
+                <div class="wallet-balance" id="walletBalanceDetail">0 IQD</div>
+                <div class="wallet-pages" id="walletPagesDetail">0 صفحة</div>
+            </div>
+            <button class="btn-gold btn-back" onclick="Nav.go('dashboard')">العودة</button>
+        </section>
+
+        <!-- Orders Section -->
+        <section id="ordersSection" class="dashboard-section">
+            <h2 class="section-title">📦 طلباتي</h2>
+            <div id="ordersList" style="padding:20px;">
+                <p style="text-align:center;color:#888;">لا توجد طلبات حالياً</p>
+            </div>
+            <button class="btn-gold btn-back" onclick="Nav.go('dashboard')">العودة</button>
         </section>
     </main>
 
-    <section id="studentSection" class="dashboard-section" style="display:none;">
-        <h2 class="section-title">فضاء النجاح</h2>
-        <div class="service-grid">
-            <div class="glass-card"><p>📦 طلباتي</p></div>
-            <div class="glass-card"><p>💰 محفظتي</p></div>
-            <div class="glass-card"><p>📚 المكتبة</p></div>
-            <div class="glass-card"><p>🖨️ الطباعة</p></div>
-            <div class="glass-card"><p>📍 التتبع</p></div>
-            <div class="glass-card"><p>📅 جدولي</p></div>
-            <div class="glass-card"><p>📊 نتائج</p></div>
-            <div class="glass-card"><p>💬 رسائل</p></div>
-            <div class="glass-card"><p>⚙️ الإعدادات</p></div>
-        </div>
-        <button class="btn-gold" onclick="Nav.go('dashboard')">العودة</button>
-    </section>
-
-    <section id="teacherSection" class="dashboard-section" style="display:none;">
-        <h2 class="section-title">منبر الأساتذة</h2>
-        <div class="service-grid">
-            <div class="glass-card"><p>📝 الواجبات</p></div>
-            <div class="glass-card"><p>📊 النتائج</p></div>
-            <div class="glass-card"><p>📅 الجدول</p></div>
-            <div class="glass-card"><p>💬 التواصل</p></div>
-            <div class="glass-card"><p>📚 المواد</p></div>
-            <div class="glass-card"><p>📹 الحصص</p></div>
-            <div class="glass-card"><p>📋 التقارير</p></div>
-            <div class="glass-card"><p>👥 الطلاب</p></div>
-            <div class="glass-card"><p>⚙️ الإعدادات</p></div>
-        </div>
-        <button class="btn-gold" onclick="Nav.go('dashboard')">العودة</button>
-    </section>
-
-    <section id="generalSection" class="dashboard-section" style="display:none;">
-        <h2 class="section-title">بصمة الإبداع - الخدمات العامة</h2>
-        <div class="service-grid">
-            <div class="glass-card"><p>🖨️ طباعة عامة</p></div>
-            <div class="glass-card"><p>📄 نسخ</p></div>
-            <div class="glass-card"><p>📁 سكانر</p></div>
-            <div class="glass-card"><p>🎨 تصميم</p></div>
-            <div class="glass-card"><p>📦 تغليف</p></div>
-            <div class="glass-card"><p>💳 كارت</p></div>
-            <div class="glass-card"><p>🖼️ بوستر</p></div>
-            <div class="glass-card"><p>📸 تصوير</p></div>
-            <div class="glass-card"><p>📨 توصيل</p></div>
-        </div>
-        <button class="btn-gold" onclick="Nav.go('dashboard')">العودة</button>
-    </section>
-
-    <section id="librarySection" class="dashboard-section" style="display:none;">
-        <h2 class="section-title">كنوز المعرفة</h2>
-        <div class="service-grid">
-            <div class="glass-card"><p>📖 كتب</p></div>
-            <div class="glass-card"><p>📝 مقالات</p></div>
-            <div class="glass-card"><p>🎥 فيديو</p></div>
-            <div class="glass-card"><p>🎧 بودكاست</p></div>
-            <div class="glass-card"><p>📜 أبحاث</p></div>
-            <div class="glass-card"><p>💡 شروحات</p></div>
-            <div class="glass-card"><p>🧮 رياضيات</p></div>
-            <div class="glass-card"><p>🔬 علوم</p></div>
-            <div class="glass-card"><p>🌍 لغات</p></div>
-        </div>
-        <button class="btn-gold" onclick="Nav.go('dashboard')">العودة</button>
-    </section>
-
-    <section id="aiSection" class="dashboard-section" style="display:none;">
-        <h2 class="section-title">العقل الرقمي - AI</h2>
-        <div class="service-grid">
-            <div class="glass-card" onclick="alert('PDF Summarizer Coming Soon!')"><p>📄 ملخص PDF</p></div>
-            <div class="glass-card" onclick="alert('Image to Doc Coming Soon!')"><p>🖼️ صورة لنص</p></div>
-            <div class="glass-card" onclick="alert('Design Request Coming Soon!')"><p>🎨 طلب تصميم</p></div>
-        </div>
-        <div class="glass-card" style="padding:20px;max-width:500px;margin:15px auto;text-align:center;">
-            <p style="color:#D4AF37;">🤖</p>
-            <p style="color:#fff;font-size:0.9rem;">اكتب سؤالك...</p>
-            <textarea class="input-field" rows="3" style="resize:none;"></textarea>
-            <button class="btn-gold">إرسال</button>
-        </div>
-        <button class="btn-gold" onclick="Nav.go('dashboard')">العودة</button>
-    </section>
-
-    <section id="academySection" class="dashboard-section" style="display:none;">
-        <h2 class="section-title">أكاديمية تكنو</h2>
-        <div class="glass-card" style="padding:40px;text-align:center;max-width:400px;margin:20px auto;">
-            <p style="font-size:4rem;">🏫</p>
-            <h3 style="color:#D4AF37;">قريباً</h3>
-            <p style="color:#fff;">Coming Soon!</p>
-        </div>
-        <button class="btn-gold" onclick="Nav.go('dashboard')">العودة</button>
-    </section>
-
-    <section id="walletSection" class="dashboard-section" style="display:none;">
-        <h2 class="section-title">المحفظة</h2>
-        <div class="glass-card" style="padding:30px;text-align:center;max-width:400px;margin:20px auto;">
-            <p style="font-size:4rem;">💰</p>
-            <p style="font-size:2rem;color:#D4AF37;font-weight:bold;">0 IQD</p>
-            <div style="display:flex;gap:10px;justify-content:center;margin-top:20px;">
-                <button class="btn-gold" onclick="alert('إيداع')">إيداع</button>
-                <button class="btn-gold" onclick="alert('سحب')">سحب</button>
-            </div>
-        </div>
-        <button class="btn-gold" onclick="Nav.go('dashboard')">العودة</button>
-    </section>
-
-    <section id="ordersSection" class="dashboard-section" style="display:none;">
-        <h2 class="section-title">طلباتي</h2>
-        <div class="service-grid">
-            <div class="glass-card"><p>📦 1</p></div>
-            <div class="glass-card"><p>📦 2</p></div>
-            <div class="glass-card"><p>📦 3</p></div>
-            <div class="glass-card"><p>📦 4</p></div>
-            <div class="glass-card"><p>📦 5</p></div>
-            <div class="glass-card"><p>📦 6</p></div>
-            <div class="glass-card"><p>📦 7</p></div>
-            <div class="glass-card"><p>📦 8</p></div>
-            <div class="glass-card"><p>📦 9</p></div>
-        </div>
-        <button class="btn-gold" onclick="Nav.go('dashboard')">العودة</button>
-    </section>
-
-    <section id="settingsSection" class="dashboard-section" style="display:none;">
-        <h2 class="section-title">الإعدادات</h2>
-        <div class="service-grid">
-            <div class="glass-card"><p>🌐 اللغة</p></div>
-            <div class="glass-card"><p>🎨 المظهر</p></div>
-            <div class="glass-card"><p>🔔 الإشعارات</p></div>
-            <div class="glass-card"><p>🔒 الخصوصية</p></div>
-            <div class="glass-card"><p>👤 حسابي</p></div>
-            <div class="glass-card"><p>🔐 الأمان</p></div>
-            <div class="glass-card"><p>📱 الأجهزة</p></div>
-            <div class="glass-card"><p>🗑️ البيانات</p></div>
-            <div class="glass-card"><p>ℹ️ عن التطبيق</p></div>
-        </div>
-        <button class="btn-gold" onclick="Nav.go('dashboard')">العودة</button>
-    </section>
-
-    <section id="supportSection" class="dashboard-section" style="display:none;">
-        <h2 class="section-title">الدعم الفني</h2>
-        <div class="glass-card" style="padding:20px;text-align:center;max-width:500px;margin:20px auto;">
-            <p style="color:#fff;">كيف يمكننا مساعدتك؟</p>
-            <textarea class="input-field" rows="3" style="resize:none;"></textarea>
-            <button class="btn-gold">إرسال</button>
-        </div>
-        <button class="btn-gold" onclick="Nav.go('dashboard')">العودة</button>
-    </section>
-
-    <section id="aboutSection" class="dashboard-section" style="display:none;">
-        <h2 class="section-title">من نحن</h2>
-        <div class="glass-card" style="padding:20px;max-width:600px;margin:20px auto;text-align:center;">
-            <p style="color:#D4AF37;font-size:3rem;">T</p>
-            <h3>TECHOPRINT 2026</h3>
-            <p style="color:#fff;">منصتك الرقمية الشاملة للطباعة والتعليم والتصميم</p>
-        </div>
-        <button class="btn-gold" onclick="Nav.go('dashboard')">العودة</button>
-    </section>
-
+    <!-- Bottom Navigation -->
     <nav class="bottom-nav">
-        <button class="nav-btn active" onclick="Nav.go('dashboard')"><i class="fas fa-home"></i><span>الرئيسية</span></button>
-        <button class="nav-btn" onclick="Nav.go('orders')"><i class="fas fa-box"></i><span>طلباتي</span></button>
-        <button class="nav-btn" onclick="Nav.go('wallet')"><i class="fas fa-coins"></i><span>رصيدي</span></button>
-        <button class="nav-btn" onclick="openModal('loginModal')"><i class="fas fa-user"></i><span>حسابي</span></button>
+        <button class="nav-btn active" onclick="Nav.go('dashboard')">
+            <i class="fas fa-home"></i>
+            <span>الرئيسية</span>
+        </button>
+        <button class="nav-btn" onclick="Nav.go('cards')">
+            <i class="fas fa-id-card"></i>
+            <span>البطاقات</span>
+        </button>
+        <button class="nav-btn" onclick="openModal('loginModal')">
+            <i class="fas fa-user"></i>
+            <span>حسابي</span>
+        </button>
     </nav>
 
-    <div id="walletModal" class="modal" style="display:none;">
-        <div class="modal-box" style="max-width:450px;">
-            <button class="modal-close" onclick="closeModal('walletModal')"><i class="fas fa-times"></i></button>
-            <h2>💰 المحفظة</h2>
-            <div class="glass-card" style="text-align:center;padding:20px;margin:15px 0;">
-                <p style="font-size:3rem;">💰</p>
-                <p style="font-size:2rem;color:#D4AF37;font-weight:bold;">0 IQD</p>
-            </div>
-            <div style="display:flex;gap:10px;">
-                <button class="btn-gold" style="flex:1;" onclick="alert('إيداع')">إيداع 💰</button>
-                <button class="btn-gold" style="flex:1;" onclick="alert('سحب')">سحب 💸</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="langModal" class="modal" style="display:none;">
-        <div class="modal-box" style="max-width:350px;">
-            <button class="modal-close" onclick="closeModal('langModal')"><i class="fas fa-times"></i></button>
-            <h2>🌐 اختر اللغة</h2>
-            <div style="display:flex;flex-direction:column;gap:10px;margin-top:20px;">
-                <button class="btn-gold" onclick="setLang('ar')" style="padding:15px;">🇮🇶 عربي</button>
-                <button class="btn-gold" onclick="setLang('ku')" style="padding:15px;">🇹🇯 کوردی</button>
-                <button class="btn-gold" onclick="setLang('en')" style="padding:15px;">🇬🇧 English</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- LOGIN MODAL - USERNAME AUTH ONLY -->
-    <div id="loginModal" class="modal" style="display:none;">
+    <!-- Login Modal -->
+    <div id="loginModal" class="modal">
         <div class="modal-box">
-            <button class="modal-close" onclick="closeModal('loginModal')"><i class="fas fa-times"></i></button>
-            <h2>🔐 تسجيل الدخول</h2>
-            <div id="authError" style="display:none;color:#E63946;padding:10px;background:rgba(230,57,70,0.1);border-radius:8px;margin-bottom:15px;text-align:center;"></div>
+            <button class="modal-close" onclick="closeModal('loginModal')">✕</button>
+            <h2 style="text-align:center;color:#D4AF37;margin-bottom:20px;">🔐 تسجيل الدخول</h2>
             <form id="loginForm">
-                <div class="input-group" style="margin-bottom:15px;">
-                    <label style="color:#D4AF37;margin-bottom:5px;display:block;">👤 اسم المستخدم</label>
-                    <input type="text" id="loginUsername" class="input-field" placeholder="أدخل اسم المستخدم" required style="width:100%;padding:12px;border-radius:8px;border:1px solid #333;background:#1a1a2e;color:#fff;">
+                <div class="input-group">
+                    <label>👤 اسم المستخدم</label>
+                    <input type="text" id="loginUsername" class="input-field" placeholder="أدخل اسم المستخدم" required>
                 </div>
-                <div class="input-group" style="margin-bottom:15px;">
-                    <label style="color:#D4AF37;margin-bottom:5px;display:block;">🔑 كلمة المرور</label>
-                    <input type="password" id="loginPassword" class="input-field" placeholder="أدخل كلمة المرور" required style="width:100%;padding:12px;border-radius:8px;border:1px solid #333;background:#1a1a2e;color:#fff;">
+                <div class="input-group">
+                    <label>🔑 كلمة المرور</label>
+                    <input type="password" id="loginPassword" class="input-field" placeholder="أدخل كلمة المرور" required>
                 </div>
-                <button type="submit" class="btn-gold" style="width:100%;padding:15px;font-size:1.1rem;">دخول</button>
+                <button type="submit" class="btn-gold" style="width:100%;margin-top:10px;">دخول</button>
             </form>
             <p style="text-align:center;margin-top:15px;color:#D4AF37;cursor:pointer;" onclick="closeModal('loginModal');openModal('registerModal')">إنشاء حساب جديد ➡️</p>
         </div>
     </div>
 
-    <!-- REGISTER MODAL - 6 REQUIRED FIELDS INCLUDING CATEGORY -->
-    <div id="registerModal" class="modal" style="display:none;">
-        <div class="modal-box" style="width:90%;max-width:500px;">
-            <button class="modal-close" onclick="closeModal('registerModal')"><i class="fas fa-times"></i></button>
-            <h2>📝 إنشاء حساب جديد</h2>
-            <div id="registerError" style="display:none;color:#E63946;padding:10px;background:rgba(230,57,70,0.1);border-radius:8px;margin-bottom:15px;text-align:center;"></div>
+    <!-- Register Modal - 6 Required Fields -->
+    <div id="registerModal" class="modal">
+        <div class="modal-box" style="max-width:500px;">
+            <button class="modal-close" onclick="closeModal('registerModal')">✕</button>
+            <h2 style="text-align:center;color:#D4AF37;margin-bottom:20px;">📝 إنشاء حساب جديد</h2>
             <form id="registerForm">
-                <!-- Field 1: Username -->
-                <div class="input-group" style="margin-bottom:12px;">
-                    <label style="color:#D4AF37;">👤 اسم المستخدم</label>
-                    <input type="text" name="username" class="input-field" placeholder="اختر اسم مستخدم فريد" required style="width:100%;padding:12px;border-radius:8px;border:1px solid #333;background:#1a1a2e;color:#fff;">
+                <!-- 1. Username -->
+                <div class="input-group">
+                    <label>👤 اسم المستخدم</label>
+                    <input type="text" name="username" class="input-field" placeholder="اختر اسم مستخدم فريد" required>
                 </div>
-                
-                <!-- Field 2: Password -->
-                <div class="input-group" style="margin-bottom:12px;">
-                    <label style="color:#D4AF37;">🔑 كلمة المرور</label>
-                    <input type="password" name="password" class="input-field" placeholder="6 أحرف على الأقل" required style="width:100%;padding:12px;border-radius:8px;border:1px solid #333;background:#1a1a2e;color:#fff;">
+                <!-- 2. Password -->
+                <div class="input-group">
+                    <label>🔑 كلمة المرور</label>
+                    <input type="password" name="password" class="input-field" placeholder="6 أحرف على الأقل" required>
                 </div>
-                
-                <!-- Field 3: Phone -->
-                <div class="input-group" style="margin-bottom:12px;">
-                    <label style="color:#D4AF37;">📱 رقم الهاتف 🇮🇶</label>
-                    <div class="phone-input" style="display:flex;gap:5px;">
-                        <span style="background:#333;color:#D4AF37;padding:12px;border-radius:8px;display:flex;align-items:center;">+964</span>
-                        <input type="tel" name="phone" class="input-field" placeholder="771 123 4567" required style="flex:1;padding:12px;border-radius:8px;border:1px solid #333;background:#1a1a2e;color:#fff;">
-                    </div>
+                <!-- 3. Phone -->
+                <div class="input-group">
+                    <label>📱 رقم الهاتف</label>
+                    <input type="tel" name="phone" class="input-field" placeholder="771 123 4567" required>
                 </div>
-                
-                <!-- Field 4: Province/Governorate -->
-                <div class="input-group" style="margin-bottom:12px;">
-                    <label style="color:#D4AF37;">🗺️ المحافظة</label>
-                    <select name="governorate" class="input-field" required style="width:100%;padding:12px;border-radius:8px;border:1px solid #333;background:#1a1a2e;color:#fff;">
+                <!-- 4. Governorate -->
+                <div class="input-group">
+                    <label>🗺️ المحافظة</label>
+                    <select name="governorate" class="input-field" required>
                         <option value="">اختر المحافظة</option>
                         <option value="baghdad">بغداد</option>
                         <option value="basra">البصرة</option>
@@ -350,30 +160,23 @@
                         <option value="duhok">دهوك</option>
                         <option value="sulaymaniyah">السليمانية</option>
                         <option value="kirkuk">كركوك</option>
-                        <option value="anbar">الأنبار</option>
-                        <option value="babylon">بابل</option>
-                        <option value="diyala">ديالى</option>
-                        <option value="wasit">واسط</option>
-                        <option value="salahuddin">صلاح الدين</option>
-                        <option value="nineveh">نينوى</option>
-                        <option value="diyala2">ذي قار</option>
-                        <option value="muthanna">المثنى</option>
-                        <option value="qadisiyah">القادسية</option>
                         <option value="najaf">النجف</option>
                         <option value="karbala">كربلاء</option>
+                        <option value="anbar">الأنبار</option>
+                        <option value="diyala">ديالى</option>
+                        <option value="wasit">واسط</option>
+                        <option value="babylon">بابل</option>
                     </select>
                 </div>
-                
-                <!-- Field 5: Street/Address -->
-                <div class="input-group" style="margin-bottom:12px;">
-                    <label style="color:#D4AF37;">🏠 الشارع/المنطقة</label>
-                    <input type="text" name="address" class="input-field" placeholder="المنطقة والشارع" required style="width:100%;padding:12px;border-radius:8px;border:1px solid #333;background:#1a1a2e;color:#fff;">
+                <!-- 5. Address -->
+                <div class="input-group">
+                    <label>🏠 العنوان/الشارع</label>
+                    <input type="text" name="address" class="input-field" placeholder="المنطقة والشارع" required>
                 </div>
-                
-                <!-- Field 6: User Category (الفئة) - MANDATORY -->
-                <div class="input-group" style="margin-bottom:15px;">
-                    <label style="color:#D4AF37;">📋 الفئة (مطلوب)</label>
-                    <select name="category" class="input-field" required style="width:100%;padding:12px;border-radius:8px;border:1px solid #333;background:#1a1a2e;color:#fff;">
+                <!-- 6. Category -->
+                <div class="input-group">
+                    <label>📋 الفئة (مطلوب)</label>
+                    <select name="category" class="input-field" required>
                         <option value="">-- اختر الفئة --</option>
                         <option value="student">🎓 طالب</option>
                         <option value="office">🏢 مكتب</option>
@@ -386,93 +189,13 @@
                         <option value="other">📋 أخرى</option>
                     </select>
                 </div>
-                
-                <button type="submit" class="btn-gold" style="width:100%;padding:15px;font-size:1.1rem;">📝 تسجيل</button>
+                <button type="submit" class="btn-gold" style="width:100%;margin-top:10px;">📝 تسجيل</button>
             </form>
             <p style="text-align:center;margin-top:15px;color:#D4AF37;cursor:pointer;" onclick="closeModal('registerModal');openModal('loginModal')">⬅️ لديك حساب؟ تسجيل الدخول</p>
         </div>
     </div>
 
-    <script src="admin/register-sync.js?v=2026"></script>
-    <script src="js/auth-logic.js?v=2026"></script>
-    <script src="js/eng-main.js?v=2026"></script>
-    <script src="js/eng-navigation.js?v=2026"></script>
-    <script src="js/eng-slider.js?v=2026"></script>
-    <script>
-        // Modal helpers
-        function openModal(id) { document.getElementById(id).style.display='flex'; }
-        function closeModal(id) { document.getElementById(id).style.display='none'; }
-        
-        // Session Persistence - Check if user is already logged in
-        window.addEventListener('DOMContentLoaded', function() {
-            if (window.Auth && window.Auth.checkExistingSession && window.Auth.checkExistingSession()) {
-                console.log('Session found - user is already logged in');
-                if (window.Auth.updateUserUI) window.Auth.updateUserUI();
-            }
-        });
-        
-        // Login form handler
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const username = document.getElementById('loginUsername').value.trim();
-            const password = document.getElementById('loginPassword').value;
-            if (window.Auth && window.Auth.login) {
-                window.Auth.login(username, password);
-            } else {
-                alert('System loading... Please try again');
-            }
-        });
-        
-        // Register form handler - COLLECTS ALL 6 FIELDS
-        document.getElementById('registerForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const formData = {
-                username: e.target.username.value.trim(),
-                password: e.target.password.value,
-                phone: e.target.phone.value.trim(),
-                governorate: e.target.governorate.value,
-                address: e.target.address.value.trim(),
-                category: e.target.category.value
-            };
-            
-            // Validation
-            if (!formData.username || !formData.password || !formData.phone || !formData.governorate || !formData.address || !formData.category) {
-                const errorEl = document.getElementById('registerError');
-                if (errorEl) {
-                    errorEl.textContent = 'الرجاء ملء جميع الحقول المطلوبة';
-                    errorEl.style.display = 'block';
-                    setTimeout(() => { errorEl.style.display = 'none'; }, 5000);
-                }
-                return;
-            }
-            
-            if (formData.password.length < 6) {
-                const errorEl = document.getElementById('registerError');
-                if (errorEl) {
-                    errorEl.textContent = 'كلمة المرور يجب أن تكون 6 أحرف على الأقل';
-                    errorEl.style.display = 'block';
-                    setTimeout(() => { errorEl.style.display = 'none'; }, 5000);
-                }
-                return;
-            }
-            
-            if (window.Auth && window.Auth.register) {
-                window.Auth.register(formData);
-            } else {
-                alert('System loading... Please try again');
-            }
-        });
-        
-        window.setLang = function(lang) {
-            document.documentElement.lang = lang;
-            document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
-            localStorage.setItem('lang', lang);
-            closeModal('langModal');
-            alert('Language changed to: ' + (lang === 'ar' ? 'عربي' : lang === 'ku' ? 'کوردی' : 'English'));
-        };
-        window.I18n = { set: function(l) { setLang(l); } };
-        window.openModal = openModal;
-        window.closeModal = closeModal;
-    </script>
+    <!-- Scripts -->
+    <script src="js/app.js?v=2026"></script>
 </body>
 </html>
