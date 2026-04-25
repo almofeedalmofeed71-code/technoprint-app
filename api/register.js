@@ -53,7 +53,7 @@ module.exports = async function handler(req, res) {
         const existing = await checkRes.json();
 
         if (existing && existing.length > 0) {
-            return res.status(400).json({ success: false, error: 'هذا المستخدم أو الرقم مسجل مسبقاً' });
+            return res.status(400).json({ success: false, error: 'هذا الرقم أو اسم المستخدم مسجل مسبقاً' });
         }
 
         // Hash password
