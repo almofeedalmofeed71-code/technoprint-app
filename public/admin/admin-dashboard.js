@@ -385,4 +385,4 @@ async function initDashboard() {
     
     // Show section
     document.getElementById('usersSection')?.classList.add('active');
-});
+}
