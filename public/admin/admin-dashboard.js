@@ -1,208 +1,465 @@
-// ===== TECHNO-CONTROL ADMIN DASHBOARD V3 - SUPABASE LINKED =====
+/**
+ * TECHOPRINT 2026 - MASTER CONTROL DASHBOARD v4.0
+ * Full Supabase Integration - Two-Way Sync
+ * Professional Admin Panel with Offline Resilience
+ */
 
-// NEW SUPABASE CREDENTIALS
+// ==================== CONFIGURATION ====================
 const SUPABASE_URL = 'https://rqzsokvhgjlftkouhphb.supabase.co';
 const SUPABASE_SERVICE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJxenNva3ZoZ2psZnRrb3VocGhiIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NTQ2NTI0NywiZXhwIjoyMDkxMDQxMjQ3fQ.NuAG8xhCkYqsb-vZ-8K6Voe6p9oqBUIuVVrQrijpT7Y';
 
 // State Management
 let allUsers = [];
-let currentUsers = [];
-let currentPage = 1;
-const usersPerPage = 10;
-let adsList = [];
-let giftsHistory = [];
-let broadcastsHistory = [];
+let appGates = [];
+let appSettings = {};
+let auditLog = [];
 
-// App Settings
-let appSettings = {
-    welcomeGiftPages: 1000,
-    welcomeGiftBalance: 0,
-    globalRewardEnabled: true
-};
+// ==================== SUPABASE API ====================
 
-// ==================== SERVER-API LINKED FUNCTIONS ====================
-
-// Fetch users DIRECTLY from Supabase using SERVICE_ROLE_KEY
-async function fetchUsersFromServer() {
+// Generic Supabase fetch with SERVICE_ROLE_KEY
+async function supabaseFetch(table, params = {}) {
+    const queryString = Object.entries(params)
+        .map(([k, v]) => `${k}=${encodeURIComponent(v)}`)
+        .join('&');
+    
+    const url = `${SUPABASE_URL}/rest/v1/${table}${queryString ? '?' + queryString : ''}`;
+    
     try {
-        console.log('📤 Fetching users from Supabase...');
-        
-        const response = await fetch(`${SUPABASE_URL}/rest/v1/profiles?select=*&order=created_at.desc`, {
+        const res = await fetch(url, {
+            headers: {
+                'apikey': SUPABASE_SERVICE_KEY,
+                'Authorization': `Bearer ${SUPABASE_SERVICE_KEY}`,
+                'Content-Type': 'application/json'
+            }
+        });
+        return await res.json();
+    } catch (err) {
+        console.error('❌ Supabase error:', err);
+        showToast('خطأ في الاتصال بقاعدة البيانات', 'error');
+        return null;
+    }
+}
+
+// Generic Supabase insert
+async function supabaseInsert(table, data) {
+    try {
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}`, {
+            method: 'POST',
+            headers: {
+                'apikey': SUPABASE_SERVICE_KEY,
+                'Authorization': `Bearer ${SUPABASE_SERVICE_KEY}`,
+                'Content-Type': 'application/json',
+                'Prefer': 'return=representation'
+            },
+            body: JSON.stringify(data)
+        });
+        return await res.json();
+    } catch (err) {
+        console.error('❌ Insert error:', err);
+        return null;
+    }
+}
+
+// Generic Supabase update
+async function supabaseUpdate(table, id, data) {
+    try {
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}?id=eq.${id}`, {
+            method: 'PATCH',
+            headers: {
+                'apikey': SUPABASE_SERVICE_KEY,
+                'Authorization': `Bearer ${SUPABASE_SERVICE_KEY}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        });
+        return res.ok;
+    } catch (err) {
+        console.error('❌ Update error:', err);
+        return false;
+    }
+}
+
+// Generic Supabase delete
+async function supabaseDelete(table, id) {
+    try {
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}?id=eq.${id}`, {
+            method: 'DELETE',
             headers: {
                 'apikey': SUPABASE_SERVICE_KEY,
                 'Authorization': `Bearer ${SUPABASE_SERVICE_KEY}`
             }
         });
-        
-        const data = await response.json();
-        console.log('📥 Supabase response:', data);
-        
-        if (Array.isArray(data)) {
-            return data.map(u => ({
-                id: u.id,
-                name: u.username || 'مستخدم',
-                username: u.username || '',
-                phone: u.phone || '',
-                governorate: u.governorate || '',
-                role: u.role || 'user',
-                category: u.category || '',
-                balance: u.balance_iqd || 0,
-                pages: u.pages_count || 0,
-                status: u.status || 'active',
-                createdAt: u.created_at
-            }));
-        }
-    } catch (e) {
-        console.error('Supabase fetch error:', e);
-    }
-    return [];
-}
-
-// Save App Settings to server
-async function saveAppSettingsToServer(settings) {
-    try {
-        await fetch('/api/admin/settings', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(settings)
-        });
-    } catch (e) {
-        console.error('Settings save error:', e);
-    }
-}
-
-// Top up user via server
-async function topUpUserOnServer(userId, balance, pages) {
-    try {
-        const response = await fetch(`/api/admin/profiles/${userId}/topup`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ balance, pages })
-        });
-        return await response.json();
-    } catch (e) {
-        console.error('Top up error:', e);
-        return null;
-    }
-}
-
-// Delete user via server
-async function deleteUserOnServer(userId) {
-    try {
-        await fetch(`/api/admin/profiles/${userId}`, { method: 'DELETE' });
-        return true;
-    } catch (e) {
-        console.error('Delete error:', e);
+        return res.ok;
+    } catch (err) {
+        console.error('❌ Delete error:', err);
         return false;
     }
 }
 
-// Update user via server
-async function updateUserOnServer(userId, updates) {
-    try {
-        await fetch(`/api/admin/profiles/${userId}`, {
-            method: 'PATCH',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(updates)
-        });
-        return true;
-    } catch (e) {
-        console.error('Update error:', e);
-        return false;
+// ==================== AUDIT LOG ====================
+
+async function logAction(action, target, details) {
+    const log = {
+        id: crypto.randomUUID(),
+        action,
+        target,
+        details,
+        admin: 'admin',
+        timestamp: new Date().toISOString()
+    };
+    
+    auditLog.unshift(log);
+    localStorage.setItem('auditLog', JSON.stringify(auditLog));
+    
+    // Also save to Supabase
+    await supabaseInsert('audit_log', log);
+    
+    renderAuditLog();
+}
+
+function renderAuditLog() {
+    const container = document.getElementById('auditLogContainer');
+    if (!container) return;
+    
+    container.innerHTML = auditLog.slice(0, 50).map(entry => `
+        <div class="audit-entry">
+            <span class="audit-time">${new Date(entry.timestamp).toLocaleString('ar-IQ')}</span>
+            <span class="audit-action">${entry.action}</span>
+            <span class="audit-target">${entry.target}</span>
+            <span class="audit-details">${entry.details || '-'}</span>
+        </div>
+    `).join('') || '<p style="color:#888;">لا توجد سجلات</p>';
+}
+
+// ==================== USERS MANAGEMENT ====================
+
+async function fetchAllUsers() {
+    const users = await supabaseFetch('profiles', 'select=*&order=created_at.desc');
+    if (users) {
+        allUsers = users.map(u => ({
+            id: u.id,
+            username: u.username || '',
+            phone: u.phone || '',
+            governorate: u.governorate || '',
+            category: u.category || '',
+            balance: u.balance_iqd || 0,
+            pages: u.pages_count || 0,
+            status: u.status || 'active',
+            role: u.role || 'user',
+            createdAt: u.created_at
+        }));
+        
+        updateStats();
+        renderUsersTable();
     }
 }
 
-// ==================== ORDERS ====================
+function renderUsersTable() {
+    const tbody = document.getElementById('usersTableBody');
+    if (!tbody) return;
+    
+    tbody.innerHTML = allUsers.map((user, index) => `
+        <tr class="user-row">
+            <td>${index + 1}</td>
+            <td><strong>${user.username}</strong></td>
+            <td>${user.phone || '-'}</td>
+            <td>${user.governorate || '-'}</td>
+            <td><span class="category-badge">${user.category || '-'}</span></td>
+            <td><span class="balance-value">${user.balance} IQD</span></td>
+            <td><span class="pages-value">${user.pages}</span></td>
+            <td>
+                <select onchange="changeUserStatus('${user.id}', this.value)" class="status-select status-${user.status}">
+                    <option value="active" ${user.status === 'active' ? 'selected' : ''}>✅ نشط</option>
+                    <option value="suspended" ${user.status === 'suspended' ? 'selected' : ''}>🚫 موقوف</option>
+                </select>
+            </td>
+            <td>
+                <div class="action-buttons">
+                    <button class="btn-action btn-edit" onclick="editUser('${user.id}')" title="تعديل">✏️</button>
+                    <button class="btn-action btn-credit" onclick="openWalletModal('${user.id}')" title="شحن">💰</button>
+                    <button class="btn-action btn-view" onclick="viewUserDetails('${user.id}')" title="عرض">👁️</button>
+                    <button class="btn-action btn-delete" onclick="deleteUser('${user.id}')" title="حذف">🗑️</button>
+                </div>
+            </td>
+        </tr>
+    `).join('');
+}
 
-// Fetch orders from server
-async function fetchOrdersFromServer() {
-    try {
-        const response = await fetch('/api/admin/orders');
-        const data = await response.json();
-        return data || [];
-    } catch (e) {
-        console.error('Orders fetch error:', e);
-        return [];
+async function changeUserStatus(userId, status) {
+    const user = allUsers.find(u => u.id === userId);
+    if (!user) return;
+    
+    const success = await supabaseUpdate('profiles', userId, { status });
+    if (success) {
+        user.status = status;
+        await logAction('تغيير الحالة', user.username, `الحالة: ${status}`);
+        showToast(`تم تحديث حالة ${user.username}`, 'success');
+        updateStats();
     }
 }
 
-// Update order status
-async function updateOrderStatus(orderId, status) {
-    try {
-        const response = await fetch(`/api/admin/orders/${orderId}`, {
-            method: 'PATCH',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ status })
-        });
-        return await response.json();
-    } catch (e) {
-        console.error('Order update error:', e);
-        return null;
+function editUser(userId) {
+    const user = allUsers.find(u => u.id === userId);
+    if (!user) return;
+    
+    // Create edit modal
+    const modal = document.createElement('div');
+    modal.className = 'modal-overlay';
+    modal.innerHTML = `
+        <div class="modal-content">
+            <h3>✏️ تعديل: ${user.username}</h3>
+            <div class="form-group">
+                <label>الهاتف</label>
+                <input type="text" id="editPhone" value="${user.phone}">
+            </div>
+            <div class="form-group">
+                <label>المحافظة</label>
+                <input type="text" id="editGovernorate" value="${user.governorate}">
+            </div>
+            <div class="form-group">
+                <label>الفئة</label>
+                <select id="editCategory">
+                    <option value="طالب" ${user.category === 'طالب' ? 'selected' : ''}>طالب</option>
+                    <option value="مدرس" ${user.category === 'مدرس' ? 'selected' : ''}>مدرس</option>
+                    <option value="مصمم" ${user.category === 'مصمم' ? 'selected' : ''}>مصمم</option>
+                    <option value="مكتبة" ${user.category === 'مكتبة' ? 'selected' : ''}>مكتبة</option>
+                    <option value="عادي" ${user.category === 'عادي' ? 'selected' : ''}>عادي</option>
+                </select>
+            </div>
+            <div class="modal-actions">
+                <button onclick="saveUserEdit('${userId}')" class="btn-save">💾 حفظ</button>
+                <button onclick="this.closest('.modal-overlay').remove()" class="btn-cancel">إلغاء</button>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(modal);
+}
+
+async function saveUserEdit(userId) {
+    const user = allUsers.find(u => u.id === userId);
+    if (!user) return;
+    
+    const phone = document.getElementById('editPhone').value;
+    const governorate = document.getElementById('editGovernorate').value;
+    const category = document.getElementById('editCategory').value;
+    
+    const success = await supabaseUpdate('profiles', userId, {
+        phone,
+        governorate,
+        category
+    });
+    
+    if (success) {
+        user.phone = phone;
+        user.governorate = governorate;
+        user.category = category;
+        await logAction('تعديل مستخدم', user.username, 'تم تحديث البيانات');
+        showToast('تم حفظ التعديلات بنجاح!', 'success');
+        renderUsersTable();
+        document.querySelector('.modal-overlay')?.remove();
     }
 }
 
-// ==================== SERVICES MANAGEMENT ====================
+function openWalletModal(userId) {
+    const user = allUsers.find(u => u.id === userId);
+    if (!user) return;
+    
+    const modal = document.createElement('div');
+    modal.className = 'modal-overlay';
+    modal.innerHTML = `
+        <div class="modal-content wallet-modal">
+            <h3>💰 محفظة: ${user.username}</h3>
+            <div class="current-balance">
+                <div class="balance-item">
+                    <span>الرصيد الحالي:</span>
+                    <strong id="modalBalance">${user.balance} IQD</strong>
+                </div>
+                <div class="balance-item">
+                    <span>الصفحات:</span>
+                    <strong id="modalPages">${user.pages}</strong>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>إضافة/خصم رصيد (IQD)</label>
+                <input type="number" id="balanceAmount" placeholder="أدخل المبلغ">
+            </div>
+            <div class="form-group">
+                <label>إضافة/خصم صفحات</label>
+                <input type="number" id="pagesAmount" placeholder="أدخل عدد الصفحات">
+            </div>
+            <div class="modal-actions">
+                <button onclick="applyCredit('${userId}', 'add')" class="btn-add">➕ إضافة</button>
+                <button onclick="applyCredit('${userId}', 'subtract')" class="btn-subtract">➖ خصم</button>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(modal);
+}
 
-// Fetch all services from server
-async function fetchServicesFromServer() {
-    try {
-        const response = await fetch('/api/services');
-        return await response.json();
-    } catch (e) {
-        console.error('Services fetch error:', e);
-        return [];
+async function applyCredit(userId, action) {
+    const user = allUsers.find(u => u.id === userId);
+    if (!user) return;
+    
+    const balanceDelta = parseInt(document.getElementById('balanceAmount').value) || 0;
+    const pagesDelta = parseInt(document.getElementById('pagesAmount').value) || 0;
+    
+    if (balanceDelta === 0 && pagesDelta === 0) {
+        showToast('أدخل مبلغ أو عدد صفحات', 'error');
+        return;
+    }
+    
+    const newBalance = action === 'add' 
+        ? (user.balance || 0) + balanceDelta 
+        : (user.balance || 0) - balanceDelta;
+    
+    const newPages = action === 'add'
+        ? (user.pages || 0) + pagesDelta
+        : (user.pages || 0) - pagesDelta;
+    
+    const success = await supabaseUpdate('profiles', userId, {
+        balance_iqd: Math.max(0, newBalance),
+        pages_count: Math.max(0, newPages)
+    });
+    
+    if (success) {
+        user.balance = Math.max(0, newBalance);
+        user.pages = Math.max(0, newPages);
+        
+        await logAction(
+            action === 'add' ? 'إضافة رصيد' : 'خصم رصيد',
+            user.username,
+            `رصيد: ${balanceDelta > 0 ? '+' : ''}${balanceDelta} | صفحات: ${pagesDelta > 0 ? '+' : ''}${pagesDelta}`
+        );
+        
+        showToast(`تم ${action === 'add' ? 'إضافة' : 'خصم'} الرصيد بنجاح!`, 'success');
+        renderUsersTable();
+        updateStats();
+        document.querySelector('.modal-overlay')?.remove();
     }
 }
 
-// Add new service
-async function addService(serviceData) {
-    try {
-        const response = await fetch('/api/admin/services', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(serviceData)
-        });
-        const result = await response.json();
-        showToast('تم إضافة الخدمة بنجاح!', 'success');
-        return result;
-    } catch (e) {
-        showToast('فشل في إضافة الخدمة', 'error');
-        return null;
+async function deleteUser(userId) {
+    const user = allUsers.find(u => u.id === userId);
+    if (!user) return;
+    
+    if (!confirm(`هل أنت متأكد من حذف حساب ${user.username}?\nلا يمكن التراجع!`)) return;
+    
+    const success = await supabaseDelete('profiles', userId);
+    if (success) {
+        await logAction('حذف مستخدم', user.username, 'تم حذف الحساب نهائياً');
+        allUsers = allUsers.filter(u => u.id !== userId);
+        renderUsersTable();
+        updateStats();
+        showToast(`تم حذف ${user.username}`, 'success');
     }
 }
 
-// Update service
-async function updateService(serviceId, updates) {
-    try {
-        const response = await fetch(`/api/admin/services/${serviceId}`, {
-            method: 'PATCH',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(updates)
-        });
-        const result = await response.json();
-        showToast('تم تحديث الخدمة بنجاح!', 'success');
-        return result;
-    } catch (e) {
-        showToast('فشل في تحديث الخدمة', 'error');
-        return null;
+function viewUserDetails(userId) {
+    const user = allUsers.find(u => u.id === userId);
+    if (!user) return;
+    
+    const modal = document.createElement('div');
+    modal.className = 'modal-overlay';
+    modal.innerHTML = `
+        <div class="modal-content details-modal">
+            <h3>👤 ${user.username}</h3>
+            <div class="details-grid">
+                <div class="detail-item"><span>ID:</span><code>${user.id}</code></div>
+                <div class="detail-item"><span>الهاتف:</span>${user.phone}</div>
+                <div class="detail-item"><span>المحافظة:</span>${user.governorate}</div>
+                <div class="detail-item"><span>الفئة:</span>${user.category}</div>
+                <div class="detail-item"><span>الرصيد:</span>${user.balance} IQD</div>
+                <div class="detail-item"><span>الصفحات:</span>${user.pages}</div>
+                <div class="detail-item"><span>الحالة:</span>${user.status}</div>
+                <div class="detail-item"><span>التسجيل:</span>${new Date(user.createdAt).toLocaleDateString('ar-IQ')}</div>
+            </div>
+            <button onclick="this.closest('.modal-overlay').remove()" class="btn-cancel">إغلاق</button>
+        </div>
+    `;
+    document.body.appendChild(modal);
+}
+
+function updateStats() {
+    const totalUsers = allUsers.filter(u => u.status !== 'deleted').length;
+    const totalBalance = allUsers.reduce((sum, u) => sum + (u.balance || 0), 0);
+    const totalPages = allUsers.reduce((sum, u) => sum + (u.pages || 0), 0);
+    
+    document.getElementById('totalUsers').textContent = totalUsers;
+    document.getElementById('totalBalance').textContent = totalBalance;
+    document.getElementById('totalPages').textContent = totalPages;
+}
+
+// ==================== CONTENT MANAGER (GATES) ====================
+
+async function fetchGates() {
+    const gates = await supabaseFetch('app_gates', 'select=*&order=order_num.asc');
+    if (gates) {
+        appGates = gates;
+        renderGates();
     }
 }
 
-// Delete service
-async function deleteService(serviceId) {
-    if (!confirm('هل أنت متأكد من حذف هذه الخدمة؟')) return;
-    try {
-        const response = await fetch(`/api/admin/services/${serviceId}`, { method: 'DELETE' });
-        await response.json();
-        showToast('تم حذف الخدمة بنجاح!', 'success');
-    } catch (e) {
-        showToast('فشل في حذف الخدمة', 'error');
+function renderGates() {
+    const container = document.getElementById('gatesContainer');
+    if (!container) return;
+    
+    container.innerHTML = appGates.map(gate => `
+        <div class="gate-card">
+            <div class="gate-header">
+                <span class="gate-icon">${gate.icon || '📁'}</span>
+                <span class="gate-name">${gate.name_ar}</span>
+                <span class="gate-id">${gate.gate_key}</span>
+            </div>
+            <div class="gate-content">
+                <p>${gate.description || '-'}</p>
+                <div class="gate-items">
+                    ${gate.items ? gate.items.map(item => `
+                        <div class="gate-item">
+                            <span>${item.name}</span>
+                            <button onclick="removeGateItem('${gate.id}', '${item.id}')">×</button>
+                        </div>
+                    `).join('') : '<p style="color:#888;">لا توجد عناصر</p>'}
+                </div>
+            </div>
+            <div class="gate-actions">
+                <button onclick="editGate('${gate.id}')">✏️ تعديل</button>
+                <button onclick="addGateItem('${gate.id}')">➕ عنصر</button>
+                <button onclick="deleteGate('${gate.id}')" class="btn-danger">🗑️ حذف</button>
+            </div>
+        </div>
+    `).join('') || '<p style="color:#888;">لا توجد بوابات</p>';
+}
+
+// ==================== THEME CONTROLLER ====================
+
+async function fetchThemeSettings() {
+    const settings = await supabaseFetch('app_settings', 'select=*');
+    if (settings && settings.length > 0) {
+        appSettings = settings[0];
+        applyTheme();
     }
 }
 
-// Toggle service active status
-async function toggleServiceStatus(serviceId, isActive) {
-    await updateService(serviceId, { is_active: isActive });
+function applyTheme() {
+    if (appSettings.primary_color) {
+        document.documentElement.style.setProperty('--primary-color', appSettings.primary_color);
+    }
+    if (appSettings.font_family) {
+        document.documentElement.style.setProperty('--font-family', appSettings.font_family);
+    }
+}
+
+async function saveThemeChanges() {
+    const primaryColor = document.getElementById('primaryColorPicker')?.value;
+    const fontFamily = document.getElementById('fontFamilyInput')?.value;
+    
+    if (primaryColor) appSettings.primary_color = primaryColor;
+    if (fontFamily) appSettings.font_family = fontFamily;
+    
+    await supabaseUpdate('app_settings', appSettings.id, appSettings);
+    applyTheme();
+    await logAction('تغيير المظهر', 'Admin', `اللون: ${primaryColor} | الخط: ${fontFamily}`);
+    showToast('تم حفظ إعدادات المظهر!', 'success');
 }
 
 // ==================== INITIALIZATION ====================
@@ -211,100 +468,48 @@ document.addEventListener('DOMContentLoaded', async () => {
     checkAuth();
     setupNavigation();
     
-    // Load settings from server
-    await loadAppSettings();
-    
-    // Fetch users from server
-    const serverUsers = await fetchUsersFromServer();
-    if (serverUsers.length > 0) {
-        allUsers = serverUsers;
+    // Load from localStorage first (offline resilience)
+    const cachedUsers = localStorage.getItem('adminCachedUsers');
+    if (cachedUsers) {
+        allUsers = JSON.parse(cachedUsers);
+        renderUsersTable();
+        updateStats();
     }
     
-    loadUsers();
-    loadAds();
-    loadPortals();
-    loadGiftsHistory();
-    loadBroadcastsHistory();
-    updateTime();
-    setInterval(updateTime, 60000);
+    const cachedAuditLog = localStorage.getItem('auditLog');
+    if (cachedAuditLog) {
+        auditLog = JSON.parse(cachedAuditLog);
+        renderAuditLog();
+    }
     
-    // Auto-refresh users every 10 seconds
+    // Then fetch fresh from Supabase
+    await fetchAllUsers();
+    await fetchGates();
+    await fetchThemeSettings();
+    
+    // Cache for offline use
+    localStorage.setItem('adminCachedUsers', JSON.stringify(allUsers));
+    
+    // Auto-refresh every 30 seconds
     setInterval(async () => {
-        const freshUsers = await fetchUsersFromServer();
-        if (freshUsers.length > 0) {
-            allUsers = freshUsers;
-            currentUsers = [...allUsers];
-            renderUsersTable();
-            updateStats();
-        }
-    }, 10000);
+        await fetchAllUsers();
+        localStorage.setItem('adminCachedUsers', JSON.stringify(allUsers));
+    }, 30000);
 });
-
-// Load App Settings
-async function loadAppSettings() {
-    try {
-        const response = await fetch('/api/admin/settings');
-        const data = await response.json();
-        appSettings = { ...appSettings, ...data };
-    } catch (e) {
-        console.error('Failed to load settings:', e);
-    }
-    
-    // Populate UI
-    if (document.getElementById('welcomePagesGift')) document.getElementById('welcomePagesGift').value = appSettings.welcomeGiftPages || 1000;
-    if (document.getElementById('welcomeBalanceGift')) document.getElementById('welcomeBalanceGift').value = appSettings.welcomeGiftBalance || 0;
-    if (document.getElementById('globalRewardToggle')) document.getElementById('globalRewardToggle').checked = appSettings.globalRewardEnabled !== false;
-}
-
-// Save App Settings
-async function saveAppSettings() {
-    const settingsData = {
-        welcomeGiftPages: parseInt(document.getElementById('welcomePagesGift')?.value) || 1000,
-        welcomeGiftBalance: parseInt(document.getElementById('welcomeBalanceGift')?.value) || 0,
-        globalRewardEnabled: document.getElementById('globalRewardToggle')?.checked || true
-    };
-    
-    appSettings = settingsData;
-    await saveAppSettingsToServer(settingsData);
-    showToast('تم حفظ الإعدادات بنجاح!', 'success');
-}
 
 // ==================== AUTH ====================
 
 function checkAuth() {
     const token = localStorage.getItem('adminToken');
-    if (token) {
-        document.getElementById('authOverlay').style.display = 'none';
-        document.getElementById('dashboardContainer').style.display = 'block';
-    }
-}
-
-function setupLoginForm() {
-    const loginForm = document.getElementById('quickLogin');
-    if (loginForm) {
-        loginForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const username = document.getElementById('adminUsername')?.value?.trim();
-            const password = document.getElementById('adminPassword')?.value?.trim();
-            
-            if (username === 'admin' && password === 'technoprint2024') {
-                localStorage.setItem('adminToken', 'demo-token');
-                localStorage.setItem('adminUser', JSON.stringify({ username: 'admin', role: 'super_admin', name: 'مدير النظام' }));
-                document.getElementById('authOverlay').style.display = 'none';
-                document.getElementById('dashboardContainer').style.display = 'block';
-                showToast('تم تسجيل الدخول بنجاح!', 'success');
-            } else {
-                const errorEl = document.getElementById('loginError');
-                if (errorEl) { errorEl.textContent = 'بيانات الدخول غير صحيحة'; errorEl.style.display = 'block'; }
-            }
-        });
+    if (!token) {
+        window.location.href = 'admin-login.html';
     }
 }
 
 function logout() {
     localStorage.removeItem('adminToken');
     localStorage.removeItem('adminUser');
-    window.location.reload();
+    window.location.href = 'admin-login.html';
 }
 
 // ==================== NAVIGATION ====================
@@ -313,7 +518,8 @@ function setupNavigation() {
     const navItems = document.querySelectorAll('.nav-item');
     navItems.forEach(item => {
         item.addEventListener('click', () => {
-            switchSection(item.dataset.section);
+            const section = item.dataset.section;
+            switchSection(section);
         });
     });
 }
@@ -325,484 +531,6 @@ function switchSection(sectionId) {
     document.querySelectorAll('.section-panel').forEach(section => {
         section.classList.toggle('active', section.id === sectionId);
     });
-    
-    const titles = {
-        dashboard: 'لوحة التحكم',
-        design: 'المظهر والألوان',
-        icons: 'أيقونات البوابات',
-        settings: 'الإعدادات',
-        users: 'قاعدة البيانات',
-        wallet: 'المحفظة',
-        gifts: 'الإرسال',
-        ads: 'إعلانات السلايدر',
-        portals: 'حالة البوابات',
-        broadcast: 'إشعارات عامة',
-        messages: 'رسائل خاصة'
-    };
-    const titleEl = document.getElementById('sectionTitle');
-    if (titleEl) titleEl.textContent = titles[sectionId] || 'لوحة التحكم';
-}
-
-// ==================== USERS MANAGEMENT ====================
-
-function loadUsers() {
-    currentUsers = [...allUsers];
-    renderUsersTable();
-    updateStats();
-    populateUserSelects();
-}
-
-function renderUsersTable() {
-    const tbody = document.getElementById('usersTableBody');
-    if (!tbody) return;
-    
-    const start = (currentPage - 1) * usersPerPage;
-    const end = start + usersPerPage;
-    const pageUsers = currentUsers.slice(start, end);
-    
-    tbody.innerHTML = pageUsers.map((user, index) => `
-        <tr>
-            <td>${start + index + 1}</td>
-            <td>${user.name || '-'}</td>
-            <td>${user.username || '-'}</td>
-            <td>${user.phone || '-'}</td>
-            <td>${user.governorate || '-'}</td>
-            <td><span class="card-value">${user.balance || 0}</span></td>
-            <td><span class="card-value">${user.pages || 0}</span></td>
-            <td><span class="status-${user.status || 'active'}">${getStatusLabel(user.status)}</span></td>
-            <td>
-                <div style="display:flex;gap:5px;">
-                    <button class="btn btn-blue" onclick="editUser(${user.id})" title="تعديل">✏️</button>
-                    <button class="btn btn-gold" onclick="topUpUser(${user.id})" title="شحن">💰</button>
-                    <button class="btn ${user.status === 'suspended' ? 'btn-green' : 'btn-red'}" onclick="toggleUserStatus(${user.id})" title="${user.status === 'suspended' ? 'تفعيل' : 'إيقاف'}">${user.status === 'suspended' ? '✅' : '🚫'}</button>
-                    <button class="btn btn-red" onclick="deleteUser(${user.id})" title="حذف">🗑️</button>
-                </div>
-            </td>
-        </tr>
-    `).join('');
-    
-    renderPagination();
-}
-
-function getStatusLabel(status) {
-    const labels = { active: '✅ نشط', suspended: '🚫 موقوف', deleted: '🗑️ محذوف' };
-    return labels[status] || '✅ نشط';
-}
-
-function renderPagination() {
-    const totalPages = Math.ceil(currentUsers.length / usersPerPage) || 1;
-    const controls = document.getElementById('paginationControls');
-    if (!controls || totalPages <= 1) return;
-    
-    let html = '';
-    for (let i = 1; i <= totalPages; i++) {
-        html += `<button class="btn ${i === currentPage ? 'btn-gold' : 'btn-blue'}" onclick="goToPage(${i})" style="margin: 0 5px;">${i}</button>`;
-    }
-    controls.innerHTML = html;
-}
-
-function goToPage(page) {
-    currentPage = page;
-    renderUsersTable();
-}
-
-function searchUsers() {
-    const query = (document.getElementById('userSearch')?.value || '').toLowerCase();
-    currentUsers = allUsers.filter(user => 
-        (user.name?.toLowerCase().includes(query)) ||
-        (user.username?.toLowerCase().includes(query)) ||
-        (user.phone?.includes(query)) ||
-        (user.governorate?.toLowerCase().includes(query))
-    );
-    currentPage = 1;
-    renderUsersTable();
-}
-
-// MASTER CONTROL: Edit User
-async function editUser(userId) {
-    const user = allUsers.find(u => u.id === userId);
-    if (!user) return;
-    
-    const newName = prompt('الاسم:', user.name);
-    const newPhone = prompt('الهاتف:', user.phone);
-    const newGovernorate = prompt('المحافظة:', user.governorate);
-    
-    const updates = {};
-    if (newName !== null) { user.name = newName; updates.full_name = newName; }
-    if (newPhone !== null) { user.phone = newPhone; updates.phone = newPhone; }
-    if (newGovernorate !== null) { user.governorate = newGovernorate; updates.governorate = newGovernorate; }
-    
-    await updateUserOnServer(userId, updates);
-    renderUsersTable();
-    showToast('تم تحديث بيانات المستخدم بنجاح!', 'success');
-}
-
-// MASTER CONTROL: Top Up User (Server Linked)
-async function topUpUser(userId) {
-    const user = allUsers.find(u => u.id === userId);
-    if (!user) return;
-    
-    const amount = parseInt(prompt(`شحن رصيد لـ ${user.name}:\nالرصيد الحالي: ${user.balance} IQD | ${user.pages} صفحة\n\nأدخل مبلغ الإيداع:`)) || 0;
-    
-    if (amount > 0) {
-        const result = await topUpUserOnServer(userId, amount, Math.floor(amount * 2));
-        if (result) {
-            user.balance = result.balance;
-            user.pages = result.pages;
-            
-            // Refresh from server
-            const freshUsers = await fetchUsersFromServer();
-            allUsers = freshUsers;
-            currentUsers = [...allUsers];
-            
-            renderUsersTable();
-            updateStats();
-            showToast(`تم شحن ${amount} IQD لـ ${user.name}!`, 'success');
-        }
-    }
-}
-
-// MASTER CONTROL: Toggle User Status
-async function toggleUserStatus(userId) {
-    const user = allUsers.find(u => u.id === userId);
-    if (!user) return;
-    
-    const newStatus = user.status === 'suspended' ? 'active' : 'suspended';
-    user.status = newStatus;
-    
-    await updateUserOnServer(userId, { status: newStatus });
-    renderUsersTable();
-    showToast(`تم ${newStatus === 'suspended' ? 'إيقاف' : 'تفعيل'} حساب ${user.name}`, 'success');
-}
-
-// MASTER CONTROL: Delete User (Server Linked)
-async function deleteUser(userId) {
-    const user = allUsers.find(u => u.id === userId);
-    if (!user) return;
-    
-    if (confirm(`هل أنت متأكد من حذف حساب ${user.name}?\nلا يمكن التراجع!`)) {
-        const success = await deleteUserOnServer(userId);
-        if (success) {
-            allUsers = allUsers.filter(u => u.id !== userId);
-            currentUsers = [...allUsers];
-            renderUsersTable();
-            updateStats();
-            showToast(`تم حذف حساب ${user.name}`, 'success');
-        }
-    }
-}
-
-function updateStats() {
-    const activeUsers = allUsers.filter(u => u.status !== 'deleted');
-    const totalEl = document.getElementById('totalUsers');
-    const balanceEl = document.getElementById('totalBalance');
-    const pagesEl = document.getElementById('totalPages');
-    
-    if (totalEl) totalEl.textContent = activeUsers.length;
-    if (balanceEl) balanceEl.textContent = activeUsers.reduce((sum, u) => sum + (u.balance || 0), 0);
-    if (pagesEl) pagesEl.textContent = activeUsers.reduce((sum, u) => sum + (u.pages || 0), 0);
-}
-
-function populateUserSelects() {
-    ['walletUserSelect', 'giftUserSelect', 'rewardUserSelect', 'messageRecipient'].forEach(selectId => {
-        const select = document.getElementById(selectId);
-        if (select) {
-            select.innerHTML = '<option value="">-- اختر مستخدم --</option>' + 
-                allUsers.map(user => `<option value="${user.id}">${user.name} (${user.username})</option>`).join('');
-        }
-    });
-}
-
-// ==================== ADS MANAGEMENT ====================
-
-function loadAds() {
-    adsList = JSON.parse(localStorage.getItem('technoprintAds') || '[]');
-    if (adsList.length === 0) {
-        adsList = [{ id: 1, url: 'https://picsum.photos/600/200?random=1', order: 1 }];
-        saveAds();
-    }
-    renderAds();
-    const totalAdsEl = document.getElementById('totalAds');
-    if (totalAdsEl) totalAdsEl.textContent = adsList.length;
-}
-
-function saveAds() {
-    localStorage.setItem('technoprintAds', JSON.stringify(adsList));
-}
-
-function renderAds() {
-    const grid = document.getElementById('adsGrid');
-    if (!grid) return;
-    grid.innerHTML = adsList.map(ad => `
-        <div class="preview-item">
-            <img src="${ad.url}" alt="Ad ${ad.order}">
-            <button class="delete-btn" onclick="deleteAd(${ad.id})">×</button>
-            <div style="position:absolute;bottom:5px;left:5px;background:var(--admin-gold);color:black;padding:3px 8px;border-radius:5px;font-size:12px;">${ad.order}</div>
-        </div>
-    `).join('') || '<p style="color:#888;">لا توجد إعلانات</p>';
-}
-
-function handleAdUpload(input) {
-    const files = input.files;
-    if (!files || files.length === 0) return;
-    
-    Array.from(files).forEach((file, index) => {
-        if (file.size > 10 * 1024 * 1024) {
-            showToast(`الملف ${file.name} كبير جداً`, 'error');
-            return;
-        }
-        
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            adsList.push({ id: Date.now() + index, url: e.target.result, order: adsList.length + index + 1 });
-            saveAds();
-            renderAds();
-            const totalAdsEl = document.getElementById('totalAds');
-            if (totalAdsEl) totalAdsEl.textContent = adsList.length;
-        };
-        reader.readAsDataURL(file);
-    });
-    showToast('تم رفع الإعلانات بنجاح!', 'success');
-}
-
-function deleteAd(adId) {
-    if (!confirm('هل أنت متأكد من حذف هذا الإعلان؟')) return;
-    adsList = adsList.filter(ad => ad.id !== adId);
-    adsList.forEach((ad, index) => ad.order = index + 1);
-    saveAds();
-    renderAds();
-    showToast('تم حذف الإعلان بنجاح!', 'success');
-}
-
-// ==================== PORTALS ====================
-
-let portalStatus = { student: true, teacher: true, academy: true, store: false, support: true, settings: true };
-
-const portalIcons = [
-    { id: 'student', name: 'بوابة الطالب', icon: '👨‍🎓' },
-    { id: 'teacher', name: 'بوابة المعلم', icon: '👨‍🏫' },
-    { id: 'academy', name: ' تكنو أكاديمي', icon: '🎓' },
-    { id: 'store', name: 'المتجر', icon: '🏪' },
-    { id: 'support', name: 'الدعم الفني', icon: '💻' },
-    { id: 'settings', name: 'الإعدادات', icon: '⚙️' }
-];
-
-function loadPortals() {
-    const container = document.getElementById('portalsList');
-    if (!container) return;
-    
-    container.innerHTML = portalIcons.map(portal => `
-        <div class="toggle-group">
-            <div>
-                <span style="font-size:24px;margin-left:10px;">${portal.icon}</span>
-                <span style="color:var(--admin-gold);">${portal.name}</span>
-            </div>
-            <label class="toggle-switch">
-                <input type="checkbox" ${portalStatus[portal.id] ? 'checked' : ''} onchange="togglePortal('${portal.id}', this.checked)">
-                <span class="toggle-slider"></span>
-            </label>
-        </div>
-    `).join('');
-}
-
-function togglePortal(portalId, isActive) {
-    portalStatus[portalId] = isActive;
-    showToast(`تم ${isActive ? 'تفعيل' : 'تعطيل'} ${portalIcons.find(p => p.id === portalId)?.name}`, 'success');
-}
-
-// ==================== WALLET ====================
-
-function loadWalletUser() {
-    const userId = parseInt(document.getElementById('walletUserSelect')?.value);
-    const user = allUsers.find(u => u.id === userId);
-    
-    const userInfo = document.getElementById('walletUserInfo');
-    if (userInfo) userInfo.style.display = user ? 'block' : 'none';
-    
-    if (user) {
-        const nameEl = document.getElementById('walletUserName');
-        const balanceEl = document.getElementById('walletCurrentBalance');
-        const pagesEl = document.getElementById('walletCurrentPages');
-        if (nameEl) nameEl.textContent = user.name;
-        if (balanceEl) balanceEl.textContent = user.balance || 0;
-        if (pagesEl) pagesEl.textContent = user.pages || 0;
-    }
-}
-
-async function adjustBalance(action) {
-    const userId = parseInt(document.getElementById('walletUserSelect')?.value);
-    const amount = parseInt(document.getElementById('balanceAmount')?.value) || 0;
-    const user = allUsers.find(u => u.id === userId);
-    
-    if (!user) { showToast('الرجاء اختيار مستخدم أولاً', 'error'); return; }
-    
-    const result = await topUpUserOnServer(userId, action === 'add' ? amount : -amount, 0);
-    if (result) {
-        user.balance = result.balance;
-        user.pages = result.pages;
-        loadWalletUser();
-        renderUsersTable();
-        updateStats();
-        showToast(`تم ${action === 'add' ? 'إضافة' : 'خصم'} ${amount} من الرصيد`, 'success');
-    }
-}
-
-async function adjustPages(action) {
-    const userId = parseInt(document.getElementById('walletUserSelect')?.value);
-    const amount = parseInt(document.getElementById('pagesAmount')?.value) || 0;
-    const user = allUsers.find(u => u.id === userId);
-    
-    if (!user) { showToast('الرجاء اختيار مستخدم أولاً', 'error'); return; }
-    
-    const result = await topUpUserOnServer(userId, 0, action === 'add' ? amount : -amount);
-    if (result) {
-        user.balance = result.balance;
-        user.pages = result.pages;
-        loadWalletUser();
-        renderUsersTable();
-        updateStats();
-        showToast(`تم ${action === 'add' ? 'إضافة' : 'خصم'} ${amount} صفحة`, 'success');
-    }
-}
-
-// ==================== GIFTS ====================
-
-function loadGiftsHistory() {
-    giftsHistory = JSON.parse(localStorage.getItem('giftsHistory') || '[]');
-    const container = document.getElementById('giftsHistory');
-    if (!container) return;
-    
-    container.innerHTML = giftsHistory.slice(0, 20).map(gift => `
-        <div class="card" style="margin-bottom:10px;padding:15px;">
-            <div style="display:flex;justify-content:space-between;">
-                <span style="color:var(--admin-gold);">${gift.userName || 'مستخدم'}</span>
-                <span style="color:#888;">${new Date(gift.date).toLocaleDateString('ar-IQ')}</span>
-            </div>
-            <div style="margin-top:10px;">
-                <span class="btn btn-green" style="padding:5px 10px;font-size:12px;">+${gift.balance} رصيد</span>
-                <span class="btn btn-blue" style="padding:5px 10px;font-size:12px;">+${gift.pages} صفحة</span>
-            </div>
-        </div>
-    `).join('') || '<p style="color:#888;text-align:center;">لا توجد سجلات</p>';
-}
-
-async function sendWelcomeGift() {
-    const userId = parseInt(document.getElementById('giftUserSelect')?.value);
-    const balance = parseInt(document.getElementById('giftBalance')?.value) || appSettings.welcomeGiftBalance;
-    const pages = parseInt(document.getElementById('giftPages')?.value) || appSettings.welcomeGiftPages;
-    
-    const user = allUsers.find(u => u.id === userId);
-    if (!user) { showToast('الرجاء اختيار مستخدم أولاً', 'error'); return; }
-    
-    const result = await topUpUserOnServer(userId, balance, pages);
-    if (result) {
-        giftsHistory.unshift({ id: Date.now(), userId, userName: user.name, type: 'welcome', balance, pages, date: new Date().toISOString() });
-        localStorage.setItem('giftsHistory', JSON.stringify(giftsHistory));
-        renderUsersTable();
-        updateStats();
-        loadGiftsHistory();
-        showToast(`تم إرسال هدية ترحيبية لـ ${user.name}!`, 'success');
-    }
-}
-
-async function sendReward() {
-    const userId = parseInt(document.getElementById('rewardUserSelect')?.value);
-    const balance = parseInt(document.getElementById('rewardBalance')?.value) || 100;
-    const pages = parseInt(document.getElementById('rewardPages')?.value) || 200;
-    
-    const user = allUsers.find(u => u.id === userId);
-    if (!user) { showToast('الرجاء اختيار مستخدم أولاً', 'error'); return; }
-    
-    const result = await topUpUserOnServer(userId, balance, pages);
-    if (result) {
-        giftsHistory.unshift({ id: Date.now(), userId, userName: user.name, type: 'reward', balance, pages, date: new Date().toISOString() });
-        localStorage.setItem('giftsHistory', JSON.stringify(giftsHistory));
-        renderUsersTable();
-        updateStats();
-        loadGiftsHistory();
-        showToast(`تم إرسال مكافأة لـ ${user.name}!`, 'success');
-    }
-}
-
-// ==================== BROADCAST ====================
-
-function loadBroadcastsHistory() {
-    broadcastsHistory = JSON.parse(localStorage.getItem('broadcastsHistory') || '[]');
-    const container = document.getElementById('broadcastHistory');
-    if (!container) return;
-    
-    const typeColors = { info: 'var(--admin-blue)', success: 'var(--admin-green)', warning: 'var(--admin-gold)', urgent: 'var(--admin-red)' };
-    
-    container.innerHTML = broadcastsHistory.slice(0, 20).map(bc => `
-        <div class="card" style="margin-bottom:10px;padding:15px;border-right:4px solid ${typeColors[bc.type]}">
-            <div style="display:flex;justify-content:space-between;">
-                <span style="color:var(--admin-gold);font-weight:bold;">${bc.title}</span>
-                <span style="color:#888;">${new Date(bc.date).toLocaleDateString('ar-IQ')}</span>
-            </div>
-            <p style="margin:10px 0;color:#ccc;">${bc.message}</p>
-            <small style="color:#666;">تم الإرسال إلى ${bc.sentTo} مستخدم</small>
-        </div>
-    `).join('') || '<p style="color:#888;text-align:center;">لا توجد إشعارات مرسلة</p>';
-}
-
-async function sendBroadcast() {
-    const title = document.getElementById('broadcastTitle')?.value?.trim();
-    const message = document.getElementById('broadcastMessage')?.value?.trim();
-    const type = document.getElementById('broadcastType')?.value || 'info';
-    
-    if (!title || !message) { showToast('الرجاء ملء جميع الحقول', 'error'); return; }
-    
-    const activeUsers = allUsers.filter(u => u.status !== 'deleted');
-    
-    try {
-        const response = await fetch('/api/admin/broadcast', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ title, message, type })
-        });
-        const data = await response.json();
-        
-        if (data.success) {
-            broadcastsHistory.unshift({ id: Date.now(), title, message, type, date: new Date().toISOString(), sentTo: activeUsers.length });
-            localStorage.setItem('broadcastsHistory', JSON.stringify(broadcastsHistory));
-            
-            document.getElementById('broadcastTitle').value = '';
-            document.getElementById('broadcastMessage').value = '';
-            
-            loadBroadcastsHistory();
-            showToast(`تم إرسال الإشعار لـ ${activeUsers.length} مستخدم!`, 'success');
-        }
-    } catch (e) {
-        console.error('Broadcast error:', e);
-        showToast('فشل في إرسال الإشعار', 'error');
-    }
-}
-
-// ==================== ICONS ====================
-
-function loadIcons() {
-    const grid = document.getElementById('iconsGrid');
-    if (!grid) return;
-    
-    grid.innerHTML = portalIcons.map(portal => `
-        <div class="card">
-            <div class="card-icon" style="font-size:60px;">${portal.icon}</div>
-            <h3>${portal.name}</h3>
-            <button class="btn btn-blue" onclick="changeIcon('${portal.id}')">🖼️ تغيير</button>
-        </div>
-    `).join('');
-}
-
-function changeIcon(portalId) {
-    const newIcon = prompt('أدخل الأيقونة الجديدة:', '👨‍🎓');
-    if (newIcon && newIcon.trim()) {
-        const portal = portalIcons.find(p => p.id === portalId);
-        if (portal) {
-            portal.icon = newIcon.trim();
-            loadIcons();
-            showToast('تم تغيير الأيقونة بنجاح!', 'success');
-        }
-    }
 }
 
 // ==================== TOAST ====================
@@ -812,24 +540,6 @@ function showToast(message, type = 'success') {
     if (!toast) return;
     
     toast.textContent = message;
-    toast.style.background = type === 'success' ? 'var(--admin-green)' : 
-                           type === 'error' ? 'var(--admin-red)' : 
-                           type === 'info' ? 'var(--admin-blue)' : 'var(--admin-gold)';
-    toast.classList.add('show');
+    toast.className = `toast toast-${type} show`;
     setTimeout(() => toast.classList.remove('show'), 3000);
 }
-
-// ==================== TIME ====================
-
-function updateTime() {
-    const now = new Date();
-    const timeEl = document.getElementById('currentTime');
-    if (timeEl) {
-        timeEl.textContent = now.toLocaleDateString('ar-IQ', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-    }
-}
-
-// ==================== INIT ====================
-
-loadIcons();
-loadPortals();
