@@ -1,96 +1,11 @@
 /**
- * TECHOPRINT 2026 - Direct Supabase Connection (No Server)
- * Connects FRONTEND directly to Supabase - NO LOCALHOST!
+ * TECHOPRINT 2026 - Auth Client
+ * Calls Vercel API routes (which use SERVICE_ROLE_KEY)
  */
 
-(function() {
-    // Load Supabase SDK immediately
-    const script = document.createElement('script');
-    script.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
-    script.onload = initClient;
-    script.onerror = initClient; // Continue even if CDN fails
-    document.head.appendChild(script);
-})();
+const API_URL = 'https://technoprint-app.vercel.app';
 
-// EXACT Supabase Config from User
-const SUPABASE_URL = 'https://avabozirwdefwtabywqo.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF2YWJvemlyd2RlZnd0YWJ5d3FvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY4NjM1NDQsImV4cCI6MjA5MjQzOTU0NH0.boDU0pXR1MGYiJXF1Jos-w0uehKCCZHsKgxHP7nbQVY';
-
-let supabase = null;
-
-function initClient() {
-    console.log('🔵 Initializing Supabase connection...');
-    console.log('📡 URL:', SUPABASE_URL);
-    console.log('🔑 Key:', SUPABASE_ANON_KEY.substring(0, 20) + '...');
-    
-    // Check if SDK loaded
-    if (typeof window.supabase !== 'undefined') {
-        supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        console.log('✅ Supabase SDK loaded successfully');
-        
-        // Test connection immediately
-        testConnection();
-    } else {
-        // Fallback: Use REST API directly
-        console.log('⚠️ SDK not loaded, using REST API fallback');
-        supabase = createRestClient();
-    }
-}
-
-function createRestClient() {
-    // Fallback REST client
-    return {
-        from: (table) => ({
-            select: (cols) => ({
-                eq: (col, val) => ({
-                    select: async () => {
-                        const url = `${SUPABASE_URL}/rest/v1/${table}?${col}=eq.${encodeURIComponent(val)}&select=${cols}`;
-                        const res = await fetch(url, {
-                            headers: { 
-                                'apikey': SUPABASE_ANON_KEY,
-                                'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
-                            }
-                        });
-                        const data = await res.json();
-                        return { data, error: res.ok ? null : data };
-                    }
-                })
-            }),
-            insert: async (data) => {
-                const url = `${SUPABASE_URL}/rest/v1/${table}`;
-                const res = await fetch(url, {
-                    method: 'POST',
-                    headers: {
-                        'apikey': SUPABASE_ANON_KEY,
-                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-                        'Content-Type': 'application/json',
-                        'Prefer': 'return=representation'
-                    },
-                    body: JSON.stringify(data)
-                });
-                const text = await res.text();
-                return { data: text ? JSON.parse(text) : null, error: res.ok ? null : text };
-            }
-        })
-    };
-}
-
-async function testConnection() {
-    try {
-        const { data, error } = await supabase.from('profiles').select('id').limit(1);
-        if (error) {
-            console.error('❌ Connection test failed:', error);
-            alert('❌ فشل الاتصال بالسيرفر');
-        } else {
-            console.log('✅ Connection SUCCESS! Data:', data);
-            alert('✅ الاتصال بالسيرفر ناجح!');
-        }
-    } catch (err) {
-        console.error('❌ Connection error:', err);
-    }
-}
-
-// Auth Module - Direct Supabase Connection
+// Auth Module - Through Server
 const Auth = {
     async register(formData) {
         const { username, password, phone, governorate, address, category } = formData;
@@ -103,53 +18,26 @@ const Auth = {
         }
         
         try {
-            // Check if username exists
-            const { data: existing } = await supabase
-                .from('profiles')
-                .select('id')
-                .eq('username', username)
-                .maybeSingle();
+            console.log('📤 Sending to /api/register...');
             
-            if (existing) {
-                alert('❌ اسم المستخدم موجود!');
+            const res = await fetch(`${API_URL}/api/register`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, password, phone, governorate, address, category })
+            });
+            
+            const result = await res.json();
+            console.log('📥 Response:', result);
+            
+            if (result.success) {
+                alert('✅ تم إنشاء الحساب بنجاح!\n🎁 هدية: 1000 صفحة مجانية');
+                closeModal('registerModal');
+                openModal('loginModal');
+                return true;
+            } else {
+                alert('❌ ' + (result.error || 'فشل التسجيل'));
                 return false;
             }
-            
-            // Create profile with EXACT column names
-            const profile = {
-                username: username,
-                password: password,
-                phone: phone,
-                governorate: governorate,
-                address: address,
-                category: category,
-                role: 'user',
-                balance_iqd: 0,
-                pages_count: 1000,
-                status: 'active',
-                created_at: new Date().toISOString()
-            };
-            
-            console.log('📤 Inserting:', profile);
-            
-            const { data, error } = await supabase
-                .from('profiles')
-                .insert(profile)
-                .select()
-                .single();
-            
-            console.log('📥 Result:', data, error);
-            
-            if (error) {
-                alert('❌ فشل التسجيل: ' + error.message);
-                return false;
-            }
-            
-            alert('✅ تم إنشاء الحساب بنجاح!\n🎁 هدية: 1000 صفحة مجانية');
-            closeModal('registerModal');
-            openModal('loginModal');
-            return true;
-            
         } catch (err) {
             console.error('❌ Error:', err);
             alert('❌ خطأ في الاتصال');
@@ -166,41 +54,45 @@ const Auth = {
         }
         
         try {
-            const { data: users, error } = await supabase
-                .from('profiles')
-                .select('*')
-                .eq('username', username)
-                .maybeSingle();
+            // For now, use direct Supabase query for login
+            const res = await fetch(
+                `https://avabozirwdefwtabywqo.supabase.co/rest/v1/profiles?username=eq.${encodeURIComponent(username)}&select=*`,
+                {
+                    headers: {
+                        'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF2YWJvemlyd2RlZnd0YWJ5d3FvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY4NjM1NDQsImV4cCI6MjA5MjQzOTU0NH0.boDU0pXR1MGYiJXF1Jos-w0uehKCCZHsKgxHP7nbQVY',
+                        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF2YWJvemlyd2RlZnd0YWJ5d3FvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY4NjM1NDQsImV4cCI6MjA5MjQzOTU0NH0.boDU0pXR1MGYiJXF1Jos-w0uehKCCZHsKgxHP7nbQVY'
+                    }
+                }
+            );
             
-            if (error) {
-                alert('❌ خطأ: ' + error.message);
-                return false;
-            }
+            const users = await res.json();
             
-            if (!users) {
+            if (!users || users.length === 0) {
                 alert('❌ المستخدم غير موجود');
                 return false;
             }
             
-            if (users.password !== password) {
+            const user = users[0];
+            
+            if (user.password !== password) {
                 alert('❌ كلمة المرور غير صحيحة');
                 return false;
             }
             
             // Save session
             localStorage.setItem('technoprintSession', JSON.stringify({
-                id: users.id,
-                username: users.username,
-                phone: users.phone,
-                governorate: users.governorate,
-                address: users.address,
-                category: users.category,
-                role: users.role || 'user',
-                balance_iqd: users.balance_iqd || 0,
-                pages_count: users.pages_count || 0
+                id: user.id,
+                username: user.username,
+                phone: user.phone,
+                governorate: user.governorate,
+                address: user.address,
+                category: user.category,
+                role: user.role || 'user',
+                balance_iqd: user.balance_iqd || 0,
+                pages_count: user.pages_count || 0
             }));
             
-            alert(`🎉 مرحباً ${users.username}!\n💰 الرصيد: ${users.balance_iqd || 0} IQD`);
+            alert(`🎉 مرحباً ${user.username}!\n💰 الرصيد: ${user.balance_iqd || 0} IQD`);
             closeModal('loginModal');
             return true;
             
@@ -225,8 +117,7 @@ const Auth = {
 
 window.Auth = Auth;
 
-// Init on load
+// Init
 document.addEventListener('DOMContentLoaded', () => {
     console.log('✅ TECHOPRINT 2026 Ready');
-    console.log('📡 Connecting to:', SUPABASE_URL);
 });
