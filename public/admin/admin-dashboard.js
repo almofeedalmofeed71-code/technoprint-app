@@ -311,7 +311,7 @@ function updateStats() {
     document.getElementById('totalUsers').textContent = total;
     document.getElementById('totalBalance').textContent = balance;
     document.getElementById('totalPages').textContent = pages;
-    document.getElementById('staffCount').textContent = staffCount;
+    document.getElementById('totalAds').textContent = 0;
 }
 
 function showToast(message, type = 'success') {
@@ -384,5 +384,5 @@ async function initDashboard() {
     }, 30000);
     
     // Show section
-    document.getElementById('usersSection')?.classList.add('active');
+    document.getElementById('users')?.classList.add('active');
 }
