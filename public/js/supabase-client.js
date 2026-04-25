@@ -1,6 +1,6 @@
 /**
  * TECHOPRINT 2026 - Complete Supabase Integration
- * Matches full schema: profiles, orders, transactions
+ * EXACT column names from Supabase Table Editor
  */
 
 const SUPABASE_URL = 'https://avabozirwdefwtabywqo.supabase.co';
@@ -25,7 +25,7 @@ async function supabaseRequest(table, method, body, filters = '') {
         });
         
         const text = await response.text();
-        console.log(`📥 Response ${response.status}:`, text.substring(0, 200));
+        console.log(`📥 Response ${response.status}:`, text.substring(0, 300));
         
         let data;
         try {
@@ -41,9 +41,9 @@ async function supabaseRequest(table, method, body, filters = '') {
     }
 }
 
-// Auth Module
+// Auth Module - EXACT COLUMN NAMES FROM DATABASE
 const Auth = {
-    // Register - maps to FULL profiles schema
+    // Register - maps to EXACT profiles schema
     async register(formData) {
         const { username, password, phone, governorate, address, category } = formData;
         
@@ -69,7 +69,7 @@ const Auth = {
                 return false;
             }
             
-            // Create profile with ALL schema columns
+            // Create profile with EXACT column names from database
             const profileData = {
                 username: username,
                 password: password,
@@ -77,13 +77,14 @@ const Auth = {
                 governorate: governorate,
                 address: address,
                 category: category,
-                role: 'user', // Default role
-                balance: 0,
+                role: 'user',
+                balance_iqd: 0,
+                pages_count: 1000,
                 status: 'active',
                 created_at: new Date().toISOString()
             };
             
-            console.log('📤 Creating profile:', profileData);
+            console.log('📤 Creating profile with EXACT columns:', profileData);
             
             const result = await supabaseRequest('profiles', 'POST', profileData);
             
@@ -91,10 +92,6 @@ const Auth = {
                 alert('✅ تم إنشاء الحساب بنجاح!\n🎁 هدية: 1000 صفحة مجانية');
                 closeModal('registerModal');
                 openModal('loginModal');
-                
-                // Log to transactions
-                await this.logTransaction(result.data?.id || 'new_user', 'welcome_bonus', 1000, 'صفحة', '🎁 هدية تسجيل');
-                
                 return true;
             } else {
                 const errorMsg = typeof result.data === 'string' ? result.data : JSON.stringify(result.data);
@@ -108,7 +105,7 @@ const Auth = {
         }
     },
     
-    // Login - maps to FULL profiles schema
+    // Login - maps to EXACT profiles schema
     async login(username, password) {
         console.log('🔵 Login attempt:', username);
         
@@ -138,7 +135,7 @@ const Auth = {
                 return false;
             }
             
-            // Store user session
+            // Store user session - EXACT column names
             const session = {
                 id: user.id,
                 username: user.username,
@@ -147,7 +144,8 @@ const Auth = {
                 address: user.address,
                 category: user.category,
                 role: user.role || 'user',
-                balance: user.balance || 0,
+                balance_iqd: user.balance_iqd || 0,
+                pages_count: user.pages_count || 0,
                 status: user.status || 'active'
             };
             
@@ -155,7 +153,7 @@ const Auth = {
             
             // Show welcome message
             const roleName = user.role === 'admin' ? 'مدير' : user.role === 'user' ? 'مستخدم' : '';
-            alert(`🎉 مرحباً ${user.username}!${roleName ? ` (${roleName})` : ''}\n💰 الرصيد: ${user.balance || 0} IQD`);
+            alert(`🎉 مرحباً ${user.username}!${roleName ? ` (${roleName})` : ''}\n💰 الرصيد: ${user.balance_iqd || 0} IQD\n📄 الصفحات: ${user.pages_count || 0}`);
             
             closeModal('loginModal');
             
@@ -170,18 +168,6 @@ const Auth = {
             alert('❌ خطأ في تسجيل الدخول');
             return false;
         }
-    },
-    
-    // Log transaction (for welcome bonus, etc.)
-    async logTransaction(userId, type, amount, unit, description) {
-        await supabaseRequest('transactions', 'POST', {
-            user_id: userId,
-            type: type,
-            amount: amount,
-            unit: unit,
-            description: description,
-            created_at: new Date().toISOString()
-        });
     },
     
     // Show admin tools if logged in as admin
@@ -209,16 +195,16 @@ const Auth = {
     }
 };
 
-// Order Module
+// Order Module - EXACT column names
 const Orders = {
     // Create new order
-    async create(userId, serviceType, serviceName, price) {
-        console.log('📦 Creating order:', { userId, serviceType, serviceName, price });
+    async create(userId, cardType, cardName, price) {
+        console.log('📦 Creating order:', { userId, cardType, cardName, price });
         
         const result = await supabaseRequest('orders', 'POST', {
             user_id: userId,
-            service_type: serviceType,
-            service_name: serviceName,
+            card_type: cardType,
+            card_name: cardName,
             price: price || 0,
             status: 'pending',
             created_at: new Date().toISOString()
@@ -270,29 +256,33 @@ const Orders = {
     }
 };
 
-// Wallet Module
+// Wallet Module - EXACT column names
 const Wallet = {
-    // Get balance
+    // Get balance and pages
     async getBalance(userId) {
         const result = await supabaseRequest(
             'profiles',
             'GET',
             null,
-            `?id=eq.${userId}&select=balance`
+            `?id=eq.${userId}&select=balance_iqd,pages_count`
         );
         
-        return result.data?.[0]?.balance || 0;
+        const user = result.data?.[0];
+        return {
+            balance_iqd: user?.balance_iqd || 0,
+            pages_count: user?.pages_count || 0
+        };
     },
     
     // Add funds (deposit)
     async deposit(userId, amount) {
         const current = await this.getBalance(userId);
-        const newBalance = current + amount;
+        const newBalance = current.balance_iqd + amount;
         
         const result = await supabaseRequest(
             'profiles',
             'PATCH',
-            { balance: newBalance },
+            { balance_iqd: newBalance },
             `?id=eq.${userId}`
         );
         
@@ -317,17 +307,17 @@ const Wallet = {
     async withdraw(userId, amount) {
         const current = await this.getBalance(userId);
         
-        if (current < amount) {
+        if (current.balance_iqd < amount) {
             alert('❌ الرصيد غير كافي!');
             return false;
         }
         
-        const newBalance = current - amount;
+        const newBalance = current.balance_iqd - amount;
         
         const result = await supabaseRequest(
             'profiles',
             'PATCH',
-            { balance: newBalance },
+            { balance_iqd: newBalance },
             `?id=eq.${userId}`
         );
         
