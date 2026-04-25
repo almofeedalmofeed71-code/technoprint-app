@@ -195,12 +195,16 @@
     <section id="walletSection" class="dashboard-section" style="display:none;">
         <h2 class="section-title">المحفظة</h2>
         <div class="glass-card" style="padding:30px;text-align:center;max-width:400px;margin:20px auto;">
-            <p style="font-size:4rem;">💰</p>
-            <p style="font-size:2rem;color:#D4AF37;font-weight:bold;">0 IQD</p>
+            <p style="font-size:3rem;">💰</p>
+            <p style="font-size:2rem;color:#D4AF37;font-weight:bold;"><span id="userBalance">0</span> IQD</p>
             <div style="display:flex;gap:10px;justify-content:center;margin-top:20px;">
                 <button class="btn-gold" onclick="alert('إيداع')">إيداع</button>
                 <button class="btn-gold" onclick="alert('سحب')">سحب</button>
             </div>
+        </div>
+        <div class="glass-card" style="padding:20px;text-align:center;max-width:400px;margin:10px auto;">
+            <h3 style="color:#D4AF37;margin-bottom:10px;">📄 الصفحات المجانية</h3>
+            <p style="font-size:1.8rem;color:#fff;font-weight:bold;" id="userPages">0</p>
         </div>
         <button class="btn-gold" onclick="Nav.go('dashboard')">العودة</button>
     </section>

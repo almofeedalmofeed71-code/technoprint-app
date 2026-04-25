@@ -190,6 +190,84 @@ const Auth = {
         return s ? JSON.parse(s) : null;
     },
     
+    // Fetch fresh user profile from Supabase
+    async fetchUserProfile() {
+        const session = this.isLoggedIn();
+        if (!session || !session.id) {
+            console.log('❌ No session to fetch profile');
+            return null;
+        }
+        
+        try {
+            console.log('📤 Fetching profile for user:', session.id);
+            
+            const res = await fetch(
+                `${SUPABASE_URL}/rest/v1/profiles?id=eq.${session.id}&select=*`,
+                {
+                    headers: {
+                        'apikey': SUPABASE_ANON_KEY,
+                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+                    }
+                }
+            );
+            
+            const users = await res.json();
+            
+            if (!users || users.length === 0) {
+                console.log('❌ User not found in database');
+                return null;
+            }
+            
+            const user = users[0];
+            console.log('📥 Profile fetched:', user);
+            
+            // Update localStorage with fresh data
+            const updatedSession = {
+                id: user.id,
+                username: user.username,
+                phone: user.phone,
+                governorate: user.governorate,
+                address: user.address,
+                category: user.category,
+                role: user.role || 'user',
+                balance_iqd: user.balance_iqd || 0,
+                pages_count: user.pages_count || 0
+            };
+            
+            localStorage.setItem('technoprintSession', JSON.stringify(updatedSession));
+            
+            // Update UI
+            this.updateDashboardUI(updatedSession);
+            
+            return updatedSession;
+            
+        } catch (err) {
+            console.error('❌ Error fetching profile:', err);
+            return null;
+        }
+    },
+    
+    // Update dashboard UI with user data
+    updateDashboardUI(user) {
+        // Update balance
+        const balanceEl = document.getElementById('userBalance');
+        if (balanceEl) balanceEl.textContent = `${user.balance_iqd || 0} IQD`;
+        
+        // Update pages
+        const pagesEl = document.getElementById('userPages');
+        if (pagesEl) pagesEl.textContent = `${user.pages_count || 0}`;
+        
+        // Update category
+        const categoryEl = document.getElementById('userCategory');
+        if (categoryEl) categoryEl.textContent = user.category || 'مستخدم';
+        
+        // Update username
+        const usernameEl = document.getElementById('userName');
+        if (usernameEl) usernameEl.textContent = user.username;
+        
+        console.log('✅ Dashboard UI updated');
+    },
+    
     // Logout
     logout() {
         localStorage.removeItem('technoprintSession');
@@ -201,7 +279,7 @@ const Auth = {
 window.Auth = Auth;
 
 // Init on page load
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
     console.log('✅ TECHOPRINT 2026 v2.0 - Professional Auth Ready');
     
     // Check if user is already logged in
@@ -209,5 +287,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (user) {
         console.log('✅ User logged in:', user.username);
         Auth.updateHeaderState();
+        
+        // Fetch fresh profile from Supabase on page load
+        await Auth.fetchUserProfile();
     }
 });
