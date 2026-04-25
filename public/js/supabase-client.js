@@ -1,205 +1,366 @@
 /**
- * TECHOPRINT 2026 - Supabase Client-Side Integration
- * Uses ANON key directly from browser (RLS disabled)
+ * TECHOPRINT 2026 - Complete Supabase Integration
+ * Matches full schema: profiles, orders, transactions
  */
 
 const SUPABASE_URL = 'https://avabozirwdefwtabywqo.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF2YWJvemlyd2RlZnd0YWJ5d3FvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY4NjM1NDQsImV4cCI6MjA5MjQzOTU0NH0.boDU0pXR1MGYiJXF1Jos-w0uehKCCZHsKgxHP7nbQVY';
 
-// Simplified Supabase REST API client
-const supabase = {
-    from: (table) => ({
-        select: (columns = '*') => ({
-            eq: (col, val) => ({
-                select: async () => {
-                    const res = await fetch(
-                        `${SUPABASE_URL}/rest/v1/${table}?${col}=eq.${encodeURIComponent(val)}&select=${columns}`,
-                        {
-                            headers: {
-                                'apikey': SUPABASE_ANON_KEY,
-                                'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
-                            }
-                        }
-                    );
-                    return { data: await res.json(), error: null };
-                }
-            })
-        }),
-        insert: async (data) => {
-            try {
-                const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}`, {
-                    method: 'POST',
-                    headers: {
-                        'apikey': SUPABASE_ANON_KEY,
-                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-                        'Content-Type': 'application/json',
-                        'Prefer': 'return=representation'
-                    },
-                    body: JSON.stringify(data)
-                });
-                
-                const text = await res.text();
-                console.log('📥 Supabase Response:', res.status, text.substring(0, 300));
-                
-                if (res.status === 201 || res.status === 200) {
-                    return { data: JSON.parse(text), error: null };
-                } else {
-                    return { data: null, error: text };
-                }
-            } catch (err) {
-                console.error('❌ Supabase Error:', err);
-                return { data: null, error: err.message };
-            }
-        }
-    })
-};
-
-// Auth module
-const Auth = {
-    API_URL: '/api/auth',
-    user: null,
+// Supabase REST API Helper
+async function supabaseRequest(table, method, body, filters = '') {
+    const url = `${SUPABASE_URL}/rest/v1/${table}${filters}`;
     
-    // Register with 6 mandatory fields - DIRECT SUPABASE
-    async register(data) {
-        const { username, password, phone, governorate, address, category } = data;
+    console.log(`📡 ${method} ${table}:`, body || '');
+    
+    try {
+        const response = await fetch(url, {
+            method: method,
+            headers: {
+                'apikey': SUPABASE_ANON_KEY,
+                'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                'Content-Type': 'application/json',
+                'Prefer': method === 'POST' ? 'return=representation' : ''
+            },
+            body: body ? JSON.stringify(body) : undefined
+        });
         
-        console.log('🔵 Registration attempt:', data);
+        const text = await response.text();
+        console.log(`📥 Response ${response.status}:`, text.substring(0, 200));
         
+        let data;
+        try {
+            data = JSON.parse(text);
+        } catch {
+            data = text;
+        }
+        
+        return { status: response.status, data, error: null };
+    } catch (err) {
+        console.error('❌ Request error:', err);
+        return { status: 0, data: null, error: err.message };
+    }
+}
+
+// Auth Module
+const Auth = {
+    // Register - maps to FULL profiles schema
+    async register(formData) {
+        const { username, password, phone, governorate, address, category } = formData;
+        
+        console.log('🔵 Registration attempt:', formData);
+        
+        // Validate all 6 required fields
         if (!username || !password || !phone || !governorate || !address || !category) {
-            alert('❌ جميع الحقول المطلوبة: المستخدم، كلمة المرور، الهاتف، المحافظة، العنوان، الفئة');
+            alert('❌ جميع الحقول الستة مطلوبة!');
             return false;
         }
         
         try {
-            // First check if username exists
-            const { data: existing } = await supabase.from('profiles').select('id').eq('username', username);
+            // Check if username exists
+            const check = await supabaseRequest(
+                'profiles',
+                'GET',
+                null,
+                `?username=eq.${encodeURIComponent(username)}&select=id`
+            );
             
-            if (existing && existing.length > 0) {
+            if (check.data && check.data.length > 0) {
                 alert('❌ اسم المستخدم موجود مسبقاً!');
                 return false;
             }
             
-            // Create new profile
-            const userId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-            
+            // Create profile with ALL schema columns
             const profileData = {
-                id: userId,
                 username: username,
-                full_name: username,
                 password: password,
                 phone: phone,
-                address: address,
                 governorate: governorate,
+                address: address,
                 category: category,
-                balance_iqd: 0,
-                pages_count: 1000,
+                role: 'user', // Default role
+                balance: 0,
                 status: 'active',
                 created_at: new Date().toISOString()
             };
             
-            console.log('📤 Inserting profile:', profileData);
+            console.log('📤 Creating profile:', profileData);
             
-            const result = await supabase.from('profiles').insert(profileData);
+            const result = await supabaseRequest('profiles', 'POST', profileData);
             
-            if (result.error) {
-                alert('❌ خطأ في إنشاء الحساب: ' + result.error);
-                console.error('Registration failed:', result.error);
+            if (result.status === 201 || result.status === 200) {
+                alert('✅ تم إنشاء الحساب بنجاح!\n🎁 هدية: 1000 صفحة مجانية');
+                closeModal('registerModal');
+                openModal('loginModal');
+                
+                // Log to transactions
+                await this.logTransaction(result.data?.id || 'new_user', 'welcome_bonus', 1000, 'صفحة', '🎁 هدية تسجيل');
+                
+                return true;
+            } else {
+                const errorMsg = typeof result.data === 'string' ? result.data : JSON.stringify(result.data);
+                alert('❌ فشل التسجيل: ' + errorMsg);
                 return false;
             }
-            
-            alert('✅ تم إنشاء الحساب بنجاح!\n🎁 هدية تسجيل: 1000 صفحة مجانية');
-            closeModal('registerModal');
-            openModal('loginModal');
-            return true;
-            
         } catch (err) {
             console.error('❌ Registration error:', err);
-            alert('❌ خطأ في الاتصال: ' + err.message);
+            alert('❌ خطأ في الاتصال');
             return false;
         }
     },
     
-    // Login using USERNAME - DIRECT SUPABASE
+    // Login - maps to FULL profiles schema
     async login(username, password) {
-        console.log('🔵 Login attempt for:', username);
+        console.log('🔵 Login attempt:', username);
         
         if (!username || !password) {
-            alert('❌ الرجاء إدخال اسم المستخدم وكلمة المرور');
+            alert('❌ أدخل اسم المستخدم وكلمة المرور');
             return false;
         }
         
         try {
-            const { data: users } = await supabase.from('profiles').select('*').eq('username', username);
+            const result = await supabaseRequest(
+                'profiles',
+                'GET',
+                null,
+                `?username=eq.${encodeURIComponent(username)}&select=*`
+            );
             
-            if (!users || users.length === 0) {
+            if (!result.data || result.data.length === 0) {
                 alert('❌ المستخدم غير موجود');
                 return false;
             }
             
-            const user = users[0];
+            const user = result.data[0];
             
+            // Verify password
             if (user.password !== password) {
                 alert('❌ كلمة المرور غير صحيحة');
                 return false;
             }
             
-            // Store in localStorage
-            localStorage.setItem('technoprintUser', JSON.stringify({
+            // Store user session
+            const session = {
                 id: user.id,
                 username: user.username,
-                full_name: user.full_name,
                 phone: user.phone,
-                balance: user.balance_iqd || 0,
-                pages: user.pages_count || 0,
                 governorate: user.governorate,
-                category: user.category
-            }));
+                address: user.address,
+                category: user.category,
+                role: user.role || 'user',
+                balance: user.balance || 0,
+                status: user.status || 'active'
+            };
             
-            alert('🎉 مرحباً ' + user.full_name + '!\n💰 الرصيد: ' + (user.balance_iqd || 0) + ' IQD\n📄 الصفحات: ' + (user.pages_count || 0));
+            localStorage.setItem('technoprintSession', JSON.stringify(session));
+            
+            // Show welcome message
+            const roleName = user.role === 'admin' ? 'مدير' : user.role === 'user' ? 'مستخدم' : '';
+            alert(`🎉 مرحباً ${user.username}!${roleName ? ` (${roleName})` : ''}\n💰 الرصيد: ${user.balance || 0} IQD`);
             
             closeModal('loginModal');
-            Auth.updateUI();
+            
+            // If admin, show admin tools
+            if (user.role === 'admin') {
+                this.showAdminTools();
+            }
             
             return true;
-            
         } catch (err) {
             console.error('❌ Login error:', err);
-            alert('❌ خطأ في الاتصال: ' + err.message);
+            alert('❌ خطأ في تسجيل الدخول');
             return false;
         }
     },
     
-    // Update wallet display
-    updateUI() {
-        const user = Auth.isLoggedIn();
-        if (user) {
-            const balanceEl = document.getElementById('headerBalance');
-            if (balanceEl) {
-                balanceEl.textContent = (user.balance || 0).toLocaleString() + ' IQD';
-            }
-        }
+    // Log transaction (for welcome bonus, etc.)
+    async logTransaction(userId, type, amount, unit, description) {
+        await supabaseRequest('transactions', 'POST', {
+            user_id: userId,
+            type: type,
+            amount: amount,
+            unit: unit,
+            description: description,
+            created_at: new Date().toISOString()
+        });
     },
     
-    // Check if logged in
+    // Show admin tools if logged in as admin
+    showAdminTools() {
+        const adminBtn = document.getElementById('adminPortalBtn');
+        if (adminBtn) adminBtn.style.display = 'block';
+    },
+    
+    // Check login status
     isLoggedIn() {
-        const stored = localStorage.getItem('technoprintUser');
-        return stored ? JSON.parse(stored) : null;
+        const session = localStorage.getItem('technoprintSession');
+        return session ? JSON.parse(session) : null;
     },
     
     // Logout
     logout() {
-        localStorage.removeItem('technoprintUser');
+        localStorage.removeItem('technoprintSession');
         alert('تم تسجيل الخروج');
         location.reload();
+    },
+    
+    // Get current user
+    getUser() {
+        return this.isLoggedIn();
     }
 };
 
-window.Auth = Auth;
+// Order Module
+const Orders = {
+    // Create new order
+    async create(userId, serviceType, serviceName, price) {
+        console.log('📦 Creating order:', { userId, serviceType, serviceName, price });
+        
+        const result = await supabaseRequest('orders', 'POST', {
+            user_id: userId,
+            service_type: serviceType,
+            service_name: serviceName,
+            price: price || 0,
+            status: 'pending',
+            created_at: new Date().toISOString()
+        });
+        
+        if (result.status === 201 || result.status === 200) {
+            alert('✅ تم تقديم الطلب بنجاح!');
+            return true;
+        } else {
+            alert('❌ فشل الطلب: ' + JSON.stringify(result.data));
+            return false;
+        }
+    },
+    
+    // Get user orders
+    async getUserOrders(userId) {
+        const result = await supabaseRequest(
+            'orders',
+            'GET',
+            null,
+            `?user_id=eq.${userId}&order=created_at.desc`
+        );
+        
+        return result.data || [];
+    },
+    
+    // Get all orders (admin only)
+    async getAllOrders() {
+        const result = await supabaseRequest(
+            'orders',
+            'GET',
+            null,
+            '?order=created_at.desc'
+        );
+        
+        return result.data || [];
+    },
+    
+    // Update order status
+    async updateStatus(orderId, newStatus) {
+        const result = await supabaseRequest(
+            'orders',
+            'PATCH',
+            { status: newStatus, updated_at: new Date().toISOString() },
+            `?id=eq.${orderId}`
+        );
+        
+        return result.status === 200 || result.status === 204;
+    }
+};
 
-// Load user on page load
+// Wallet Module
+const Wallet = {
+    // Get balance
+    async getBalance(userId) {
+        const result = await supabaseRequest(
+            'profiles',
+            'GET',
+            null,
+            `?id=eq.${userId}&select=balance`
+        );
+        
+        return result.data?.[0]?.balance || 0;
+    },
+    
+    // Add funds (deposit)
+    async deposit(userId, amount) {
+        const current = await this.getBalance(userId);
+        const newBalance = current + amount;
+        
+        const result = await supabaseRequest(
+            'profiles',
+            'PATCH',
+            { balance: newBalance },
+            `?id=eq.${userId}`
+        );
+        
+        if (result.status === 200 || result.status === 204) {
+            // Log transaction
+            await supabaseRequest('transactions', 'POST', {
+                user_id: userId,
+                type: 'deposit',
+                amount: amount,
+                description: 'إيداع رصيد',
+                created_at: new Date().toISOString()
+            });
+            
+            alert('✅ تم إيداع ' + amount + ' IQD');
+            return true;
+        }
+        
+        return false;
+    },
+    
+    // Withdraw
+    async withdraw(userId, amount) {
+        const current = await this.getBalance(userId);
+        
+        if (current < amount) {
+            alert('❌ الرصيد غير كافي!');
+            return false;
+        }
+        
+        const newBalance = current - amount;
+        
+        const result = await supabaseRequest(
+            'profiles',
+            'PATCH',
+            { balance: newBalance },
+            `?id=eq.${userId}`
+        );
+        
+        if (result.status === 200 || result.status === 204) {
+            await supabaseRequest('transactions', 'POST', {
+                user_id: userId,
+                type: 'withdraw',
+                amount: -amount,
+                description: 'سحب رصيد',
+                created_at: new Date().toISOString()
+            });
+            
+            alert('✅ تم سحب ' + amount + ' IQD');
+            return true;
+        }
+        
+        return false;
+    }
+};
+
+// Make available globally
+window.Auth = Auth;
+window.Orders = Orders;
+window.Wallet = Wallet;
+
+// Load session on page load
 document.addEventListener('DOMContentLoaded', () => {
     const user = Auth.isLoggedIn();
     if (user) {
-        Auth.updateUI();
+        console.log('✅ User logged in:', user.username);
+        
+        if (user.role === 'admin') {
+            Auth.showAdminTools();
+        }
     }
 });
