@@ -48,29 +48,59 @@
         }
     }
     
-    // ===== ACTIVE SERVICE STATE =====
-    let activeService = null;
+    // ===== STATE MACHINE (PEAK ARCHITECTURE) =====
+    // State: 'home' | 'cards' | 'projects' | etc.
+    let currentState = 'home';
     
-    // ===== DYNAMIC RENDER CONTAINER =====
+    // ===== DYNAMIC OVERLAY CONTAINER =====
     function getServiceContainer() {
-        let container = document.getElementById('serviceContainer');
+        let container = document.getElementById('serviceOverlay');
         if (!container) {
             container = document.createElement('div');
-            container.id = 'serviceContainer';
-            container.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:#0A0A0A;z-index:1000;overflow-y:auto;display:none;';
+            container.id = 'serviceOverlay';
+            container.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                z-index: 999;
+                background: rgba(10, 10, 11, 0.95);
+                display: none;
+                overflow-y: auto;
+                backdrop-filter: blur(10px);
+            `;
             document.body.appendChild(container);
         }
         return container;
     }
     
-    // ===== OPEN SERVICE PAGE =====
-    function openServicePage(serviceName) {
-        activeService = serviceName;
-        const container = getServiceContainer();
-        container.style.display = 'block';
+    // ===== STATE MACHINE TRANSITIONS =====
+    function setState(newState) {
+        const previousState = currentState;
+        currentState = newState;
         
-        // Render based on service
-        switch(serviceName) {
+        const overlay = getServiceContainer();
+        
+        if (newState === 'home') {
+            // HOME LAYER: Always visible as base
+            overlay.style.display = 'none';
+            // Show home content
+            document.getElementById('appContainer')?.style.setProperty('display', 'grid', 'important');
+            document.getElementById('homePage')?.classList.add('active');
+        } else {
+            // SERVICE OVERLAY: Transparent on top of home
+            overlay.style.display = 'block';
+            // Home stays visible underneath
+            renderServiceContent(overlay, newState);
+        }
+        
+        console.log(`[State Machine] ${previousState} → ${newState}`);
+    }
+    
+    // ===== RENDER SERVICE CONTENT =====
+    function renderServiceContent(container, state) {
+        switch(state) {
             case 'cards':
                 renderCardsPage(container);
                 break;
@@ -78,15 +108,18 @@
                 renderProjectsPage(container);
                 break;
             default:
-                container.innerHTML = '<p style="color:#fff;text-align:center;padding-top:100px;">قريباً...</p>';
+                container.innerHTML = '<p style="color:#D4AF37;text-align:center;padding-top:100px;font-size:24px;">قريباً...</p>';
         }
+    }
+    
+    // ===== OPEN SERVICE PAGE =====
+    function openServicePage(serviceName) {
+        setState(serviceName);
     }
     
     // ===== CLOSE SERVICE PAGE =====
     function closeServicePage() {
-        const container = getServiceContainer();
-        container.style.display = 'none';
-        activeService = null;
+        setState('home');
     }
     
     // ===== RENDER CARDS PAGE =====
@@ -393,6 +426,8 @@
         loadUserOrders,
         openServicePage,
         closeServicePage,
+        setState,
+        getCurrentState: () => currentState,
         updateServiceWallet,
         init
     };
