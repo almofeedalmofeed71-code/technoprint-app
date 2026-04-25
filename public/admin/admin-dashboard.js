@@ -365,6 +365,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 async function initDashboard() {
+    // Show dashboard container
+    document.getElementById('authOverlay').style.display = 'none';
+    document.getElementById('dashboardContainer').style.display = 'flex';
+    
     // Load cached data
     const cachedUsers = localStorage.getItem('adminCachedUsers');
     if (cachedUsers) {
@@ -383,6 +387,6 @@ async function initDashboard() {
         localStorage.setItem('adminCachedUsers', JSON.stringify(allUsers));
     }, 30000);
     
-    // Show section
-    document.getElementById('users')?.classList.add('active');
+    // Show dashboard section (id="dashboard")
+    document.getElementById('dashboard')?.classList.add('active');
 }
