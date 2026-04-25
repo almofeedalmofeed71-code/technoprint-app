@@ -6,23 +6,47 @@
 (function() {
     'use strict';
     
-    // ===== CARDS DATA (Full with images) =====
-    const cardsData = [
-        { id: 1, name: 'بطاقة طالب', price: 5000, desc: 'بطاقة طالب رسمية مع صورة وملومات كاملة', icon: '🎓', color: '#F39C12', delivery: '24 ساعة' },
-        { id: 2, name: 'بطاقة مكتب', price: 15000, desc: 'بطاقة تعريف احترافية للمكاتب والشركات', icon: '🏢', color: '#3498DB', delivery: '48 ساعة' },
-        { id: 3, name: 'بطاقة مختبر', price: 12000, desc: 'بطاقة مختبر طبي مع شهادات معتمدة', icon: '🔬', color: '#9B59B6', delivery: '48 ساعة' },
-        { id: 4, name: 'بطاقة مدرسة', price: 8000, desc: 'بطاقة موظف مدرسة رسمية ومعمدة', icon: '🏫', color: '#E74C3C', delivery: '24 ساعة' },
-        { id: 5, name: 'بطاقة جامعة', price: 10000, desc: 'بطاقة طالب جامعي مع barcode', icon: '🎓', color: '#2ECC71', delivery: '24 ساعة' },
-        { id: 6, name: 'بطاقة خاصة', price: 20000, desc: 'تصميم مخصص حسب رغبة العميل', icon: '✨', color: '#E91E63', delivery: '72 ساعة' }
+    // ===== DYNAMIC DATA (From server or fallback defaults) =====
+    let cardsData = [];
+    let projectsData = [];
+    
+    // Fallback default data
+    const DEFAULT_CARDS = [
+        { id: 1, name: 'بطاقة طالب', price: 5000, desc: 'بطاقة طالب رسمية مع صورة وملومات كاملة', icon: '🎓', color: '#F39C12', delivery: '24 ساعة', type: 'card' },
+        { id: 2, name: 'بطاقة مكتب', price: 15000, desc: 'بطاقة تعريف احترافية للمكاتب والشركات', icon: '🏢', color: '#3498DB', delivery: '48 ساعة', type: 'card' },
+        { id: 3, name: 'بطاقة مختبر', price: 12000, desc: 'بطاقة مختبر طبي مع شهادات معتمدة', icon: '🔬', color: '#9B59B6', delivery: '48 ساعة', type: 'card' },
+        { id: 4, name: 'بطاقة مدرسة', price: 8000, desc: 'بطاقة موظف مدرسة رسمية ومعمدة', icon: '🏫', color: '#E74C3C', delivery: '24 ساعة', type: 'card' },
+        { id: 5, name: 'بطاقة جامعة', price: 10000, desc: 'بطاقة طالب جامعي مع barcode', icon: '🎓', color: '#2ECC71', delivery: '24 ساعة', type: 'card' },
+        { id: 6, name: 'بطاقة خاصة', price: 20000, desc: 'تصميم مخصص حسب رغبة العميل', icon: '✨', color: '#E91E63', delivery: '72 ساعة', type: 'card' }
     ];
     
-    // ===== PROJECTS DATA =====
-    const projectsData = [
-        { id: 1, name: 'تصميم شعار', price: 25000, desc: 'تصميم شعار احترافي مع تعديلات', icon: '🎨', color: '#E91E63', delivery: '3 أيام' },
-        { id: 2, name: 'تصميم كارت أعمال', price: 15000, desc: 'تصميم كارت أعمال احترافي', icon: '💼', color: '#2196F3', delivery: '2 أيام' },
-        { id: 3, name: 'تصميم بروشور', price: 20000, desc: 'تصميم بروشور احترافي', icon: '📄', color: '#FF9800', delivery: '2 أيام' },
-        { id: 4, name: 'تصميم منشور', price: 10000, desc: 'تصميم منشور سوشال ميديا', icon: '📱', color: '#4CAF50', delivery: '1 يوم' }
+    const DEFAULT_PROJECTS = [
+        { id: 101, name: 'تصميم شعار', price: 25000, desc: 'تصميم شعار احترافي مع تعديلات', icon: '🎨', color: '#E91E63', delivery: '3 أيام', type: 'project' },
+        { id: 102, name: 'تصميم كارت أعمال', price: 15000, desc: 'تصميم كارت أعمال احترافي', icon: '💼', color: '#2196F3', delivery: '2 أيام', type: 'project' },
+        { id: 103, name: 'تصميم بروشور', price: 20000, desc: 'تصميم بروشور احترافي', icon: '📄', color: '#FF9800', delivery: '2 أيام', type: 'project' },
+        { id: 104, name: 'تصميم منشور', price: 10000, desc: 'تصميم منشور سوشال ميديا', icon: '📱', color: '#4CAF50', delivery: '1 يوم', type: 'project' }
     ];
+    
+    // Load services from server
+    async function loadServicesData() {
+        try {
+            const res = await fetch(CONFIG.API_BASE + '/services');
+            const services = await res.json();
+            
+            if (services && services.length > 0) {
+                cardsData = services.filter(s => s.type === 'card' && s.is_active !== false);
+                projectsData = services.filter(s => s.type === 'project' && s.is_active !== false);
+            } else {
+                // Use defaults if no services in DB
+                cardsData = DEFAULT_CARDS;
+                projectsData = DEFAULT_PROJECTS;
+            }
+        } catch (e) {
+            console.error('Failed to load services:', e);
+            cardsData = DEFAULT_CARDS;
+            projectsData = DEFAULT_PROJECTS;
+        }
+    }
     
     // ===== ACTIVE SERVICE STATE =====
     let activeService = null;

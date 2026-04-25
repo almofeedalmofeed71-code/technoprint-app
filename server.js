@@ -140,14 +140,68 @@ app.post('/api/admin/profiles/:id/topup', async (req, res) => {
 
 // ==================== APP SETTINGS ====================
 
-// Get app settings
+// Get app settings (public endpoint for client)
+app.get('/api/settings', async (req, res) => {
+    try {
+        const { data } = await supabaseRequest('app_settings?select=*&limit=1');
+        const settings = data?.[0] || {};
+        
+        res.json({
+            primaryColor: settings.primary_color || '#D4AF37',
+            secondaryColor: settings.secondary_color || '#0A0A0A',
+            appName: settings.app_name || 'TECHOPRINT',
+            welcomeGiftPages: settings.welcome_gift_pages || 1000,
+            welcomeGiftBalance: settings.welcome_gift_balance || 0,
+            sliderImages: settings.slider_images ? JSON.parse(settings.slider_images) : [
+                { url: 'https://picsum.photos/1200/400?random=1', title: 'TECHOPRINT 2026' },
+                { url: 'https://picsum.photos/1200/400?random=2', title: 'خصم 50% للطلاب!' },
+                { url: 'https://picsum.photos/1200/400?random=3', title: '1000 صفحة مجانية!' }
+            ],
+            portals: settings.portals ? JSON.parse(settings.portals) : [
+                { id: 'student', name: 'بوابة الطالب', icon: '🎓', visible: true },
+                { id: 'library', name: 'بوابة المكتبة', icon: '📚', visible: true },
+                { id: 'cards', name: 'بوابة البطاقات', icon: '🪪', visible: true },
+                { id: 'services', name: 'بوابة الخدمات', icon: '⚙️', visible: true },
+                { id: 'projects', name: 'بوابة المشاريع', icon: '🎂', visible: true },
+                { id: 'tracking', name: 'بوابة التتبع', icon: '📍', visible: true }
+            ]
+        });
+    } catch (err) {
+        // Return defaults on error
+        res.json({
+            primaryColor: '#D4AF37',
+            secondaryColor: '#0A0A0A',
+            appName: 'TECHOPRINT',
+            welcomeGiftPages: 1000,
+            welcomeGiftBalance: 0,
+            sliderImages: [
+                { url: 'https://picsum.photos/1200/400?random=1', title: 'TECHOPRINT 2026' },
+                { url: 'https://picsum.photos/1200/400?random=2', title: 'خصم 50% للطلاب!' },
+                { url: 'https://picsum.photos/1200/400?random=3', title: '1000 صفحة مجانية!' }
+            ],
+            portals: [
+                { id: 'student', name: 'بوابة الطالب', icon: '🎓', visible: true },
+                { id: 'library', name: 'بوابة المكتبة', icon: '📚', visible: true },
+                { id: 'cards', name: 'بوابة البطاقات', icon: '🪪', visible: true },
+                { id: 'services', name: 'بوابة الخدمات', icon: '⚙️', visible: true },
+                { id: 'projects', name: 'بوابة المشاريع', icon: '🎂', visible: true },
+                { id: 'tracking', name: 'بوابة التتبع', icon: '📍', visible: true }
+            ]
+        });
+    }
+});
+
+// Get admin settings (with all config)
 app.get('/api/admin/settings', async (req, res) => {
     try {
         const { data } = await supabaseRequest('app_settings?select=*&limit=1');
         res.json(data?.[0] || { 
             welcomeGiftPages: 1000, 
             welcomeGiftBalance: 0, 
-            globalRewardEnabled: true 
+            globalRewardEnabled: true,
+            primary_color: '#D4AF37',
+            secondary_color: '#0A0A0A',
+            app_name: 'TECHOPRINT'
         });
     } catch (err) {
         res.json({ welcomeGiftPages: 1000, welcomeGiftBalance: 0, globalRewardEnabled: true });
@@ -444,6 +498,68 @@ app.get('/api/profile/:userId', async (req, res) => {
         } else {
             res.status(404).json({ error: 'المستخدم غير موجود' });
         }
+    } catch (err) {
+        res.status(500).json({ error: 'Server error' });
+    }
+});
+
+// ==================== SERVICES CONFIG ====================
+
+// Get services config (cards and projects)
+app.get('/api/services', async (req, res) => {
+    try {
+        const { data } = await supabaseRequest('services_config?order=display_order.asc');
+        res.json(data || []);
+    } catch (err) {
+        res.json([]);
+    }
+});
+
+// Get single service
+app.get('/api/services/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { data } = await supabaseRequest(`services_config?id=eq.${id}`);
+        res.json(data?.[0] || null);
+    } catch (err) {
+        res.status(500).json({ error: 'Server error' });
+    }
+});
+
+// Create service (admin)
+app.post('/api/admin/services', async (req, res) => {
+    try {
+        const service = req.body;
+        service.id = service.id || 'svc_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        service.created_at = new Date().toISOString();
+        
+        await supabaseRequest('services_config', 'POST', service);
+        res.json({ success: true, service });
+    } catch (err) {
+        res.status(500).json({ error: 'Server error' });
+    }
+});
+
+// Update service (admin)
+app.patch('/api/admin/services/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const updates = req.body;
+        updates.updated_at = new Date().toISOString();
+        
+        await supabaseRequest(`services_config?id=eq.${id}`, 'PATCH', updates);
+        res.json({ success: true });
+    } catch (err) {
+        res.status(500).json({ error: 'Server error' });
+    }
+});
+
+// Delete service (admin)
+app.delete('/api/admin/services/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        await supabaseRequest(`services_config?id=eq.${id}`, 'DELETE');
+        res.json({ success: true });
     } catch (err) {
         res.status(500).json({ error: 'Server error' });
     }

@@ -127,6 +127,70 @@ async function updateOrderStatus(orderId, status) {
     }
 }
 
+// ==================== SERVICES MANAGEMENT ====================
+
+// Fetch all services from server
+async function fetchServicesFromServer() {
+    try {
+        const response = await fetch('/api/services');
+        return await response.json();
+    } catch (e) {
+        console.error('Services fetch error:', e);
+        return [];
+    }
+}
+
+// Add new service
+async function addService(serviceData) {
+    try {
+        const response = await fetch('/api/admin/services', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(serviceData)
+        });
+        const result = await response.json();
+        showToast('تم إضافة الخدمة بنجاح!', 'success');
+        return result;
+    } catch (e) {
+        showToast('فشل في إضافة الخدمة', 'error');
+        return null;
+    }
+}
+
+// Update service
+async function updateService(serviceId, updates) {
+    try {
+        const response = await fetch(`/api/admin/services/${serviceId}`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(updates)
+        });
+        const result = await response.json();
+        showToast('تم تحديث الخدمة بنجاح!', 'success');
+        return result;
+    } catch (e) {
+        showToast('فشل في تحديث الخدمة', 'error');
+        return null;
+    }
+}
+
+// Delete service
+async function deleteService(serviceId) {
+    if (!confirm('هل أنت متأكد من حذف هذه الخدمة؟')) return;
+    try {
+        const response = await fetch(`/api/admin/services/${serviceId}`, { method: 'DELETE' });
+        await response.json();
+        showToast('تم حذف الخدمة بنجاح!', 'success');
+    } catch (e) {
+        showToast('فشل في حذف الخدمة', 'error');
+    }
+}
+
+// Toggle service active status
+async function toggleServiceStatus(serviceId, isActive) {
+    await updateService(serviceId, { is_active: isActive });
+}
+
 // ==================== INITIALIZATION ====================
 
 document.addEventListener('DOMContentLoaded', async () => {
