@@ -585,6 +585,10 @@
     
     // ===== INIT =====
     window.addEventListener('DOMContentLoaded', () => {
+        // Force hide splash screen
+        const splash = document.getElementById('splash');
+        if (splash) splash.style.display = 'none';
+        // Show main content
         Nav.go('dashboard');
     });
     </script>
