@@ -397,6 +397,35 @@ function setupButtons() {
     if (logoutBtn) logoutBtn.addEventListener('click', logout);
 }
 
+// ==================== MOBILE MENU TOGGLE ====================
+window.toggleMobileMenu = function() {
+    try {
+        const sidebar = document.getElementById('adminSidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+        
+        if (sidebar) {
+            sidebar.classList.toggle('mobile-open');
+            if (overlay) {
+                overlay.classList.toggle('active');
+            }
+        }
+    } catch (err) {
+        console.error('Mobile menu error:', err);
+    }
+};
+
+// Close mobile menu when clicking nav item
+document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.nav-item').forEach(item => {
+        item?.addEventListener('click', () => {
+            // Close mobile menu on navigation
+            if (window.innerWidth < 768) {
+                window.toggleMobileMenu();
+            }
+        });
+    });
+});
+
 // Export for global use
 window.ADMIN_STATE = ADMIN_STATE;
 window.initAdmin = initAdmin;
@@ -404,3 +433,4 @@ window.switchSection = switchSection;
 window.logout = logout;
 window.loadAllData = loadAllData;
 window.renderDashboard = renderDashboard;
+window.toggleMobileMenu = toggleMobileMenu;

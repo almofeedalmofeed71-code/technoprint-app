@@ -570,17 +570,237 @@ input:checked + .toggle-slider:before { transform: translateX(30px); }
     opacity: 1;
 }
 
-/* Responsive */
+/* ===== MOBILE TOGGLE BUTTON ===== */
+.mobile-menu-btn {
+    display: none;
+    position: fixed;
+    top: 15px;
+    right: 15px;
+    z-index: 1002;
+    width: 50px;
+    height: 50px;
+    background: var(--admin-gold);
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 24px;
+    box-shadow: 0 5px 20px rgba(212, 175, 55, 0.5);
+}
+
+.mobile-menu-btn:active {
+    transform: scale(0.95);
+}
+
+/* ===== ENHANCED RESPONSIVE DESIGN ===== */
+@media (max-width: 1024px) {
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
 @media (max-width: 768px) {
-    .sidebar {
-        width: 100%;
-        height: auto;
-        position: relative;
-        border-left: none;
-        border-bottom: 3px solid var(--admin-gold);
+    /* Mobile Menu Button */
+    .mobile-menu-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
     
-    .main-content { margin-right: 0; }
+    /* Sidebar - Hidden by default on mobile */
+    .sidebar {
+        position: fixed;
+        top: 0;
+        right: -300px;
+        width: 280px;
+        height: 100vh;
+        z-index: 1001;
+        transition: 0.3s ease;
+        box-shadow: -5px 0 30px rgba(0, 0, 0, 0.5);
+    }
     
-    .stats-grid { grid-template-columns: repeat(2, 1fr); }
+    .sidebar.mobile-open {
+        right: 0;
+    }
+    
+    /* Sidebar Overlay */
+    .sidebar-overlay {
+        display: none;
+        position: fixed;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: rgba(0, 0, 0, 0.7);
+        z-index: 1000;
+    }
+    
+    .sidebar-overlay.active {
+        display: block;
+    }
+    
+    /* Main Content */
+    .main-content {
+        margin-right: 0;
+        padding: 20px 15px;
+        padding-top: 80px;
+    }
+    
+    /* Header Bar */
+    .header-bar {
+        flex-direction: column;
+        gap: 10px;
+        padding: 15px;
+    }
+    
+    .header-bar h1 {
+        font-size: 18px;
+    }
+    
+    /* Stats Grid */
+    .stats-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+    }
+    
+    .stat-card {
+        padding: 15px;
+    }
+    
+    .stat-card .stat-value {
+        font-size: 20px;
+    }
+    
+    .stat-card .stat-icon {
+        font-size: 24px;
+    }
+    
+    .stat-card .stat-label {
+        font-size: 10px;
+    }
+    
+    /* Module Grid */
+    .module-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+    }
+    
+    .module-card {
+        padding: 15px;
+    }
+    
+    .module-card .icon {
+        font-size: 30px;
+    }
+    
+    .module-card .value {
+        font-size: 20px;
+    }
+    
+    .module-card .label {
+        font-size: 10px;
+    }
+    
+    /* Cards Grid */
+    .cards-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    
+    .card {
+        padding: 15px;
+    }
+    
+    .card-icon {
+        font-size: 30px;
+    }
+    
+    /* Forms */
+    .form-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    
+    /* Data Table - Horizontal Scroll */
+    .data-table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+    
+    .data-table th, .data-table td {
+        padding: 10px 8px;
+        font-size: 12px;
+        min-width: 100px;
+    }
+    
+    .data-table th {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+    }
+    
+    /* Section Title */
+    .section-title {
+        font-size: 18px;
+    }
+    
+    /* Search Box */
+    .search-box {
+        padding: 10px;
+        font-size: 14px;
+    }
+    
+    /* Buttons */
+    .btn {
+        padding: 10px 20px;
+        font-size: 14px;
+        width: 100%;
+    }
+    
+    /* Connection Status */
+    .connection-status {
+        font-size: 10px;
+        padding: 8px 10px;
+    }
+    
+    /* Section Panels */
+    .section-panel {
+        padding: 15px;
+        border-radius: 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    /* Extra small screens */
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .module-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .sidebar-logo h2 {
+        font-size: 18px;
+    }
+    
+    .nav-item {
+        padding: 10px 12px;
+    }
+    
+    .nav-item .icon {
+        font-size: 16px;
+    }
+    
+    .nav-item span {
+        font-size: 13px;
+    }
+}
+
+/* Desktop - Full layout */
+@media (min-width: 769px) {
+    .sidebar-overlay {
+        display: none !important;
+    }
+    
+    .sidebar {
+        right: 0;
+    }
 }

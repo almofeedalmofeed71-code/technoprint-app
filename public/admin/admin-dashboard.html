@@ -51,10 +51,16 @@
         </div>
     </div>
 
+    <!-- Mobile Menu Button -->
+    <button class="mobile-menu-btn" id="mobileMenuBtn" onclick="toggleMobileMenu()">☰</button>
+    
+    <!-- Sidebar Overlay -->
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleMobileMenu()"></div>
+    
     <!-- Main Dashboard -->
     <div class="dashboard-container" id="dashboardContainer" style="display: none;">
         <!-- Sidebar -->
-        <nav class="sidebar">
+        <nav class="sidebar" id="adminSidebar">
             <div class="sidebar-logo">
                 <h2>⚡ TECHNO</h2>
                 <span>Control Room v8</span>
