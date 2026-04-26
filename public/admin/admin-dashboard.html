@@ -3,8 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة التحكم - TECHNO CONTROL</title>
+    <title>لوحة التحكم - TECHNO CONTROL v8</title>
     <link rel="stylesheet" href="admin.css">
+    <style>
+        .module-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-bottom: 20px; }
+        .module-card { background: var(--admin-black); padding: 20px; border-radius: 15px; text-align: center; border: 2px solid var(--admin-gray); transition: 0.3s; cursor: pointer; }
+        .module-card:hover { border-color: var(--admin-gold); transform: translateY(-3px); }
+        .module-card .icon { font-size: 40px; margin-bottom: 10px; }
+        .module-card .value { font-size: 28px; font-weight: bold; color: var(--admin-gold); }
+        .module-card .label { color: #888; font-size: 12px; margin-top: 5px; }
+        
+        .radar-map { background: var(--admin-black); border-radius: 15px; padding: 20px; height: 300px; display: flex; align-items: center; justify-content: center; }
+        .activity-chart { background: var(--admin-black); border-radius: 15px; padding: 20px; margin-top: 20px; }
+        
+        .print-job-card { background: var(--admin-black); padding: 15px; border-radius: 10px; margin-bottom: 10px; border: 1px solid #333; }
+        .insight-card { background: var(--admin-black); padding: 20px; border-radius: 15px; margin-bottom: 15px; border-right: 4px solid #3498DB; }
+        .order-card { background: var(--admin-black); padding: 15px; border-radius: 10px; margin-bottom: 10px; border: 1px solid #333; }
+        
+        .connection-status { display: flex; align-items: center; gap: 10px; padding: 10px 15px; background: var(--admin-black); border-radius: 20px; font-size: 12px; }
+        .toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: var(--admin-gold); color: black; padding: 15px 30px; border-radius: 10px; display: none; z-index: 9999; font-weight: bold; }
+        .toast.show { display: block; animation: fadeIn 0.3s; }
+        @keyframes fadeIn { from { opacity: 0; bottom: 50px; } to { opacity: 1; bottom: 30px; } }
+        
+        .section-panel { display: none; padding: 20px; }
+        .section-panel.active { display: block; }
+    </style>
 </head>
 <body>
     <!-- Login Required Overlay -->
@@ -12,7 +35,7 @@
         <div class="login-box">
             <div class="lock-icon">🔐</div>
             <h1>لوحة التحكم الإدارية</h1>
-            <p class="subtitle">TECHNO-PRINT Control Room</p>
+            <p class="subtitle">TECHNO-CONTROL v8 | System Heart</p>
             <form id="quickLogin">
                 <div class="input-group">
                     <label>اسم المستخدم</label>
@@ -22,7 +45,7 @@
                     <label>كلمة المرور</label>
                     <input type="password" id="adminPassword" placeholder="أدخل كلمة المرور" required>
                 </div>
-                <button type="submit" class="login-btn">تسجيل الدخول</button>
+                <button type="submit" class="login-btn">🚀 دخول لوحة التحكم</button>
             </form>
             <p class="error-msg" id="loginError"></p>
         </div>
@@ -34,7 +57,7 @@
         <nav class="sidebar">
             <div class="sidebar-logo">
                 <h2>⚡ TECHNO</h2>
-                <span>Control Room v1.0</span>
+                <span>Control Room v8</span>
             </div>
             
             <div class="nav-section">
@@ -46,18 +69,14 @@
             </div>
             
             <div class="nav-section">
-                <h3>التصميم</h3>
-                <div class="nav-item" data-section="design">
-                    <span class="icon">🎨</span>
-                    <span>المظهر والألوان</span>
+                <h3>🆕 الوحدات الذكية</h3>
+                <div class="nav-item" data-section="radar">
+                    <span class="icon">📡</span>
+                    <span>رادار المستخدمين</span>
                 </div>
-                <div class="nav-item" data-section="icons">
-                    <span class="icon">🖼️</span>
-                    <span>أيقونات البوابات</span>
-                </div>
-                <div class="nav-item" data-section="texts">
-                    <span class="icon">✏️</span>
-                    <span>النصوص</span>
+                <div class="nav-item" data-section="printing">
+                    <span class="icon">🖨️</span>
+                    <span>وحدة الطباعة</span>
                 </div>
             </div>
             
@@ -66,6 +85,14 @@
                 <div class="nav-item" data-section="users">
                     <span class="icon">👥</span>
                     <span>قاعدة البيانات</span>
+                </div>
+                <div class="nav-item" data-section="orders">
+                    <span class="icon">📦</span>
+                    <span>الطلبات</span>
+                </div>
+                <div class="nav-item" data-section="tasks">
+                    <span class="icon">📋</span>
+                    <span>المهام</span>
                 </div>
                 <div class="nav-item" data-section="wallet">
                     <span class="icon">💰</span>
@@ -79,13 +106,17 @@
             
             <div class="nav-section">
                 <h3>المحتوى</h3>
+                <div class="nav-item" data-section="design">
+                    <span class="icon">🎨</span>
+                    <span>الألوان</span>
+                </div>
+                <div class="nav-item" data-section="texts">
+                    <span class="icon">✏️</span>
+                    <span>النصوص</span>
+                </div>
                 <div class="nav-item" data-section="ads">
                     <span class="icon">📢</span>
-                    <span>إعلانات السلايدر</span>
-                </div>
-                <div class="nav-item" data-section="portals">
-                    <span class="icon">🚪</span>
-                    <span>حالة البوابات</span>
+                    <span>الإعلانات</span>
                 </div>
             </div>
             
@@ -102,17 +133,20 @@
             </div>
             
             <div class="nav-section">
-                <button class="logout-btn" onclick="logout()">🚪 تسجيل الخروج</button>
+                <button class="logout-btn" style="width: 100%;">🚪 تسجيل الخروج</button>
             </div>
         </nav>
 
         <!-- Main Content -->
         <main class="main-content">
             <div class="header-bar">
-                <h1 id="sectionTitle">لوحة التحكم</h1>
-                <div>
+                <div style="display: flex; align-items: center; gap: 20px;">
+                    <h1 id="sectionTitle">لوحة التحكم</h1>
+                    <span id="connectionStatus" class="connection-status">🔄 جاري الاتصال...</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 15px;">
                     <span id="currentTime"></span>
-                    <button class="logout-btn" onclick="logout()">🚪</button>
+                    <span style="color: var(--admin-gold);">👑 مدير النظام</span>
                 </div>
             </div>
 
@@ -127,7 +161,7 @@
                     </div>
                     <div class="stat-card">
                         <div class="stat-icon">💰</div>
-                        <div class="stat-value" id="totalBalance">0</div>
+                        <div class="stat-value" id="totalBalance">0 IQD</div>
                         <div class="stat-label">إجمالي الأرصدة</div>
                     </div>
                     <div class="stat-card">
@@ -136,137 +170,43 @@
                         <div class="stat-label">إجمالي الصفحات</div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-icon">📢</div>
-                        <div class="stat-value" id="totalAds">0</div>
-                        <div class="stat-label">الإعلانات</div>
+                        <div class="stat-icon">✅</div>
+                        <div class="stat-value" id="totalActive">0</div>
+                        <div class="stat-label">نشط</div>
                     </div>
                 </div>
                 
                 <h3 style="color: var(--admin-gold); margin: 30px 0 20px;">⚡ إجراءات سريعة</h3>
                 <div class="cards-grid">
-                    <div class="card" onclick="switchSection('users')">
+                    <div class="card" onclick="window.switchSection('users')">
                         <div class="card-icon">👥</div>
                         <h3>إدارة المستخدمين</h3>
                         <p>عرض وتعديل بيانات المستخدمين</p>
                     </div>
-                    <div class="card" onclick="switchSection('broadcast')">
+                    <div class="card" onclick="window.switchSection('orders')">
+                        <div class="card-icon">📦</div>
+                        <h3>الطلبات</h3>
+                        <p>إدارة طلبات الطباعة</p>
+                    </div>
+                    <div class="card" onclick="window.switchSection('wallet')">
+                        <div class="card-icon">💰</div>
+                        <h3>لوحة المحفظة</h3>
+                        <p>إضافة رصيد ومكافآت</p>
+                    </div>
+                    <div class="card" onclick="window.switchSection('broadcast')">
                         <div class="card-icon">📨</div>
                         <h3>إرسال إشعار</h3>
                         <p>إشعار لجميع المستخدمين</p>
                     </div>
-                    <div class="card" onclick="switchSection('design')">
-                        <div class="card-icon">🎨</div>
-                        <h3>تخصيص الألوان</h3>
-                        <p>تغيير ألوان التطبيق</p>
-                    </div>
-                    <div class="card" onclick="switchSection('ads')">
-                        <div class="card-icon">📢</div>
-                        <h3>إدارة الإعلانات</h3>
-                        <p>رفع وتعديل الإعلانات</p>
-                    </div>
                 </div>
-            </section>
-
-            <!-- Design Section: Colors -->
-            <section id="design" class="section-panel">
-                <h2 class="section-title">🎨 تصميم التطبيق - الألوان</h2>
-                <div class="form-grid">
-                    <div class="card">
-                        <h3 style="color: var(--admin-gold);">اللون الذهبي الرئيسي</h3>
-                        <div class="color-picker-group">
-                            <input type="color" id="mainGoldColor" value="#D4AF37">
-                            <div>
-                                <p>القيمة: <span id="mainGoldValue">#D4AF37</span></p>
-                                <small>يستخدم في العناوين والأزرار</small>
-                            </div>
-                        </div>
-                        <button class="btn btn-gold" onclick="saveColor('mainGold')">💾 حفظ اللون</button>
-                    </div>
-                    <div class="card">
-                        <h3 style="color: var(--admin-gold);">اللون الأسود الرئيسي</h3>
-                        <div class="color-picker-group">
-                            <input type="color" id="mainBlackColor" value="#0A0A0A">
-                            <div>
-                                <p>القيمة: <span id="mainBlackValue">#0A0A0A</span></p>
-                                <small>يستخدم في الخلفية</small>
-                            </div>
-                        </div>
-                        <button class="btn btn-gold" onclick="saveColor('mainBlack')">💾 حفظ اللون</button>
-                    </div>
-                </div>
-                <div style="margin-top: 30px;">
-                    <h3 style="color: var(--admin-gold); margin-bottom: 15px;">🎯 معاينة مباشرة</h3>
-                    <div style="background: var(--admin-black); padding: 30px; border-radius: 15px; display: flex; gap: 20px;">
-                        <div id="previewGold" style="flex: 1; padding: 20px; background: #D4AF37; color: #0A0A0A; border-radius: 10px; text-align: center; font-weight: bold;">
-                            معاينة ذهبية
-                        </div>
-                        <div id="previewBlack" style="flex: 1; padding: 20px; background: #0A0A0A; color: #D4AF37; border-radius: 10px; text-align: center; font-weight: bold;">
-                            معاينة سوداء
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Design Section: Icons -->
-            <section id="icons" class="section-panel">
-                <h2 class="section-title">🖼️ أيقونات البوابات</h2>
-                <p style="color: #888; margin-bottom: 20px;">قم برفع أيقونات جديدة للاستبدال - الحجم المثالي: 256x256px</p>
-                <div class="upload-zone" onclick="document.getElementById('iconUpload').click()">
-                    <div class="icon">📁</div>
-                    <p>انقر أو اسحب الملفات هنا</p>
-                    <small>PNG, JPG حتى 5MB</small>
-                </div>
-                <input type="file" id="iconUpload" accept="image/*" style="display: none;" onchange="handleIconUpload(this)">
-                
-                <h3 style="color: var(--admin-gold); margin: 30px 0 20px;">🔴 الأيقونات الحالية</h3>
-                <div class="cards-grid" id="iconsGrid">
-                    <!-- Icons will be loaded here -->
-                </div>
-            </section>
-
-            <!-- Design Section: Texts -->
-            <section id="texts" class="section-panel">
-                <h2 class="section-title">✏️ تحرير النصوص</h2>
-                <p style="color: #888; margin-bottom: 20px;">قم بتعديل جميع النصوص والوصف في التطبيق</p>
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label>عنوان التطبيق</label>
-                        <input type="text" id="appTitle" value="TECHNO-PRINT" placeholder="عنوان التطبيق">
-                    </div>
-                    <div class="form-group">
-                        <label>وصف التطبيق</label>
-                        <input type="text" id="appDescription" value="منصة الطباعة الذكية" placeholder="وصف التطبيق">
-                    </div>
-                    <div class="form-group">
-                        <label>نص الترحيب</label>
-                        <input type="text" id="welcomeText" value="مرحباً بك في تقنية" placeholder="نص الترحيب">
-                    </div>
-                    <div class="form-group">
-                        <label>اسم البوابة - الطالب</label>
-                        <input type="text" id="studentPortalName" value="بوابة الطالب" placeholder="اسم البوابة">
-                    </div>
-                    <div class="form-group">
-                        <label>اسم البوابة - المعلم</label>
-                        <input type="text" id="teacherPortalName" value="بوابة المعلم" placeholder="اسم البوابة">
-                    </div>
-                    <div class="form-group">
-                        <label>اسم البوابة - الأكاديمية</label>
-                        <input type="text" id="academyPortalName" value=" تكنو أكاديمي" placeholder="اسم البوابة">
-                    </div>
-                    <div class="form-group">
-                        <label>نص الفوتر</label>
-                        <input type="text" id="footerText" value="© 2024 TECHNO-PRINT" placeholder="نص الفوتر">
-                    </div>
-                </div>
-                <button class="btn btn-gold" onclick="saveTexts()" style="margin-top: 20px;">💾 حفظ جميع النصوص</button>
             </section>
 
             <!-- Users Section -->
             <section id="users" class="section-panel">
                 <h2 class="section-title">👥 قاعدة بيانات المستخدمين</h2>
-                <input type="text" class="search-box" id="userSearch" placeholder="🔍 بحث بالاسم أو الهاتف أو المحافظة..." oninput="searchUsers()">
+                <input type="text" class="search-box" id="userSearch" placeholder="🔍 بحث بالاسم أو الهاتف أو المحافظة...">
                 
-                <div style="overflow-x: auto;">
+                <div style="overflow-x: auto; margin-top: 20px;">
                     <table class="data-table">
                         <thead>
                             <tr>
@@ -285,180 +225,362 @@
                         </tbody>
                     </table>
                 </div>
-                <div id="paginationControls" style="margin-top: 20px; text-align: center;"></div>
+            </section>
+
+            <!-- Orders Section -->
+            <section id="orders" class="section-panel">
+                <h2 class="section-title">📦 إدارة الطلبات</h2>
+                <div class="module-grid" style="margin-bottom: 30px;">
+                    <div class="module-card">
+                        <div class="icon">📋</div>
+                        <div class="value" id="ordersTotal">0</div>
+                        <div class="label">إجمالي الطلبات</div>
+                    </div>
+                    <div class="module-card">
+                        <div class="icon">⏳</div>
+                        <div class="value" id="ordersPending">0</div>
+                        <div class="label">في الانتظار</div>
+                    </div>
+                    <div class="module-card">
+                        <div class="icon">✅</div>
+                        <div class="value" id="ordersCompleted">0</div>
+                        <div class="label">مكتمل</div>
+                    </div>
+                    <div class="module-card">
+                        <div class="icon">💰</div>
+                        <div class="value" id="ordersAmount">0 IQD</div>
+                        <div class="label">إجمالي المبيعات</div>
+                    </div>
+                </div>
+                
+                <div class="card" style="margin-bottom: 20px;">
+                    <h3 style="color: var(--admin-gold);">➕ إضافة طلب جديد</h3>
+                    <div class="form-grid" style="margin-top: 15px;">
+                        <div class="form-group">
+                            <label>اسم العميل</label>
+                            <input type="text" id="orderCustomer" placeholder="اسم العميل">
+                        </div>
+                        <div class="form-group">
+                            <label>نوع الطباعة</label>
+                            <select id="orderType">
+                                <option value="A4">A4 - عادي</option>
+                                <option value="A3">A3 - كبير</option>
+                                <option value="A5">A5 - صغير</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>عدد الصفحات</label>
+                            <input type="number" id="orderPages" placeholder="عدد الصفحات" value="1">
+                        </div>
+                        <div class="form-group">
+                            <label>اللون</label>
+                            <select id="orderColor">
+                                <option value="أسود">⚫ أسود</option>
+                                <option value="ملون">🎨 ملون</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button onclick="window.addNewOrder()" class="btn btn-gold" style="margin-top: 15px;">➕ إضافة الطلب</button>
+                </div>
+                
+                <h3 style="color: var(--admin-gold); margin: 30px 0 20px;">📋 قائمة الطلبات</h3>
+                <div id="ordersList">
+                    <!-- Orders will be loaded here -->
+                </div>
+            </section>
+
+            <!-- Tasks Section -->
+            <section id="tasks" class="section-panel">
+                <h2 class="section-title">📋 إدارة المهام</h2>
+                <div class="card" style="margin-bottom: 30px;">
+                    <h3 style="color: var(--admin-gold);">➕ إضافة مهمة جديدة</h3>
+                    <div class="form-group" style="margin-top: 15px;">
+                        <input type="text" id="newTaskTitle" placeholder="عنوان المهمة" style="width: 100%; padding: 12px; background: var(--admin-black); border: 2px solid var(--admin-gray); border-radius: 10px; color: white;">
+                    </div>
+                    <div class="form-group">
+                        <select id="newTaskPriority" style="width: 100%; padding: 12px; background: var(--admin-black); border: 2px solid var(--admin-gray); border-radius: 10px; color: white;">
+                            <option value="low">🟢 منخفض</option>
+                            <option value="medium">🟡 متوسط</option>
+                            <option value="high">🔴 عالي</option>
+                        </select>
+                    </div>
+                    <button onclick="window.addNewTask()" class="btn btn-gold" style="width: 100%; margin-top: 10px;">➕ إضافة المهمة</button>
+                </div>
+                
+                <h3 style="color: var(--admin-gold); margin: 20px 0 20px;">📋 قائمة المهام</h3>
+                <div id="tasksList">
+                    <!-- Tasks will be loaded here -->
+                </div>
+            </section>
+
+            <!-- User Radar Section -->
+            <section id="radar" class="section-panel">
+                <h2 class="section-title">📡 رادار المستخدمين</h2>
+                <div class="module-grid">
+                    <div class="module-card">
+                        <div class="icon">👥</div>
+                        <div class="value" id="radarTotal">0</div>
+                        <div class="label">إجمالي المستخدمين</div>
+                    </div>
+                    <div class="module-card">
+                        <div class="icon">🟢</div>
+                        <div class="value" id="radarActive">0</div>
+                        <div class="label">نشطون</div>
+                    </div>
+                    <div class="module-card">
+                        <div class="icon">🆕</div>
+                        <div class="value" id="radarNewToday">0</div>
+                        <div class="label">مسجلين اليوم</div>
+                    </div>
+                    <div class="module-card">
+                        <div class="icon">📍</div>
+                        <div class="value" id="radarActiveNow">0</div>
+                        <div class="label">متصلون حالياً</div>
+                    </div>
+                </div>
+                
+                <div class="cards-grid" style="margin-top: 30px;">
+                    <div class="card">
+                        <h3 style="color: var(--admin-gold);">🗺️ خريطة التوزيع</h3>
+                        <div id="userMapView" class="radar-map">
+                            <div style="text-align: center;">
+                                <div style="font-size: 80px;">🗺️</div>
+                                <p style="color: #888;">الخريطة تفاعلية</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <h3 style="color: var(--admin-gold);">📊 نشاط المستخدمين</h3>
+                        <div id="radarChart" class="activity-chart">
+                            <!-- Chart will be rendered here -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Printing Module Section -->
+            <section id="printing" class="section-panel">
+                <h2 class="section-title">🖨️ وحدة الطباعة - A3/A4/A5/A6</h2>
+                <div class="module-grid">
+                    <div class="module-card">
+                        <div class="icon">📋</div>
+                        <div class="value" id="printTotal">0</div>
+                        <div class="label">إجمالي المهام</div>
+                    </div>
+                    <div class="module-card">
+                        <div class="icon">⏳</div>
+                        <div class="value" id="printPending">0</div>
+                        <div class="label">في الانتظار</div>
+                    </div>
+                    <div class="module-card">
+                        <div class="icon">🖨️</div>
+                        <div class="value" id="printPrinting">0</div>
+                        <div class="label">جاري الطباعة</div>
+                    </div>
+                    <div class="module-card">
+                        <div class="icon">✅</div>
+                        <div class="value" id="printCompleted">0</div>
+                        <div class="label">مكتمل</div>
+                    </div>
+                </div>
+                
+                <h3 style="color: var(--admin-gold); margin: 30px 0 20px;">🖨️ قائمة مهام الطباعة</h3>
+                <div id="printingJobsList">
+                    <!-- Printing jobs will be loaded here -->
+                </div>
             </section>
 
             <!-- Wallet Section -->
             <section id="wallet" class="section-panel">
                 <h2 class="section-title">💰 التحكم بالمحفظة</h2>
-                <p style="color: #888; margin-bottom: 20px;">إضافة أو خصم أرصدة وصفحات من حساب أي مستخدم</p>
-                
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label>اختر المستخدم</label>
-                        <select id="walletUserSelect" onchange="loadWalletUser()">
-                            <option value="">-- اختر مستخدم --</option>
-                        </select>
-                    </div>
+                <div class="form-group">
+                    <label>اختر المستخدم</label>
+                    <select id="walletUserSelect">
+                        <option value="">-- اختر مستخدم --</option>
+                    </select>
                 </div>
                 
-                <div id="walletUserInfo" class="card" style="display: none; margin-bottom: 20px;">
+                <div id="walletUserInfo" class="card" style="display: none; margin: 20px 0;">
                     <h3 id="walletUserName" style="color: var(--admin-gold);"></h3>
                     <p>الرصيد الحالي: <span id="walletCurrentBalance" class="card-value">0</span></p>
                     <p>الصفحات الحالية: <span id="walletCurrentPages" class="card-value">0</span></p>
                 </div>
                 
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label>إضافة/خصم رصيد</label>
-                        <div style="display: flex; gap: 10px;">
-                            <input type="number" id="balanceAmount" placeholder="المبلغ">
-                            <button class="btn btn-green" onclick="adjustBalance('add')">+ إضافة</button>
-                            <button class="btn btn-red" onclick="adjustBalance('subtract')">- خصم</button>
-                        </div>
+                <div class="form-group" style="margin-top: 20px;">
+                    <label>إضافة/خصم رصيد</label>
+                    <div style="display: flex; gap: 10px; margin-top: 10px;">
+                        <input type="number" id="balanceAmount" placeholder="المبلغ" style="flex: 1; padding: 12px; background: var(--admin-black); border: 2px solid var(--admin-gray); border-radius: 10px; color: white;">
+                        <button class="btn btn-green" onclick="window.adjustBalance('add')">+ إضافة</button>
+                        <button class="btn btn-red" onclick="window.adjustBalance('subtract')">- خصم</button>
                     </div>
-                    <div class="form-group">
-                        <label>إضافة/خصم صفحات</label>
-                        <div style="display: flex; gap: 10px;">
-                            <input type="number" id="pagesAmount" placeholder="عدد الصفحات">
-                            <button class="btn btn-green" onclick="adjustPages('add')">+ إضافة</button>
-                            <button class="btn btn-red" onclick="adjustPages('subtract')">- خصم</button>
-                        </div>
+                </div>
+                
+                <div class="form-group" style="margin-top: 20px;">
+                    <label>إضافة/خصم صفحات</label>
+                    <div style="display: flex; gap: 10px; margin-top: 10px;">
+                        <input type="number" id="pagesAmount" placeholder="عدد الصفحات" style="flex: 1; padding: 12px; background: var(--admin-black); border: 2px solid var(--admin-gray); border-radius: 10px; color: white;">
+                        <button class="btn btn-green" onclick="window.adjustPages('add')">+ إضافة</button>
+                        <button class="btn btn-red" onclick="window.adjustPages('subtract')">- خصم</button>
                     </div>
                 </div>
             </section>
 
             <!-- Gifts Section -->
             <section id="gifts" class="section-panel">
-                <h2 class="section-title">🎁 إرسال الهدايا والصفحات</h2>
-                <p style="color: #888; margin-bottom: 20px;">إرسال هدايا ترحيبية أو مكافآت للمستخدمين</p>
-                
+                <h2 class="section-title">🎁 إرسال الهدايا والمكافآت</h2>
                 <div class="form-grid">
                     <div class="card">
                         <h3 style="color: var(--admin-gold);">🎁 هدية ترحيبية</h3>
-                        <p style="color: #888; margin: 10px 0;">إرسال هدية للمستخدمين الجدد</p>
-                        <div class="form-group">
-                            <label>اختر المستخدم</label>
+                        <div class="form-group" style="margin-top: 15px;">
                             <select id="giftUserSelect">
                                 <option value="">-- اختر مستخدم --</option>
                             </select>
                         </div>
                         <div class="form-group">
-                            <label>قيمة الهدية</label>
-                            <input type="number" id="giftBalance" placeholder="قيمة الرصيد" value="50">
+                            <input type="number" id="giftBalance" placeholder="قيمة الرصيد" value="50" style="width: 100%; padding: 12px; background: var(--admin-black); border: 2px solid var(--admin-gray); border-radius: 10px; color: white;">
                         </div>
                         <div class="form-group">
-                            <label>عدد الصفحات</label>
-                            <input type="number" id="giftPages" placeholder="عدد الصفحات" value="100">
+                            <input type="number" id="giftPages" placeholder="عدد الصفحات" value="100" style="width: 100%; padding: 12px; background: var(--admin-black); border: 2px solid var(--admin-gray); border-radius: 10px; color: white;">
                         </div>
-                        <button class="btn btn-gold" onclick="sendWelcomeGift()">🎁 إرسال هدية ترحيبية</button>
+                        <button class="btn btn-gold" onclick="window.sendWelcomeGift()" style="width: 100%;">🎁 إرسال هدية ترحيبية</button>
                     </div>
                     
                     <div class="card">
                         <h3 style="color: var(--admin-gold);">⭐ مكافأة خاصة</h3>
-                        <p style="color: #888; margin: 10px 0;">مكافأة للمستخدمين المميزين</p>
-                        <div class="form-group">
-                            <label>اختر المستخدم</label>
+                        <div class="form-group" style="margin-top: 15px;">
                             <select id="rewardUserSelect">
                                 <option value="">-- اختر مستخدم --</option>
                             </select>
                         </div>
                         <div class="form-group">
-                            <label>قيمة المكافأة</label>
-                            <input type="number" id="rewardBalance" placeholder="قيمة الرصيد" value="100">
+                            <input type="number" id="rewardBalance" placeholder="قيمة الرصيد" value="100" style="width: 100%; padding: 12px; background: var(--admin-black); border: 2px solid var(--admin-gray); border-radius: 10px; color: white;">
                         </div>
                         <div class="form-group">
-                            <label>عدد الصفحات</label>
-                            <input type="number" id="rewardPages" placeholder="عدد الصفحات" value="200">
+                            <input type="number" id="rewardPages" placeholder="عدد الصفحات" value="200" style="width: 100%; padding: 12px; background: var(--admin-black); border: 2px solid var(--admin-gray); border-radius: 10px; color: white;">
                         </div>
-                        <button class="btn btn-green" onclick="sendReward()">⭐ إرسال مكافأة</button>
+                        <button class="btn btn-green" onclick="window.sendReward()" style="width: 100%;">⭐ إرسال مكافأة</button>
                     </div>
                 </div>
-                
-                <h3 style="color: var(--admin-gold); margin: 30px 0 20px;">📋 سجل الهدايا</h3>
-                <div id="giftsHistory" style="max-height: 300px; overflow-y: auto;">
-                    <!-- Gifts history will be loaded here -->
+            </section>
+
+            <!-- Design Section: Colors -->
+            <section id="design" class="section-panel">
+                <h2 class="section-title">🎨 تصميم التطبيق - الألوان</h2>
+                <div class="form-grid">
+                    <div class="card">
+                        <h3 style="color: var(--admin-gold);">اللون الذهبي الرئيسي</h3>
+                        <div style="display: flex; align-items: center; gap: 15px; margin: 15px 0;">
+                            <input type="color" id="mainGoldColor" value="#D4AF37" style="width: 60px; height: 60px; border: none; cursor: pointer;">
+                            <div>
+                                <p>القيمة: <span id="mainGoldValue">#D4AF37</span></p>
+                                <small style="color: #888;">يستخدم في العناوين والأزرار</small>
+                            </div>
+                        </div>
+                        <button class="btn btn-gold" onclick="window.saveColor('mainGold')">💾 حفظ اللون</button>
+                    </div>
+                    <div class="card">
+                        <h3 style="color: var(--admin-gold);">اللون الأسود الرئيسي</h3>
+                        <div style="display: flex; align-items: center; gap: 15px; margin: 15px 0;">
+                            <input type="color" id="mainBlackColor" value="#0A0A0A" style="width: 60px; height: 60px; border: none; cursor: pointer;">
+                            <div>
+                                <p>القيمة: <span id="mainBlackValue">#0A0A0A</span></p>
+                                <small style="color: #888;">يستخدم في الخلفية</small>
+                            </div>
+                        </div>
+                        <button class="btn btn-gold" onclick="window.saveColor('mainBlack')">💾 حفظ اللون</button>
+                    </div>
                 </div>
+            </section>
+
+            <!-- Design Section: Texts -->
+            <section id="texts" class="section-panel">
+                <h2 class="section-title">✏️ تحرير النصوص</h2>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>عنوان التطبيق</label>
+                        <input type="text" id="appTitle" value="TECHNO-PRINT" style="width: 100%; padding: 12px; background: var(--admin-black); border: 2px solid var(--admin-gray); border-radius: 10px; color: white;">
+                    </div>
+                    <div class="form-group">
+                        <label>وصف التطبيق</label>
+                        <input type="text" id="appDescription" value="منصة الطباعة الذكية" style="width: 100%; padding: 12px; background: var(--admin-black); border: 2px solid var(--admin-gray); border-radius: 10px; color: white;">
+                    </div>
+                    <div class="form-group">
+                        <label>نص الترحيب</label>
+                        <input type="text" id="welcomeText" value="مرحباً بك في تقنية" style="width: 100%; padding: 12px; background: var(--admin-black); border: 2px solid var(--admin-gray); border-radius: 10px; color: white;">
+                    </div>
+                    <div class="form-group">
+                        <label>بوابة الطالب</label>
+                        <input type="text" id="studentPortalName" value="بوابة الطالب" style="width: 100%; padding: 12px; background: var(--admin-black); border: 2px solid var(--admin-gray); border-radius: 10px; color: white;">
+                    </div>
+                    <div class="form-group">
+                        <label>بوابة المعلم</label>
+                        <input type="text" id="teacherPortalName" value="بوابة المعلم" style="width: 100%; padding: 12px; background: var(--admin-black); border: 2px solid var(--admin-gray); border-radius: 10px; color: white;">
+                    </div>
+                    <div class="form-group">
+                        <label>البوابة الأكاديمية</label>
+                        <input type="text" id="academyPortalName" value="تكنو أكاديمي" style="width: 100%; padding: 12px; background: var(--admin-black); border: 2px solid var(--admin-gray); border-radius: 10px; color: white;">
+                    </div>
+                </div>
+                <button class="btn btn-gold" onclick="window.saveTexts()" style="margin-top: 20px;">💾 حفظ جميع النصوص</button>
             </section>
 
             <!-- Ads Section -->
             <section id="ads" class="section-panel">
                 <h2 class="section-title">📢 إدارة إعلانات السلايدر</h2>
-                <p style="color: #888; margin-bottom: 20px;">رفع وتعديل وحذف إعلانات الشريط الرئيسي</p>
-                
-                <div class="upload-zone" onclick="document.getElementById('adUpload').click()">
-                    <div class="icon">📁</div>
-                    <p>انقر أو اسحب صور الإعلانات</p>
-                    <small>PNG, JPG حتى 10MB - الأبعاد المثالية: 1200x400</small>
+                <div class="upload-zone" onclick="document.getElementById('adUpload').click()" style="border: 2px dashed var(--admin-gray); padding: 40px; text-align: center; border-radius: 15px; cursor: pointer; margin-bottom: 20px;">
+                    <div style="font-size: 60px;">📁</div>
+                    <p style="color: #888; margin-top: 10px;">انقر أو اسحب صور الإعلانات هنا</p>
+                    <small style="color: #666;">PNG, JPG حتى 10MB</small>
                 </div>
-                <input type="file" id="adUpload" accept="image/*" multiple style="display: none;" onchange="handleAdUpload(this)">
-                
-                <h3 style="color: var(--admin-gold); margin: 30px 0 20px;">🖼️ الإعلانات الحالية</h3>
-                <div class="file-preview" id="adsGrid">
-                    <!-- Ads will be loaded here -->
-                </div>
-            </section>
-
-            <!-- Portals Section -->
-            <section id="portals" class="section-panel">
-                <h2 class="section-title">🚪 حالة البوابات</h2>
-                <p style="color: #888; margin-bottom: 20px;">تفعيل أو تعطيل البوابات الرئيسية</p>
-                
-                <div id="portalsList">
-                    <!-- Portal toggles will be loaded here -->
-                </div>
+                <input type="file" id="adUpload" accept="image/*" multiple style="display: none;" onchange="window.handleAdUpload(this)">
+                <div id="adsGrid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px;"></div>
             </section>
 
             <!-- Broadcast Section -->
             <section id="broadcast" class="section-panel">
                 <h2 class="section-title">📨 إشعارات عامة</h2>
-                <p style="color: #888; margin-bottom: 20px;">إرسال إشعارات لجميع المستخدمين</p>
-                
-                <div class="form-group">
-                    <label>عنوان الإشعار</label>
-                    <input type="text" id="broadcastTitle" placeholder="عنوان الإشعار">
-                </div>
-                <div class="form-group">
-                    <label>محتوى الإشعار</label>
-                    <textarea id="broadcastMessage" placeholder="اكتب محتوى الإشعار هنا..."></textarea>
-                </div>
-                <div class="form-group">
-                    <label>نوع الإشعار</label>
-                    <select id="broadcastType">
-                        <option value="info">ℹ️ معلومات</option>
-                        <option value="success">✅ نجاح</option>
-                        <option value="warning">⚠️ تحذير</option>
-                        <option value="urgent">🚨 عاجل</option>
-                    </select>
-                </div>
-                <button class="btn btn-gold" onclick="sendBroadcast()" style="margin-top: 20px;">📨 إرسال للجميع</button>
-                
-                <h3 style="color: var(--admin-gold); margin: 30px 0 20px;">📋 سجل الإشعارات</h3>
-                <div id="broadcastHistory" style="max-height: 300px; overflow-y: auto;">
-                    <!-- Broadcast history will be loaded here -->
+                <div class="card">
+                    <div class="form-group">
+                        <label>عنوان الإشعار</label>
+                        <input type="text" id="broadcastTitle" placeholder="عنوان الإشعار" style="width: 100%; padding: 12px; background: var(--admin-black); border: 2px solid var(--admin-gray); border-radius: 10px; color: white;">
+                    </div>
+                    <div class="form-group">
+                        <label>محتوى الإشعار</label>
+                        <textarea id="broadcastMessage" placeholder="اكتب محتوى الإشعار هنا..." style="width: 100%; padding: 12px; background: var(--admin-black); border: 2px solid var(--admin-gray); border-radius: 10px; color: white; min-height: 100px;"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>نوع الإشعار</label>
+                        <select id="broadcastType" style="width: 100%; padding: 12px; background: var(--admin-black); border: 2px solid var(--admin-gray); border-radius: 10px; color: white;">
+                            <option value="info">ℹ️ معلومات</option>
+                            <option value="success">✅ نجاح</option>
+                            <option value="warning">⚠️ تحذير</option>
+                            <option value="urgent">🚨 عاجل</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-gold" onclick="window.sendBroadcast()" style="margin-top: 20px; width: 100%;">📨 إرسال للجميع</button>
                 </div>
             </section>
 
             <!-- Messages Section -->
             <section id="messages" class="section-panel">
                 <h2 class="section-title">💬 رسائل خاصة</h2>
-                <p style="color: #888; margin-bottom: 20px;">إرسال رسائل خاصة لمستخدمين محددين</p>
-                
-                <div class="form-group">
-                    <label>اختر المستلم</label>
-                    <select id="messageRecipient">
-                        <option value="">-- اختر مستخدم --</option>
-                    </select>
+                <div class="card">
+                    <div class="form-group">
+                        <label>اختر المستلم</label>
+                        <select id="messageRecipient" style="width: 100%; padding: 12px; background: var(--admin-black); border: 2px solid var(--admin-gray); border-radius: 10px; color: white;">
+                            <option value="">-- اختر مستخدم --</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>الموضوع</label>
+                        <input type="text" id="messageSubject" placeholder="موضوع الرسالة" style="width: 100%; padding: 12px; background: var(--admin-black); border: 2px solid var(--admin-gray); border-radius: 10px; color: white;">
+                    </div>
+                    <div class="form-group">
+                        <label>المحتوى</label>
+                        <textarea id="messageContent" placeholder="اكتب رسالتك هنا..." style="width: 100%; padding: 12px; background: var(--admin-black); border: 2px solid var(--admin-gray); border-radius: 10px; color: white; min-height: 100px;"></textarea>
+                    </div>
+                    <button class="btn btn-blue" onclick="window.sendPrivateMessage()" style="margin-top: 20px; width: 100%;">💬 إرسال الرسالة</button>
                 </div>
-                <div class="form-group">
-                    <label>الموضوع</label>
-                    <input type="text" id="messageSubject" placeholder="موضوع الرسالة">
-                </div>
-                <div class="form-group">
-                    <label>المحتوى</label>
-                    <textarea id="messageContent" placeholder="اكتب رسالتك هنا..."></textarea>
-                </div>
-                <button class="btn btn-blue" onclick="sendPrivateMessage()" style="margin-top: 20px;">💬 إرسال الرسالة</button>
             </section>
         </main>
     </div>
@@ -466,6 +588,11 @@
     <!-- Toast Notification -->
     <div class="toast" id="toast"></div>
 
-    <script src="admin-dashboard.js"></script>
+    <!-- Load modules in order -->
+    <script src="admin-core.js"></script>
+    <script src="admin-users.js"></script>
+    <script src="admin-orders.js"></script>
+    <script src="admin-wallet.js"></script>
+    <script src="admin-settings.js"></script>
 </body>
 </html>
