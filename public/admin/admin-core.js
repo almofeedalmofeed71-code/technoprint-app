@@ -14,26 +14,26 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 // ==================== SUPABASE CLIENT ====================
 let supabaseClient = null;
 
-// Initialize Supabase Client
+// Initialize Supabase Client - waits for library to load
 async function initSupabase() {
+    // Wait for supabase library to be available (loaded in HTML before this script)
+    let attempts = 0;
+    while (typeof window.supabase === 'undefined' && attempts < 50) {
+        await new Promise(r => setTimeout(r, 100));
+        attempts++;
+    }
+    
+    if (typeof window.supabase === 'undefined') {
+        console.error('❌ supabase-js not loaded');
+        return null;
+    }
+    
     try {
-        // Load supabase-js from CDN if not already loaded
-        if (typeof window.supabase === 'undefined') {
-            console.log('📦 Loading supabase-js...');
-            await new Promise((resolve, reject) => {
-                const script = document.createElement('script');
-                script.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
-                script.onload = resolve;
-                script.onerror = reject;
-                document.head.appendChild(script);
-            });
-        }
-        
         supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         console.log('✅ Supabase client initialized');
         return supabaseClient;
     } catch (e) {
-        console.error('❌ Failed to init Supabase:', e);
+        console.error('❌ Failed to create client:', e);
         return null;
     }
 }
