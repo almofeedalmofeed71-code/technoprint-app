@@ -148,46 +148,155 @@ window.saveTexts = function() {
     }
 };
 
+// ==================== UPLOAD TO SUPABASE STORAGE ====================
 window.handleAdUpload = async function(input) {
     if (!input?.files?.length) return;
     
     const files = input.files;
     let uploaded = 0;
     
-    window.showToast(`⬆️ جاري رفع ${files.length} إعلان...`);
+    window.showToast(`⬆️ جاري رفع ${files.length} إعلان إلى Supabase...`);
     
     for (const file of files) {
         try {
-            // Convert to base64
+            // Read file as base64
             const reader = new FileReader();
-            const base64 = await new Promise((resolve) => {
+            const base64 = await new Promise((resolve, reject) => {
                 reader.onload = () => resolve(reader.result);
+                reader.onerror = reject;
                 reader.readAsDataURL(file);
             });
             
-            // Save to localStorage as demo (in production, use Supabase Storage)
-            const ads = JSON.parse(localStorage.getItem('admin_ads') || '[]');
-            ads.push({
-                id: 'ad_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9),
+            // Generate unique filename
+            const ext = file.name.split('.').pop();
+            const filename = `ad_${Date.now()}_${Math.random().toString(36).substr(2, 9)}.${ext}`;
+            
+            // Upload to ads table
+            const adData = await window.supabase.insert('ads', {
                 filename: file.name,
-                size: file.size,
+                url: base64, // Store base64 directly
                 type: file.type,
-                data: base64,
-                created_at: new Date().toISOString()
+                size: file.size,
+                created_at: new Date().toISOString(),
+                is_active: true
             });
-            localStorage.setItem('admin_ads', JSON.stringify(ads));
+            
+            // Also save to ads bucket if exists
+            await uploadToStorage(file, filename);
             
             uploaded++;
-            console.log(`✅ Uploaded: ${file.name}`);
+            console.log(`✅ Uploaded to DB: ${file.name}`);
+            
         } catch (err) {
             console.error(`❌ Upload failed: ${file.name}`, err);
+            window.showToast(`❌ فشل رفع: ${file.name}`);
         }
     }
     
     window.showToast(`✅ تم رفع ${uploaded} من ${files.length} إعلان`);
     input.value = '';
-    loadAdsGrid();
+    
+    // Refresh ads from DB
+    await loadAdsFromDB();
 };
+
+async function uploadToStorage(file, filename) {
+    try {
+        const STORAGE_URL = SUPABASE_URL + '/storage/v1/object/ads/' + filename;
+        
+        const res = await fetch(STORAGE_URL, {
+            method: 'POST',
+            headers: {
+                'apikey': SUPABASE_ANON_KEY,
+                'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                'Content-Type': file.type
+            },
+            body: file
+        });
+        
+        if (res.ok) {
+            console.log(`✅ Saved to Storage: ${filename}`);
+            return true;
+        }
+    } catch (e) {
+        console.log('Storage upload failed, saved to DB only');
+    }
+    return false;
+}
+
+// ==================== LOAD ADS FROM DATABASE ====================
+window.loadAdsFromDB = async function() {
+    try {
+        const grid = document.getElementById('adsGrid');
+        if (!grid) return;
+        
+        grid.innerHTML = '<p style="text-align: center; color: #888; padding: 20px;">🔄 جاري تحميل الإعلانات...</p>';
+        
+        const adsData = await window.supabase.query('ads', '?select=*&order=created_at.desc&limit=20');
+        
+        if (!adsData || !Array.isArray(adsData) || adsData.length === 0) {
+            grid.innerHTML = `
+                <div style="text-align: center; padding: 40px; grid-column: 1/-1;">
+                    <div style="font-size: 60px; margin-bottom: 15px;">📢</div>
+                    <p style="color: #888;">لا توجد إعلانات</p>
+                    <small style="color: #666;">ارفع أول إعلان لعرضه هنا</small>
+                </div>
+            `;
+            return;
+        }
+        
+        grid.innerHTML = adsData.map(ad => `
+            <div style="position: relative; background: #1a1a1a; border-radius: 10px; overflow: hidden; aspect-ratio: 16/9;">
+                ${ad?.url ? 
+                    `<img src="${ad.url}" alt="${ad?.filename || 'ad'}" style="width: 100%; height: 100%; object-fit: cover;">` :
+                    `<div style="display: flex; align-items: center; justify-content: center; height: 100%; font-size: 40px;">📢</div>`
+                }
+                <div style="position: absolute; top: 5px; left: 5px; right: 5px; display: flex; justify-content: space-between;">
+                    <span style="background: ${ad?.is_active ? '#2ECC71' : '#888'}; color: white; padding: 3px 8px; border-radius: 5px; font-size: 10px;">
+                        ${ad?.is_active ? '✅' : '⏳'}
+                    </span>
+                    <button onclick="window.deleteAd('${ad?.id || ''}')" style="background: #E74C3C; color: white; border: none; width: 25px; height: 25px; border-radius: 50%; cursor: pointer; font-size: 14px;">×</button>
+                </div>
+                <div style="position: absolute; bottom: 0; left: 0; right: 0; background: rgba(0,0,0,0.7); padding: 5px; font-size: 10px; color: white; text-align: center;">
+                    ${ad?.filename || 'إعلان'}
+                </div>
+            </div>
+        `).join('');
+        
+        console.log(`✅ Loaded ${adsData.length} ads from DB`);
+        
+    } catch (err) {
+        console.error('❌ Load ads error:', err);
+        const grid = document.getElementById('adsGrid');
+        if (grid) grid.innerHTML = '<p style="color: #E74C3C; text-align: center; padding: 20px;">❌ خطأ في تحميل الإعلانات</p>';
+    }
+};
+
+window.deleteAd = async function(adId) {
+    if (!adId) return;
+    if (!confirm('حذف هذا الإعلان؟')) return;
+    
+    try {
+        const success = await window.supabase.delete('ads', { id: adId });
+        
+        if (success) {
+            window.showToast('✅ تم حذف الإعلان');
+            await loadAdsFromDB();
+        } else {
+            window.showToast('❌ فشل الحذف');
+        }
+    } catch (err) {
+        window.showToast('❌ خطأ في الحذف');
+    }
+};
+
+// Load ads when section opens
+document.addEventListener('DOMContentLoaded', () => {
+    // Load ads after 2 seconds
+    setTimeout(() => {
+        loadAdsFromDB();
+    }, 2000);
+});
 
 window.handleIconUpload = function(input) {
     if (!input?.files?.length) return;

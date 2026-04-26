@@ -179,12 +179,14 @@ body {
 .nav-item .icon { font-size: 22px; }
 .nav-item span { font-size: 14px; }
 
-/* Main Content - FULL WIDTH */
+/* Main Content - FULL SCREEN PC */
 .main-content {
-    margin-right: 280px;
-    padding: 30px 40px;
-    min-height: 100vh;
-    width: calc(100% - 280px);
+    position: fixed;
+    top: 0;
+    right: 280px;
+    bottom: 0;
+    left: 0;
+    padding: 25px 35px;
     overflow-y: auto;
     background: var(--admin-black);
 }
