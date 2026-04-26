@@ -76,6 +76,10 @@
             
             <div class="nav-section">
                 <h3>🆕 الوحدات الذكية</h3>
+                <div class="nav-item" data-section="services">
+                    <span class="icon">⚙️</span>
+                    <span>إدارة الخدمات</span>
+                </div>
                 <div class="nav-item" data-section="radar">
                     <span class="icon">📡</span>
                     <span>رادار المستخدمين</span>
@@ -316,6 +320,48 @@
                 <h3 style="color: var(--admin-gold); margin: 20px 0 20px;">📋 قائمة المهام</h3>
                 <div id="tasksList">
                     <!-- Tasks will be loaded here -->
+                </div>
+            </section>
+
+            <!-- Services Management Section -->
+            <section id="services" class="section-panel">
+                <h2 class="section-title">⚙️ إدارة الخدمات والأسعار</h2>
+                
+                <div class="card" style="margin-bottom: 30px;">
+                    <h3 style="color: var(--admin-gold);">➕ إضافة خدمة جديدة</h3>
+                    <div class="form-grid" style="margin-top: 20px;">
+                        <div class="form-group">
+                            <label>اسم الخدمة</label>
+                            <input type="text" id="newServiceName" placeholder="مثال: طباعة A4" style="width: 100%; padding: 12px; background: var(--admin-black); border: 2px solid var(--admin-gray); border-radius: 10px; color: white;">
+                        </div>
+                        <div class="form-group">
+                            <label>الأيقونة (رمز)</label>
+                            <div style="display: flex; gap: 10px;">
+                                <input type="text" id="newServiceIcon" placeholder="📄" value="📄" style="flex: 1; padding: 12px; background: var(--admin-black); border: 2px solid var(--admin-gray); border-radius: 10px; color: white;">
+                                <label style="background: #3498DB; padding: 12px; border-radius: 10px; cursor: pointer;">
+                                    📷
+                                    <input type="file" accept="image/*" style="display: none;" onchange="window.uploadIconFromFile(this)">
+                                </label>
+                            </div>
+                            <div id="iconPreview" style="margin-top: 10px;"></div>
+                        </div>
+                        <div class="form-group">
+                            <label>السعر (IQD)</label>
+                            <input type="number" id="newServicePrice" placeholder="1000" style="width: 100%; padding: 12px; background: var(--admin-black); border: 2px solid var(--admin-gray); border-radius: 10px; color: white;">
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 15px;">
+                        <label style="color: var(--admin-gold); display: block; margin-bottom: 10px;">اختر أيقونة:</label>
+                        <div id="iconPicker" style="display: flex; flex-wrap: wrap; gap: 8px;"></div>
+                    </div>
+                    
+                    <button onclick="window.addService()" class="btn btn-gold" style="margin-top: 20px; width: 100%;">➕ إضافة الخدمة</button>
+                </div>
+                
+                <h3 style="color: var(--admin-gold); margin: 30px 0 20px;">📋 الخدمات الحالية</h3>
+                <div id="servicesGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px;">
+                    <!-- Services will be loaded here -->
                 </div>
             </section>
 
@@ -599,6 +645,7 @@
     <script src="admin-users.js"></script>
     <script src="admin-orders.js"></script>
     <script src="admin-wallet.js"></script>
+    <script src="admin-services.js"></script>
     <script src="admin-settings.js"></script>
 </body>
 </html>
