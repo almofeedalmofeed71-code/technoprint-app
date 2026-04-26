@@ -77,33 +77,37 @@ window.renderServicesGrid = function() {
             return;
         }
         
-        container.innerHTML = services.map(s => `
-            <div style="background: #1a1a1a; border-radius: 15px; padding: 20px; border: 2px solid ${s?.status === 'active' ? '#333' : '#E74C3C'}; position: relative;">
-                <div style="position: absolute; top: 10px; left: 10px; display: flex; gap: 5px;">
-                    <button onclick="window.editService('${s?.id || ''}')" style="background: #3498DB; color: white; border: none; width: 28px; height: 28px; border-radius: 6px; cursor: pointer; font-size: 12px;">✏️</button>
-                    <button onclick="window.deleteService('${s?.id || ''}')" style="background: #E74C3C; color: white; border: none; width: 28px; height: 28px; border-radius: 6px; cursor: pointer; font-size: 12px;">🗑️</button>
+        container.innerHTML = services.map(s => {
+            const isActive = s?.status === 'active';
+            const priceFormatted = window.formatNumber ? window.formatNumber(s?.price || 0) : (s?.price || 0);
+            return `
+            <div class="service-card ${isActive ? '' : 'inactive'}">
+                <div class="service-card-actions">
+                    <button class="edit-btn" onclick="window.editService('${s?.id || ''}')" title="تعديل">✏️</button>
+                    <button class="delete-btn" onclick="window.deleteService('${s?.id || ''}')" title="حذف">🗑️</button>
                 </div>
                 
-                <div style="text-align: center; margin-top: 20px;">
-                    <div style="font-size: 50px; margin-bottom: 10px;">${s?.icon || '📄'}</div>
-                    <h3 style="color: var(--admin-gold); margin-bottom: 10px; font-size: 16px;">${s?.name || 'خدمة'}</h3>
-                    <div style="font-size: 24px; font-weight: bold; color: #2ECC71; margin-bottom: 10px;">
-                        ${window.formatNumber ? window.formatNumber(s?.price || 0) : (s?.price || 0)}
-                        <span style="font-size: 12px; color: #888;">${s?.currency || 'IQD'}</span>
-                    </div>
-                    <span style="background: ${s?.status === 'active' ? '#2ECC71' : '#E74C3C'}; color: white; padding: 5px 15px; border-radius: 20px; font-size: 12px;">
-                        ${s?.status === 'active' ? '✅ نشط' : '🚫 متوقف'}
-                    </span>
+                <div class="service-icon-wrapper">
+                    ${s?.icon || '📄'}
                 </div>
                 
-                <div style="margin-top: 15px; text-align: center;">
-                    <button onclick="window.toggleServiceStatus('${s?.id || ''}')" 
-                        style="background: ${s?.status === 'active' ? '#F39C12' : '#2ECC71'}; color: white; border: none; padding: 8px 15px; border-radius: 8px; cursor: pointer; font-size: 12px; width: 100%;">
-                        ${s?.status === 'active' ? '⏸️ إيقاف' : '▶️ تفعيل'}
-                    </button>
+                <h3 class="service-title">${s?.name || 'خدمة'}</h3>
+                
+                <div class="service-price-tag">
+                    ${priceFormatted}<span>${s?.currency || 'IQD'}</span>
                 </div>
+                
+                <div class="service-status-badge ${isActive ? 'active' : 'inactive'}">
+                    ${isActive ? '✅ نشط' : '🚫 متوقف'}
+                </div>
+                
+                <button class="service-toggle-btn ${isActive ? 'active' : 'inactive'}" 
+                    onclick="window.toggleServiceStatus('${s?.id || ''}')">
+                    ${isActive ? '⏸️ إيقاف الخدمة' : '▶️ تفعيل الخدمة'}
+                </button>
             </div>
-        `).join('');
+            `;
+        }).join('');
         
         console.log(`✅ Rendered ${services.length} services`);
         
