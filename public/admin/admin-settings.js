@@ -1,8 +1,185 @@
 /**
- * ADMIN TASKS MODULE
- * Task management
+ * ADMIN SETTINGS MODULE v12
+ * Ads + Storage + Real Supabase Upload
  */
 
+console.log('📦 Admin Settings v12 loading...');
+
+// ==================== ADS GRID ====================
+window.renderAdsGrid = function() {
+    try {
+        const grid = document.getElementById('adsGrid');
+        if (!grid) return;
+        
+        const ads = window.ADMIN_STATE?.ads || [];
+        
+        if (ads.length === 0) {
+            grid.innerHTML = `
+                <div style="text-align: center; padding: 60px; grid-column: 1/-1;">
+                    <div style="font-size: 60px; margin-bottom: 15px;">📢</div>
+                    <p style="color: #888; font-size: 16px;">لا توجد إعلانات</p>
+                    <small style="color: #666;">ارفع أول إعلان لعرضه هنا وفي التطبيق</small>
+                </div>
+            `;
+            return;
+        }
+        
+        grid.innerHTML = ads.map(ad => `
+            <div style="position: relative; background: #1a1a1a; border-radius: 10px; overflow: hidden; aspect-ratio: 16/9; border: 2px solid #333;">
+                ${ad?.url ? 
+                    `<img src="${ad.url}" alt="${ad?.filename || 'ad'}" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.parentElement.innerHTML='<div style=display:flex;align-items:center;justify-content:center;height:100%;font-size:40px;>📢</div>'">` :
+                    `<div style="display: flex; align-items: center; justify-content: center; height: 100%; font-size: 40px;">📢</div>`
+                }
+                <div style="position: absolute; top: 5px; left: 5px; right: 5px; display: flex; justify-content: space-between; align-items: center;">
+                    <span style="background: ${ad?.is_active ? '#2ECC71' : '#888'}; color: white; padding: 4px 10px; border-radius: 5px; font-size: 10px;">
+                        ${ad?.is_active ? '✅' : '⏳'}
+                    </span>
+                    <button onclick="window.deleteAd('${ad?.id || ''}')" style="background: #E74C3C; color: white; border: none; width: 28px; height: 28px; border-radius: 50%; cursor: pointer; font-size: 14px;">×</button>
+                </div>
+                <div style="position: absolute; bottom: 0; left: 0; right: 0; background: rgba(0,0,0,0.8); padding: 8px; font-size: 11px; color: white; text-align: center;">
+                    ${ad?.filename || 'إعلان'}
+                </div>
+            </div>
+        `).join('');
+        
+        console.log(`✅ Rendered ${ads.length} ads`);
+        
+    } catch (err) {
+        console.error('❌ Render ads error:', err);
+    }
+};
+
+// ==================== UPLOAD TO SUPABASE STORAGE ====================
+window.handleAdUpload = async function(input) {
+    if (!input?.files?.length) return;
+    
+    const files = Array.from(input.files);
+    let uploaded = 0;
+    let failed = 0;
+    
+    window.showToast(`⬆️ جاري رفع ${files.length} إعلان إلى Supabase...`);
+    
+    for (const file of files) {
+        try {
+            // Generate unique filename
+            const ext = file.name.split('.').pop() || 'jpg';
+            const filename = `ad_${Date.now()}_${Math.random().toString(36).substr(2, 9)}.${ext}`;
+            
+            // Upload to Supabase Storage
+            const publicUrl = await window.supabase.uploadToStorage('ads', filename, file);
+            
+            if (publicUrl) {
+                // Insert record into ads table
+                const adRecord = {
+                    filename: file.name,
+                    url: publicUrl,
+                    type: file.type,
+                    size: file.size,
+                    is_active: true,
+                    created_at: new Date().toISOString()
+                };
+                
+                const result = await window.supabase.insert('ads', adRecord);
+                
+                if (result) {
+                    uploaded++;
+                    console.log(`✅ Uploaded: ${file.name} → ${publicUrl}`);
+                    
+                    // Add to local state
+                    const newAd = { id: 'new_' + Date.now(), ...adRecord };
+                    window.ADMIN_STATE.ads = [newAd, ...(window.ADMIN_STATE.ads || [])];
+                } else {
+                    failed++;
+                }
+            } else {
+                // If storage fails, save as base64 in ads table
+                const reader = new FileReader();
+                const base64 = await new Promise((resolve) => {
+                    reader.onload = () => resolve(reader.result);
+                    reader.readAsDataURL(file);
+                });
+                
+                const adRecord = {
+                    filename: file.name,
+                    url: base64,
+                    type: file.type,
+                    size: file.size,
+                    is_active: true,
+                    created_at: new Date().toISOString()
+                };
+                
+                const result = await window.supabase.insert('ads', adRecord);
+                if (result) {
+                    uploaded++;
+                    console.log(`✅ Saved as base64: ${file.name}`);
+                    
+                    const newAd = { id: 'new_' + Date.now(), ...adRecord };
+                    window.ADMIN_STATE.ads = [newAd, ...(window.ADMIN_STATE.ads || [])];
+                } else {
+                    failed++;
+                }
+            }
+            
+        } catch (err) {
+            console.error(`❌ Upload failed: ${file.name}`, err);
+            failed++;
+        }
+    }
+    
+    if (uploaded > 0) {
+        window.showToast(`✅ تم رفع ${uploaded} من ${files.length} إعلان`);
+    }
+    if (failed > 0) {
+        window.showToast(`⚠️ فشل رفع ${failed} إعلان`);
+    }
+    
+    input.value = '';
+    
+    // Re-render ads grid
+    window.renderAdsGrid();
+};
+
+window.deleteAd = async function(adId) {
+    if (!adId) return;
+    if (!confirm('حذف هذا الإعلان؟')) return;
+    
+    try {
+        window.showToast('🗑️ جاري الحذف...');
+        
+        const success = await window.supabase.delete('ads', { id: adId });
+        
+        if (success) {
+            window.ADMIN_STATE.ads = (window.ADMIN_STATE.ads || []).filter(a => a?.id !== adId);
+            window.renderAdsGrid();
+            window.showToast('✅ تم حذف الإعلان');
+        } else {
+            window.showToast('❌ فشل الحذف');
+        }
+    } catch (err) {
+        console.error('❌ Delete ad error:', err);
+        window.showToast('❌ خطأ في الحذف');
+    }
+};
+
+window.toggleAdStatus = async function(adId) {
+    if (!adId) return;
+    
+    const ad = window.ADMIN_STATE?.ads?.find(a => a?.id === adId);
+    if (!ad) return;
+    
+    const newStatus = !ad.is_active;
+    
+    try {
+        await window.supabase.update('ads', { id: adId }, { is_active: newStatus });
+        ad.is_active = newStatus;
+        window.renderAdsGrid();
+        window.showToast(`✅ ${newStatus ? 'تم التفعيل' : 'تم الإيقاف'}`);
+    } catch (err) {
+        window.showToast('❌ خطأ في التحديث');
+    }
+};
+
+// ==================== TASKS MODULE ====================
 window.renderTasksList = function() {
     try {
         const container = document.getElementById('tasksList');
@@ -16,101 +193,93 @@ window.renderTasksList = function() {
         }
         
         container.innerHTML = tasks.map(t => `
-            <div class="task-card" style="background: var(--admin-black); padding: 15px; border-radius: 10px; margin-bottom: 10px; border: 1px solid #333;">
-                <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <div>
-                        <h4 style="color: var(--admin-gold); margin-bottom: 5px;">${t?.title || '-'}</h4>
-                        <span style="color: #888; font-size: 12px;">${formatDate(t?.created_at)}</span>
-                    </div>
-                    <div style="display: flex; gap: 10px; align-items: center;">
-                        <span style="padding: 5px 10px; border-radius: 15px; font-size: 12px; 
-                            background: ${getTaskStatusColor(t?.status)}20; color: ${getTaskStatusColor(t?.status)};">
-                            ${getTaskStatusText(t?.status)}
-                        </span>
-                        ${t?.status !== 'completed' ? `
-                            <button onclick="window.completeTask('${t?.id || ''}')" 
-                                style="background: #2ECC71; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer;">✓</button>
-                        ` : ''}
-                    </div>
+            <div style="background: #1a1a1a; padding: 15px; border-radius: 10px; margin-bottom: 10px; border: 1px solid #333; display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h4 style="color: var(--admin-gold); margin-bottom: 5px;">${t?.title || '-'}</h4>
+                    <small style="color: #666;">${t?.created_at || ''}</small>
+                </div>
+                <div style="display: flex; gap: 10px; align-items: center;">
+                    <span style="padding: 5px 12px; border-radius: 15px; font-size: 12px; background: ${t?.status === 'completed' ? '#2ECC71' : '#3498DB'}20; color: ${t?.status === 'completed' ? '#2ECC71' : '#3498DB'};">
+                        ${t?.status === 'completed' ? '✅ مكتمل' : '⏳ قيد الانتظار'}
+                    </span>
+                    ${t?.status !== 'completed' ? `
+                        <button onclick="window.completeTask('${t?.id || ''}')" style="background: #2ECC71; color: white; border: none; padding: 8px 15px; border-radius: 8px; cursor: pointer;">✓</button>
+                    ` : ''}
                 </div>
             </div>
         `).join('');
         
     } catch (err) {
-        console.error('Render tasks error:', err);
+        console.error('❌ Render tasks error:', err);
     }
 };
 
-function getTaskStatusColor(status) {
-    switch (status) {
-        case 'completed': return '#2ECC71';
-        case 'in_progress': return '#F39C12';
-        case 'pending': return '#3498DB';
-        default: return '#888';
-    }
-}
-
-function getTaskStatusText(status) {
-    switch (status) {
-        case 'completed': return '✅ مكتمل';
-        case 'in_progress': return '🔄 جاري';
-        case 'pending': return '⏳ انتظار';
-        default: return status || 'غير معروف';
-    }
-}
-
-window.completeTask = async function(taskId) {
-    if (!taskId) return;
+window.addNewTask = async function() {
+    const titleInput = document.getElementById('newTaskTitle');
+    const prioritySelect = document.getElementById('newTaskPriority');
     
-    try {
-        const success = await window.supabase.update('tasks', { id: taskId }, { status: 'completed' });
-        if (success) {
-            window.showToast('✅ تم إكمال المهمة');
-            const task = window.ADMIN_STATE.tasks.find(t => t?.id === taskId);
-            if (task) task.status = 'completed';
-            window.renderTasksList();
-        } else {
-            window.showToast('❌ فشل التحديث');
-        }
-    } catch (err) {
-        window.showToast('❌ حدث خطأ');
-    }
-};
-
-window.addNewTask = function() {
-    const title = document.getElementById('newTaskTitle')?.value;
-    const priority = document.getElementById('newTaskPriority')?.value;
+    const title = titleInput?.value?.trim();
+    const priority = prioritySelect?.value || 'medium';
     
     if (!title) {
         window.showToast('⚠️ أدخل عنوان المهمة');
         return;
     }
     
-    const newTask = {
-        id: 'local_' + Date.now(),
-        title,
-        priority: priority || 'medium',
-        status: 'pending',
-        created_at: new Date().toISOString()
-    };
-    
-    window.ADMIN_STATE.tasks.unshift(newTask);
-    window.renderTasksList();
-    window.showToast(`✅ تمت إضافة: ${title}`);
-    
-    document.getElementById('newTaskTitle').value = '';
+    try {
+        const newTask = {
+            title,
+            priority,
+            status: 'pending',
+            created_at: new Date().toISOString()
+        };
+        
+        const result = await window.supabase.insert('tasks', newTask);
+        
+        if (result) {
+            window.ADMIN_STATE.tasks = window.ADMIN_STATE.tasks || [];
+            window.ADMIN_STATE.tasks.unshift({ id: 'new_' + Date.now(), ...newTask });
+            window.renderTasksList();
+            window.showToast(`✅ تمت إضافة: ${title}`);
+            if (titleInput) titleInput.value = '';
+        } else {
+            window.showToast('❌ فشل إضافة المهمة');
+        }
+    } catch (err) {
+        console.error('❌ Add task error:', err);
+        window.showToast('❌ خطأ');
+    }
 };
 
-/**
- * ADMIN SETTINGS MODULE
- * Design, colors, texts management
- */
+window.completeTask = async function(taskId) {
+    if (!taskId) return;
+    
+    try {
+        const success = await window.supabase.update('tasks', { id: taskId }, { status: 'completed' });
+        
+        if (success) {
+            const task = window.ADMIN_STATE.tasks?.find(t => t?.id === taskId);
+            if (task) task.status = 'completed';
+            window.renderTasksList();
+            window.showToast('✅ تم إكمال المهمة');
+        } else {
+            window.showToast('❌ فشل التحديث');
+        }
+    } catch (err) {
+        window.showToast('❌ خطأ');
+    }
+};
 
+// ==================== COLORS & TEXTS ====================
 window.saveColor = function(colorKey) {
     try {
         const colorInput = document.getElementById(colorKey + 'Color');
         const colorValue = colorInput?.value;
+        
         if (!colorValue) return;
+        
+        // Save to localStorage (in production, save to DB settings table)
+        localStorage.setItem(`theme_${colorKey}`, colorValue);
         
         // Update preview
         const previewId = colorKey === 'mainGold' ? 'previewGold' : 'previewBlack';
@@ -120,233 +289,73 @@ window.saveColor = function(colorKey) {
         const valueEl = document.getElementById(colorKey + 'Value');
         if (valueEl) valueEl.textContent = colorValue;
         
-        // Save to localStorage (in production, save to DB)
-        localStorage.setItem(`theme_${colorKey}`, colorValue);
         window.showToast('✅ تم حفظ اللون');
         
     } catch (err) {
-        window.showToast('⚠️ حدث خطأ');
+        window.showToast('⚠️ خطأ');
     }
 };
 
 window.saveTexts = function() {
     try {
         const texts = {
-            appTitle: document.getElementById('appTitle')?.value,
-            appDescription: document.getElementById('appDescription')?.value,
-            welcomeText: document.getElementById('welcomeText')?.value,
-            studentPortalName: document.getElementById('studentPortalName')?.value,
-            teacherPortalName: document.getElementById('teacherPortalName')?.value,
-            academyPortalName: document.getElementById('academyPortalName')?.value
+            appTitle: document.getElementById('appTitle')?.value || '',
+            appDescription: document.getElementById('appDescription')?.value || '',
+            welcomeText: document.getElementById('welcomeText')?.value || '',
+            studentPortalName: document.getElementById('studentPortalName')?.value || '',
+            teacherPortalName: document.getElementById('teacherPortalName')?.value || '',
+            academyPortalName: document.getElementById('academyPortalName')?.value || ''
         };
         
+        // Save to localStorage (in production, save to DB)
         localStorage.setItem('app_texts', JSON.stringify(texts));
         window.showToast('✅ تم حفظ جميع النصوص');
         
     } catch (err) {
-        window.showToast('⚠️ حدث خطأ');
+        window.showToast('⚠️ خطأ في الحفظ');
     }
 };
 
-// ==================== UPLOAD TO SUPABASE STORAGE ====================
-window.handleAdUpload = async function(input) {
+// ==================== ICON UPLOAD FOR SERVICES ====================
+window.uploadIconFromFile = async function(input) {
     if (!input?.files?.length) return;
     
-    const files = input.files;
-    let uploaded = 0;
-    
-    window.showToast(`⬆️ جاري رفع ${files.length} إعلان إلى Supabase...`);
-    
-    for (const file of files) {
-        try {
-            // Read file as base64
-            const reader = new FileReader();
-            const base64 = await new Promise((resolve, reject) => {
-                reader.onload = () => resolve(reader.result);
-                reader.onerror = reject;
-                reader.readAsDataURL(file);
-            });
-            
-            // Generate unique filename
-            const ext = file.name.split('.').pop();
-            const filename = `ad_${Date.now()}_${Math.random().toString(36).substr(2, 9)}.${ext}`;
-            
-            // Upload to ads table
-            const adData = await window.supabase.insert('ads', {
-                filename: file.name,
-                url: base64, // Store base64 directly
-                type: file.type,
-                size: file.size,
-                created_at: new Date().toISOString(),
-                is_active: true
-            });
-            
-            // Also save to ads bucket if exists
-            await uploadToStorage(file, filename);
-            
-            uploaded++;
-            console.log(`✅ Uploaded to DB: ${file.name}`);
-            
-        } catch (err) {
-            console.error(`❌ Upload failed: ${file.name}`, err);
-            window.showToast(`❌ فشل رفع: ${file.name}`);
-        }
-    }
-    
-    window.showToast(`✅ تم رفع ${uploaded} من ${files.length} إعلان`);
-    input.value = '';
-    
-    // Refresh ads from DB
-    await loadAdsFromDB();
-};
-
-async function uploadToStorage(file, filename) {
-    try {
-        const STORAGE_URL = SUPABASE_URL + '/storage/v1/object/ads/' + filename;
-        
-        const res = await fetch(STORAGE_URL, {
-            method: 'POST',
-            headers: {
-                'apikey': SUPABASE_ANON_KEY,
-                'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-                'Content-Type': file.type
-            },
-            body: file
-        });
-        
-        if (res.ok) {
-            console.log(`✅ Saved to Storage: ${filename}`);
-            return true;
-        }
-    } catch (e) {
-        console.log('Storage upload failed, saved to DB only');
-    }
-    return false;
-}
-
-// ==================== LOAD ADS FROM DATABASE ====================
-window.loadAdsFromDB = async function() {
-    try {
-        const grid = document.getElementById('adsGrid');
-        if (!grid) return;
-        
-        grid.innerHTML = '<p style="text-align: center; color: #888; padding: 20px;">🔄 جاري تحميل الإعلانات...</p>';
-        
-        const adsData = await window.supabase.query('ads', '?select=*&order=created_at.desc&limit=20');
-        
-        if (!adsData || !Array.isArray(adsData) || adsData.length === 0) {
-            grid.innerHTML = `
-                <div style="text-align: center; padding: 40px; grid-column: 1/-1;">
-                    <div style="font-size: 60px; margin-bottom: 15px;">📢</div>
-                    <p style="color: #888;">لا توجد إعلانات</p>
-                    <small style="color: #666;">ارفع أول إعلان لعرضه هنا</small>
-                </div>
-            `;
-            return;
-        }
-        
-        grid.innerHTML = adsData.map(ad => `
-            <div style="position: relative; background: #1a1a1a; border-radius: 10px; overflow: hidden; aspect-ratio: 16/9;">
-                ${ad?.url ? 
-                    `<img src="${ad.url}" alt="${ad?.filename || 'ad'}" style="width: 100%; height: 100%; object-fit: cover;">` :
-                    `<div style="display: flex; align-items: center; justify-content: center; height: 100%; font-size: 40px;">📢</div>`
-                }
-                <div style="position: absolute; top: 5px; left: 5px; right: 5px; display: flex; justify-content: space-between;">
-                    <span style="background: ${ad?.is_active ? '#2ECC71' : '#888'}; color: white; padding: 3px 8px; border-radius: 5px; font-size: 10px;">
-                        ${ad?.is_active ? '✅' : '⏳'}
-                    </span>
-                    <button onclick="window.deleteAd('${ad?.id || ''}')" style="background: #E74C3C; color: white; border: none; width: 25px; height: 25px; border-radius: 50%; cursor: pointer; font-size: 14px;">×</button>
-                </div>
-                <div style="position: absolute; bottom: 0; left: 0; right: 0; background: rgba(0,0,0,0.7); padding: 5px; font-size: 10px; color: white; text-align: center;">
-                    ${ad?.filename || 'إعلان'}
-                </div>
-            </div>
-        `).join('');
-        
-        console.log(`✅ Loaded ${adsData.length} ads from DB`);
-        
-    } catch (err) {
-        console.error('❌ Load ads error:', err);
-        const grid = document.getElementById('adsGrid');
-        if (grid) grid.innerHTML = '<p style="color: #E74C3C; text-align: center; padding: 20px;">❌ خطأ في تحميل الإعلانات</p>';
-    }
-};
-
-window.deleteAd = async function(adId) {
-    if (!adId) return;
-    if (!confirm('حذف هذا الإعلان؟')) return;
+    const file = input.files[0];
+    if (!file) return;
     
     try {
-        const success = await window.supabase.delete('ads', { id: adId });
+        window.showToast('⬆️ جاري رفع الأيقونة...');
         
-        if (success) {
-            window.showToast('✅ تم حذف الإعلان');
-            await loadAdsFromDB();
+        const ext = file.name.split('.').pop() || 'png';
+        const filename = `icon_${Date.now()}.${ext}`;
+        
+        const iconUrl = await window.supabase.uploadToStorage('icons', filename, file);
+        
+        if (iconUrl) {
+            document.getElementById('newServiceIcon').value = iconUrl;
+            
+            const preview = document.getElementById('iconPreview');
+            if (preview) {
+                preview.innerHTML = `<img src="${iconUrl}" style="width:60px;height:60px;border-radius:10px;border:2px solid var(--admin-gold);">`;
+            }
+            
+            window.showToast('✅ تم رفع الأيقونة');
         } else {
-            window.showToast('❌ فشل الحذف');
+            window.showToast('❌ فشل الرفع');
         }
+        
     } catch (err) {
-        window.showToast('❌ خطأ في الحذف');
+        console.error('❌ Upload icon error:', err);
+        window.showToast('❌ خطأ في الرفع');
     }
 };
 
-// Load ads when section opens
+// ==================== INIT ====================
 document.addEventListener('DOMContentLoaded', () => {
-    // Load ads after 2 seconds
+    // Load ads after DOM is ready
     setTimeout(() => {
-        loadAdsFromDB();
-    }, 2000);
+        window.renderAdsGrid();
+    }, 500);
 });
 
-window.handleIconUpload = function(input) {
-    if (!input?.files?.length) return;
-    window.showToast(`⬆️ جاري رفع ${input.files.length} أيقونة...`);
-    
-    setTimeout(() => {
-        window.showToast(`✅ تم رفع ${input.files.length} أيقونة`);
-        input.value = '';
-    }, 1000);
-};
-
-function loadAdsGrid() {
-    try {
-        const grid = document.getElementById('adsGrid');
-        if (!grid) return;
-        
-        const ads = JSON.parse(localStorage.getItem('admin_ads') || '[]');
-        
-        if (ads.length === 0) {
-            grid.innerHTML = '<p style="text-align: center; color: #888; padding: 40px; grid-column: 1/-1;">لا توجد إعلانات - ارفع أول إعلان</p>';
-            return;
-        }
-        
-        grid.innerHTML = ads.map(ad => `
-            <div class="preview-item" style="position: relative;">
-                <img src="${ad?.data || ''}" alt="${ad?.filename || 'ad'}" style="width: 100%; height: 100%; object-fit: cover;">
-                <button onclick="window.deleteAd('${ad?.id || ''}')" title="حذف" style="position: absolute; top: 5px; left: 5px; width: 25px; height: 25px; background: #E74C3C; color: white; border: none; border-radius: 50%; cursor: pointer; font-size: 12px;">×</button>
-                <span style="position: absolute; bottom: 5px; left: 5px; font-size: 10px; color: white; background: rgba(0,0,0,0.7); padding: 2px 5px; border-radius: 3px;">${ad?.filename || ''}</span>
-            </div>
-        `).join('');
-        
-    } catch (err) {
-        console.error('Load ads error:', err);
-    }
-}
-
-window.deleteAd = function(adId) {
-    if (!adId) return;
-    if (!confirm('حذف هذا الإعلان؟')) return;
-    
-    const ads = JSON.parse(localStorage.getItem('admin_ads') || '[]');
-    const filtered = ads.filter(a => a?.id !== adId);
-    localStorage.setItem('admin_ads', JSON.stringify(filtered));
-    window.showToast('✅ تم حذف الإعلان');
-    loadAdsGrid();
-};
-
-// Load ads on section render
-document.addEventListener('DOMContentLoaded', () => {
-    setTimeout(() => {
-        loadAdsGrid();
-    }, 1000);
-});
+console.log('✅ Admin Settings v12 ready');
