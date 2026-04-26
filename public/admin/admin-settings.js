@@ -148,15 +148,45 @@ window.saveTexts = function() {
     }
 };
 
-window.handleAdUpload = function(input) {
+window.handleAdUpload = async function(input) {
     if (!input?.files?.length) return;
-    window.showToast(`⬆️ جاري رفع ${input.files.length} إعلان...`);
     
-    // Simulate upload
-    setTimeout(() => {
-        window.showToast(`✅ تم رفع ${input.files.length} إعلان`);
-        input.value = '';
-    }, 1500);
+    const files = input.files;
+    let uploaded = 0;
+    
+    window.showToast(`⬆️ جاري رفع ${files.length} إعلان...`);
+    
+    for (const file of files) {
+        try {
+            // Convert to base64
+            const reader = new FileReader();
+            const base64 = await new Promise((resolve) => {
+                reader.onload = () => resolve(reader.result);
+                reader.readAsDataURL(file);
+            });
+            
+            // Save to localStorage as demo (in production, use Supabase Storage)
+            const ads = JSON.parse(localStorage.getItem('admin_ads') || '[]');
+            ads.push({
+                id: 'ad_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9),
+                filename: file.name,
+                size: file.size,
+                type: file.type,
+                data: base64,
+                created_at: new Date().toISOString()
+            });
+            localStorage.setItem('admin_ads', JSON.stringify(ads));
+            
+            uploaded++;
+            console.log(`✅ Uploaded: ${file.name}`);
+        } catch (err) {
+            console.error(`❌ Upload failed: ${file.name}`, err);
+        }
+    }
+    
+    window.showToast(`✅ تم رفع ${uploaded} من ${files.length} إعلان`);
+    input.value = '';
+    loadAdsGrid();
 };
 
 window.handleIconUpload = function(input) {
@@ -168,3 +198,46 @@ window.handleIconUpload = function(input) {
         input.value = '';
     }, 1000);
 };
+
+function loadAdsGrid() {
+    try {
+        const grid = document.getElementById('adsGrid');
+        if (!grid) return;
+        
+        const ads = JSON.parse(localStorage.getItem('admin_ads') || '[]');
+        
+        if (ads.length === 0) {
+            grid.innerHTML = '<p style="text-align: center; color: #888; padding: 40px; grid-column: 1/-1;">لا توجد إعلانات - ارفع أول إعلان</p>';
+            return;
+        }
+        
+        grid.innerHTML = ads.map(ad => `
+            <div class="preview-item" style="position: relative;">
+                <img src="${ad?.data || ''}" alt="${ad?.filename || 'ad'}" style="width: 100%; height: 100%; object-fit: cover;">
+                <button onclick="window.deleteAd('${ad?.id || ''}')" title="حذف" style="position: absolute; top: 5px; left: 5px; width: 25px; height: 25px; background: #E74C3C; color: white; border: none; border-radius: 50%; cursor: pointer; font-size: 12px;">×</button>
+                <span style="position: absolute; bottom: 5px; left: 5px; font-size: 10px; color: white; background: rgba(0,0,0,0.7); padding: 2px 5px; border-radius: 3px;">${ad?.filename || ''}</span>
+            </div>
+        `).join('');
+        
+    } catch (err) {
+        console.error('Load ads error:', err);
+    }
+}
+
+window.deleteAd = function(adId) {
+    if (!adId) return;
+    if (!confirm('حذف هذا الإعلان؟')) return;
+    
+    const ads = JSON.parse(localStorage.getItem('admin_ads') || '[]');
+    const filtered = ads.filter(a => a?.id !== adId);
+    localStorage.setItem('admin_ads', JSON.stringify(filtered));
+    window.showToast('✅ تم حذف الإعلان');
+    loadAdsGrid();
+};
+
+// Load ads on section render
+document.addEventListener('DOMContentLoaded', () => {
+    setTimeout(() => {
+        loadAdsGrid();
+    }, 1000);
+});
