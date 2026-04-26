@@ -1,28 +1,29 @@
 /**
- * TECHNO-CONTROL ADMIN CORE v13 — FIXED
- * ══════════════════════════════════════
- * الإصلاح الكامل لمشكلة window.supabase.createClient
- * وأخطاء 404 في قاعدة البيانات
+ * TECHNO-CONTROL ADMIN CORE v14 — COMPLETE FIX
+ * ═══════════════════════════════════════════════════════════════════
+ * Tasks Applied:
+ * 1. ✅ Supabase connection fix (retry loop, proper CDN handling)
+ * 2. ✅ Data flow verification (missing tables → warning, continue)
+ * 3. ✅ All helper functions exposed to window
+ * 4. ✅ Boot screen support
  */
 
 (function() {
     'use strict';
 
     // ══════════════════════════════════════════════
-    //  CONFIG — تم استعادة روابطك الأصلية هنا
+    //  CONFIGURATION
     // ══════════════════════════════════════════════
     const CONFIG = {
-        // روابطك الأصلية حتى يشتغل الربط فوراً
         SUPABASE_URL:      'https://rqzsokvhgjlftkouhphb.supabase.co',
         SUPABASE_ANON_KEY: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJxem9rbWhnamxmdGtvdWhwYmgiLCJyb2xlIjoiYW5vbiIsImlhdCI6MTc3NTQ2NTI0NywiZXhwIjoxOTAxMDQxMjQ3fQ.2VJpfOpCUp_Mr9ot00qH0nhLmIIfUy3Rr5TQ5GOgjbY',
-
-        SYNC_INTERVAL: 60000,   // مزامنة كل دقيقة
-        RETRY_DELAY:   100,     // ms بين كل محاولة
-        MAX_RETRIES:   100      // أقصى عدد محاولات
+        SYNC_INTERVAL: 60000,
+        RETRY_DELAY:   100,
+        MAX_RETRIES:   100
     };
 
     // ══════════════════════════════════════════════
-    //  GLOBAL STATE — متاح لجميع الملفات الأخرى
+    //  GLOBAL STATE
     // ══════════════════════════════════════════════
     let supabase  = null;
     let adminUser = null;
@@ -37,12 +38,17 @@
         syncInterval:   null,
         realtimeChannel: null,
         isLoading:      false,
-        isInitialized:  false
+        isInitialized:  false,
+        errors:         []
     };
 
-    // نُتيح STATE و supabase للملفات الأخرى
+    // ══════════════════════════════════════════════
+    //  EXPOSE STATE (accessible to all files)
+    // ══════════════════════════════════════════════
     window.ADMIN_STATE    = STATE;
     window.supabaseClient = () => supabase;
+    window.getSupabaseClient = () => supabase;
+    window.isSupabaseReady = () => supabase !== null;
 
     // ══════════════════════════════════════════════
     //  DOM HELPERS
@@ -51,7 +57,7 @@
     const $$ = (sel) => document.querySelectorAll(sel);
 
     // ══════════════════════════════════════════════
-    //  SUPABASE INIT — مع Retry Loop مضمون
+    //  SUPABASE INIT — guaranteed with retry loop
     // ══════════════════════════════════════════════
     function initSupabaseClient() {
         return new Promise((resolve, reject) => {
@@ -59,16 +65,12 @@
 
             function tryInit() {
                 attempts++;
-
-                // هل المكتبة محمّلة؟
                 const lib = window.supabase;
 
                 if (lib && typeof lib.createClient === 'function') {
                     try {
                         supabase = lib.createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_ANON_KEY, {
-                            auth: {
-                                persistSession: false   // تجنب مشاكل الـ Session في بيئة الأدمن
-                            }
+                            auth: { persistSession: false }
                         });
                         console.log('✅ Supabase client created');
                         resolve(supabase);
@@ -76,11 +78,9 @@
                         console.error('❌ createClient threw:', e);
                         reject(e);
                     }
-
                 } else if (attempts < CONFIG.MAX_RETRIES) {
-                    console.log(`⏳ Waiting for Supabase... attempt ${attempts}/${CONFIG.MAX_RETRIES}`);
+                    console.log(`⏳ Waiting for Supabase... ${attempts}/${CONFIG.MAX_RETRIES}`);
                     setTimeout(tryInit, CONFIG.RETRY_DELAY);
-
                 } else {
                     reject(new Error('❌ Supabase library not available after max retries'));
                 }
@@ -114,14 +114,22 @@
         return parseInt(num).toLocaleString('ar-IQ');
     }
 
-    function showToast(message) {
+    function showToast(message, type) {
         try {
             const el = $('toast');
-            if (!el) return;
+            if (!el) {
+                console.log('Toast:', message);
+                return;
+            }
             el.textContent = message;
+            el.className = 'toast';
+            // Force reflow
+            void el.offsetWidth;
             el.classList.add('show');
             setTimeout(() => el.classList.remove('show'), 3500);
-        } catch(e) {}
+        } catch(e) {
+            console.log('Toast:', message);
+        }
     }
 
     function updateConnectionStatus(status) {
@@ -142,95 +150,128 @@
     }
 
     // ══════════════════════════════════════════════
-    //  DATA LOADING
+    //  DATA LOADING — handles missing tables gracefully
     // ══════════════════════════════════════════════
     async function loadAllData() {
         if (!supabase) {
             console.error('❌ supabase is null — loadAllData aborted');
             return;
         }
-        if (STATE.isLoading) return;   // منع التحميل المتزامن
+        if (STATE.isLoading) return;
 
         STATE.isLoading = true;
+        STATE.errors = [];
         console.log('📡 Loading data...');
 
         try {
-            // ─── Users ───────────────────────────────
-            const { data: usersData, error: uErr } = await supabase
-                .from('profiles')
-                .select('*')
-                .order('created_at', { ascending: false });
+            // ─── Users (profiles table) ────────────────────────
+            try {
+                const { data: usersData, error: uErr } = await supabase
+                    .from('profiles')
+                    .select('*')
+                    .order('created_at', { ascending: false });
 
-            if (uErr) {
-                console.warn('⚠️ profiles table error:', uErr.message);
-            } else {
-                STATE.users = (usersData || []).map(u => ({
-                    id:          u.id          || '',
-                    username:    u.username    || u.name         || 'Unknown',
-                    phone:       u.phone       || u.phone_number || '',
-                    governorate: u.governorate || u.city         || '',
-                    balance:     u.balance_iqd || u.balance      || 0,
-                    pages:       u.pages_count || u.pages        || 0,
-                    status:      u.status      || 'active',
-                    role:        u.role        || 'user',
-                    created_at:  u.created_at  || ''
-                }));
-                console.log(`✅ Users loaded: ${STATE.users.length}`);
+                if (uErr) {
+                    console.warn('⚠️ profiles table error:', uErr.message);
+                    STATE.errors.push({ table: 'profiles', error: uErr.message });
+                    STATE.users = [];
+                } else {
+                    STATE.users = (usersData || []).map(u => ({
+                        id:          u.id          || '',
+                        username:    u.username    || u.name         || 'Unknown',
+                        phone:       u.phone       || u.phone_number || '',
+                        governorate: u.governorate || u.city         || '',
+                        balance:     u.balance_iqd || u.balance      || 0,
+                        pages:       u.pages_count || u.pages        || 0,
+                        status:      u.status      || 'active',
+                        role:        u.role        || 'user',
+                        created_at:  u.created_at  || ''
+                    }));
+                    console.log(`✅ Users: ${STATE.users.length}`);
+                }
+            } catch (e) {
+                console.warn('⚠️ profiles table failed:', e.message);
+                STATE.errors.push({ table: 'profiles', error: e.message });
+                STATE.users = [];
             }
 
-            // ─── Services ────────────────────────────
-            const { data: svcData, error: sErr } = await supabase
-                .from('services')
-                .select('*')
-                .order('order_index', { ascending: true });
+            // ─── Services ────────────────────────────────────
+            try {
+                const { data: svcData, error: sErr } = await supabase
+                    .from('services')
+                    .select('*')
+                    .order('order_index', { ascending: true });
 
-            if (sErr) {
-                console.warn('⚠️ services table error:', sErr.message);
-            } else {
-                STATE.services = (svcData || []).map(s => ({
-                    id:          s.id          || '',
-                    name:        s.name        || 'خدمة',
-                    icon:        s.icon        || '📄',
-                    price:       s.price       || 0,
-                    currency:    s.currency    || 'IQD',
-                    status:      s.status      || 'active',
-                    description: s.description || ''
-                }));
-                console.log(`✅ Services loaded: ${STATE.services.length}`);
+                if (sErr) {
+                    console.warn('⚠️ services table error:', sErr.message);
+                    STATE.errors.push({ table: 'services', error: sErr.message });
+                    STATE.services = [];
+                } else {
+                    STATE.services = (svcData || []).map(s => ({
+                        id:          s.id          || '',
+                        name:        s.name        || 'خدمة',
+                        icon:        s.icon        || '📄',
+                        price:       s.price       || 0,
+                        currency:    s.currency    || 'IQD',
+                        status:      s.status      || 'active',
+                        description: s.description || ''
+                    }));
+                    console.log(`✅ Services: ${STATE.services.length}`);
+                }
+            } catch (e) {
+                console.warn('⚠️ services table failed:', e.message);
+                STATE.errors.push({ table: 'services', error: e.message });
+                STATE.services = [];
             }
 
-            // ─── Orders ──────────────────────────────
-            const { data: ordData, error: oErr } = await supabase
-                .from('orders')
-                .select('*')
-                .order('created_at', { ascending: false })
-                .limit(100);
+            // ─── Orders ───────────────────────────────────────
+            try {
+                const { data: ordData, error: oErr } = await supabase
+                    .from('orders')
+                    .select('*')
+                    .order('created_at', { ascending: false })
+                    .limit(100);
 
-            if (oErr) {
-                console.warn('⚠️ orders table error:', oErr.message);
-            } else {
-                STATE.orders = ordData || [];
-                console.log(`✅ Orders loaded: ${STATE.orders.length}`);
+                if (oErr) {
+                    console.warn('⚠️ orders table error:', oErr.message);
+                    STATE.errors.push({ table: 'orders', error: oErr.message });
+                    STATE.orders = [];
+                } else {
+                    STATE.orders = ordData || [];
+                    console.log(`✅ Orders: ${STATE.orders.length}`);
+                }
+            } catch (e) {
+                console.warn('⚠️ orders table failed:', e.message);
+                STATE.errors.push({ table: 'orders', error: e.message });
+                STATE.orders = [];
             }
 
-            // ─── Ads ─────────────────────────────────
-            const { data: adsData, error: aErr } = await supabase
-                .from('ads')
-                .select('*')
-                .order('created_at', { ascending: false })
-                .limit(20);
+            // ─── Ads ──────────────────────────────────────────
+            try {
+                const { data: adsData, error: aErr } = await supabase
+                    .from('ads')
+                    .select('*')
+                    .order('created_at', { ascending: false })
+                    .limit(20);
 
-            if (aErr) {
-                console.warn('⚠️ ads table error:', aErr.message);
-            } else {
-                STATE.ads = adsData || [];
-                console.log(`✅ Ads loaded: ${STATE.ads.length}`);
+                if (aErr) {
+                    console.warn('⚠️ ads table error:', aErr.message);
+                    STATE.errors.push({ table: 'ads', error: aErr.message });
+                    STATE.ads = [];
+                } else {
+                    STATE.ads = adsData || [];
+                    console.log(`✅ Ads: ${STATE.ads.length}`);
+                }
+            } catch (e) {
+                console.warn('⚠️ ads table failed:', e.message);
+                STATE.errors.push({ table: 'ads', error: e.message });
+                STATE.ads = [];
             }
 
             STATE.isLoading     = false;
             STATE.isInitialized = true;
 
-            // تحديث الواجهة
+            // Update UI
             updateStats();
             renderUsersTable();
             renderServicesGrid();
@@ -238,7 +279,12 @@
             renderAdsGrid();
             populateUserSelects();
 
-            showToast(`📊 ${STATE.users.length} مستخدم | ${STATE.services.length} خدمة`);
+            // Toast summary
+            if (STATE.errors.length > 0) {
+                showToast(`⚠️ ${STATE.errors.length} جدول غير موجود — تم التخطي`);
+            } else {
+                showToast(`📊 ${STATE.users.length} مستخدم | ${STATE.services.length} خدمة`);
+            }
 
         } catch (err) {
             console.error('❌ loadAllData error:', err);
@@ -302,8 +348,8 @@
         }
 
         tbody.innerHTML = STATE.users.map((u, i) => `
-            <tr style="border-bottom:1px solid #222;">
-                <td style="padding:12px;">${i + 1}</td>
+            <tr>
+                <td>${i + 1}</td>
                 <td>${u.username}</td>
                 <td>${u.phone || '-'}</td>
                 <td>${u.governorate || '-'}</td>
@@ -323,17 +369,20 @@
         if (!el) return;
 
         if (!STATE.services.length) {
-            el.innerHTML = '<p style="text-align:center;color:#888;grid-column:1/-1;">لا توجد خدمات</p>';
+            el.innerHTML = '<p style="text-align:center;color:#888;grid-column:1/-1;">لا توجد خدمات — أضف خدمة جديدة</p>';
             return;
         }
 
         el.innerHTML = STATE.services.map(s => `
-            <div style="background:#111;padding:20px;border-radius:15px;border:2px solid #222;text-align:center;">
-                <div style="font-size:40px;">${s.icon}</div>
-                <h3 style="color:var(--admin-gold);margin:10px 0;">${s.name}</h3>
-                <p style="font-size:22px;font-weight:bold;">${formatNumber(s.price)} IQD</p>
-                <button onclick="window.editService('${s.id}')"   style="background:#3498DB;color:white;border:none;padding:8px 15px;border-radius:8px;cursor:pointer;margin:5px;">✏️ تعديل</button>
-                <button onclick="window.deleteService('${s.id}')" style="background:#E74C3C;color:white;border:none;padding:8px 15px;border-radius:8px;cursor:pointer;margin:5px;">🗑️ حذف</button>
+            <div class="service-card">
+                <div class="service-icon-wrapper">${s.icon}</div>
+                <div class="service-title">${s.name}</div>
+                <div class="service-price-tag">${formatNumber(s.price)} <span>IQD</span></div>
+                <div class="service-status-badge ${s.status}">${s.status === 'active' ? '🟢 نشط' : '🔴 متوقف'}</div>
+                <div style="display:flex;gap:10px;margin-top:10px;">
+                    <button onclick="window.editService('${s.id}')"   style="background:#3498DB;color:white;border:none;padding:8px 15px;border-radius:8px;cursor:pointer;">✏️</button>
+                    <button onclick="window.deleteService('${s.id}')" style="background:#E74C3C;color:white;border:none;padding:8px 15px;border-radius:8px;cursor:pointer;">🗑️</button>
+                </div>
             </div>
         `).join('');
     }
@@ -377,10 +426,10 @@
         }
 
         el.innerHTML = STATE.ads.map(ad => `
-            <div style="background:#111;padding:15px;border-radius:10px;text-align:center;">
+            <div style="background:var(--admin-surface);padding:15px;border-radius:10px;text-align:center;">
                 <img src="${ad.image_url || ''}" alt="Ad" style="width:100%;height:150px;object-fit:cover;border-radius:8px;" onerror="this.style.display='none'">
                 <p style="color:var(--admin-gold);margin-top:10px;">${ad.title || 'إعلان'}</p>
-                <button onclick="window.deleteAd('${ad.id}')" style="background:#E74C3C;color:white;border:none;padding:5px 10px;border-radius:5px;cursor:pointer;">🗑️ حذف</button>
+                <button onclick="window.deleteAd('${ad.id}')" style="background:#E74C3C;color:white;border:none;padding:5px 10px;border-radius:5px;cursor:pointer;margin-top:5px;">🗑️ حذف</button>
             </div>
         `).join('');
     }
@@ -437,7 +486,6 @@
         const user = STATE.users.find(u => u.id === id);
         if (!user) return;
         showToast(`✏️ تعديل: ${user.username}`);
-        // يمكنك توسيع هذا بنافذة modal
     }
 
     async function deleteAd(id) {
@@ -688,39 +736,63 @@
     //  MAIN INIT
     // ══════════════════════════════════════════════
     async function init() {
-        console.log('🚀 TECHNO-CONTROL v13 starting...');
+        console.log('🚀 TECHNO-CONTROL v14 starting...');
+        
+        // Hide boot screen if exists
+        const bootScreen = $('bootScreen');
+        
         if (!checkAuth()) return;
         try {
             updateConnectionStatus('connecting');
+            
+            // Initialize Supabase
             await initSupabaseClient();
-            const bs = $('bootScreen');
-            const dc = $('dashboardContainer');
-            if (bs) bs.style.display = 'none';
-            if (dc) dc.style.display = 'block';
+            
+            // Hide boot screen
+            if (bootScreen) bootScreen.style.display = 'none';
+            
+            // Show dashboard
+            const dashboardContainer = $('dashboardContainer');
+            if (dashboardContainer) dashboardContainer.style.display = 'block';
+            
+            // Load data
             await loadAllData();
+            
+            // Setup navigation
             setupNavigation();
+            
+            // Start real-time
             startRealtimeListener();
+            
+            // Start sync
             startDataSync();
+            
+            // Update time
             updateTime();
             setInterval(updateTime, 1000);
+            
             updateConnectionStatus('connected');
             showToast('✅ لوحة التحكم جاهزة');
+            
         } catch (err) {
             console.error('❌ Init error:', err);
             updateConnectionStatus('error');
-            const bs = $('bootScreen');
-            if (bs) {
-                bs.querySelector('p').textContent = '❌ ' + err.message;
-                bs.style.background = '#1a0000';
+            if (bootScreen) {
+                const msgEl = bootScreen.querySelector('p');
+                if (msgEl) msgEl.textContent = '❌ ' + err.message;
+                bootScreen.style.background = '#1a0000';
             }
         }
     }
 
+    // ══════════════════════════════════════════════
+    //  START
+    // ══════════════════════════════════════════════
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', init);
     } else {
         init();
     }
 
-    console.log('✅ admin-core.js v13 FIXED — loaded');
+    console.log('✅ admin-core.js v14 loaded');
 })();

@@ -3,11 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة التحكم - TECHNO CONTROL v13</title>
+    <title>لوحة التحكم - TECHNO CONTROL v14</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="admin.css">
 
+    <!-- ========================================
+         SUPABASE CDN - MUST BE FIRST SCRIPT
+         ======================================== -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.7/dist/umd/supabase.js"></script>
 
     <style>
@@ -15,78 +18,90 @@
             --admin-gold: #D4AF37;
             --admin-black: #0A0A0A;
             --admin-gray: #222;
+            --admin-surface: #111111;
+            --admin-text: #e8e8e8;
         }
-        body { font-family: 'Amiri', serif; background-color: #000; color: #fff; margin: 0; }
+        body { font-family: 'Amiri', serif; background-color: var(--admin-black); color: var(--admin-text); margin: 0; direction: rtl; }
 
-        /* ─── Loading Screen ─── */
+        /* Boot Screen */
         #bootScreen {
-            position: fixed; inset: 0; background: #000;
+            position: fixed; inset: 0; background: var(--admin-black);
             display: flex; flex-direction: column;
             align-items: center; justify-content: center;
             z-index: 99999; gap: 20px;
         }
+        #bootScreen .boot-logo { font-size: 48px; color: var(--admin-gold); animation: pulse 1.5s infinite; }
         #bootScreen h1 { color: var(--admin-gold); font-size: 36px; margin: 0; letter-spacing: 4px; }
-        #bootScreen p  { color: #888; margin: 0; font-size: 14px; }
-        #bootProgress  { width: 300px; height: 4px; background: #222; border-radius: 4px; overflow: hidden; }
-        #bootBar       { height: 100%; background: var(--admin-gold); width: 0%; transition: width 0.3s; }
+        #bootScreen p { color: #888; margin: 0; font-size: 14px; }
+        #bootProgress { width: 300px; height: 4px; background: #222; border-radius: 4px; overflow: hidden; }
+        #bootBar { height: 100%; background: linear-gradient(90deg, var(--admin-gold), #b8960c); width: 0%; transition: width 0.3s; }
+        @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.7; transform: scale(0.95); } }
 
-        /* ─── Layout ─── */
-        .module-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-bottom: 20px; }
+        /* Layout */
+        .module-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin-bottom: 20px; }
         .module-card { background: var(--admin-black); padding: 20px; border-radius: 15px; text-align: center; border: 2px solid var(--admin-gray); transition: 0.3s; cursor: pointer; }
         .module-card:hover { border-color: var(--admin-gold); transform: translateY(-3px); }
-        .module-card .icon  { font-size: 40px; margin-bottom: 10px; }
+        .module-card .icon { font-size: 40px; margin-bottom: 10px; }
         .module-card .value { font-size: 28px; font-weight: bold; color: var(--admin-gold); }
         .module-card .label { color: #888; font-size: 12px; margin-top: 5px; }
 
-        .order-card  { background: var(--admin-black); padding: 15px; border-radius: 10px; margin-bottom: 10px; border: 1px solid #333; }
-        .status-badge { padding: 4px 8px; border-radius: 5px; font-size: 11px; }
-        .status-badge.active   { background: rgba(46,204,113,.2); color: #2ecc71; }
-        .status-badge.inactive { background: rgba(231,76,60,.2);  color: #e74c3c; }
-        .status-badge.pending  { background: rgba(241,196,15,.2); color: #f1c40f; }
+        .order-card { background: var(--admin-surface); padding: 15px; border-radius: 10px; margin-bottom: 10px; border: 1px solid var(--admin-gray); }
+        .status-badge { padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+        .status-badge.active { background: rgba(46,204,113,.15); color: #2ecc71; }
+        .status-badge.inactive { background: rgba(231,76,60,.15); color: #e74c3c; }
+        .status-badge.pending { background: rgba(241,196,15,.15); color: #f1c40f; }
 
-        .connection-status { display: flex; align-items: center; gap: 10px; padding: 10px 15px; background: var(--admin-black); border-radius: 20px; font-size: 12px; }
+        .connection-status { display: flex; align-items: center; gap: 10px; padding: 10px 15px; background: var(--admin-surface); border-radius: 20px; font-size: 12px; }
 
-        .toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: var(--admin-gold); color: black; padding: 15px 30px; border-radius: 10px; display: none; z-index: 9999; font-weight: bold; }
-        .toast.show { display: block; animation: fadeIn 0.3s; }
-        @keyframes fadeIn { from { opacity:0; bottom:50px; } to { opacity:1; bottom:30px; } }
+        .toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: linear-gradient(135deg, var(--admin-gold), #b8960c); color: #000; padding: 15px 30px; border-radius: 12px; z-index: 9999; font-weight: bold; box-shadow: 0 8px 32px rgba(0,0,0,0.4); opacity: 0; transition: opacity 0.3s; }
+        .toast.show { opacity: 1; }
 
         .section-panel { display: none; padding: 20px; }
         .section-panel.active { display: block; }
 
-        /* ─── Sidebar ─── */
-        .sidebar { width: 250px; background: #0a0a0a; border-left: 1px solid #222; height: 100vh; position: fixed; right: 0; top: 0; overflow-y: auto; }
-        .main-content { margin-right: 250px; padding: 20px; }
-        .nav-item { padding: 12px 20px; cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 10px; color: #ccc; }
-        .nav-item:hover, .nav-item.active { background: #111; color: var(--admin-gold); border-right: 4px solid var(--admin-gold); }
-        .nav-section h3 { font-size: 12px; color: #555; padding: 10px 20px; text-transform: uppercase; }
+        /* Sidebar */
+        .sidebar { width: 240px; background: #0a0a0a; border-left: 3px solid var(--admin-gold); height: 100vh; position: fixed; right: 0; top: 0; overflow-y: auto; z-index: 1000; }
+        .main-content { margin-right: 240px; padding: 20px; }
+        .nav-item { padding: 14px 16px; cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 12px; color: #ccc; border-right: 3px solid transparent; }
+        .nav-item:hover { background: rgba(212,175,55,.1); }
+        .nav-item.active { background: linear-gradient(90deg, #1a1500, #0a0a0a); border-right: 3px solid var(--admin-gold); color: var(--admin-gold); }
+        .nav-section h3 { font-size: 12px; color: var(--admin-gold); padding: 10px 20px; text-transform: uppercase; letter-spacing: 2px; }
 
         @media (max-width: 768px) {
-            .sidebar { transform: translateX(100%); transition: 0.3s; z-index: 1000; }
+            .sidebar { transform: translateX(100%); transition: 0.3s; }
             .sidebar.mobile-open { transform: translateX(0); }
             .main-content { margin-right: 0; }
             .module-grid { grid-template-columns: 1fr 1fr; }
         }
 
-        /* ─── Overlay ─── */
-        #sidebarOverlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.6); z-index:999; }
-        #sidebarOverlay.active { display:block; }
+        @media (max-width: 480px) {
+            .module-grid { grid-template-columns: 1fr; }
+        }
+
+        /* Overlay */
+        #sidebarOverlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.7); z-index: 999; }
+        #sidebarOverlay.active { display: block; }
     </style>
 </head>
 <body>
 
+<!-- Boot Screen -->
 <div id="bootScreen">
-    <h1>⚡ TECHNO CONTROL</h1>
+    <div class="boot-logo">⚡</div>
+    <h1>TECHNO CONTROL</h1>
     <p id="bootStatus">جاري تهيئة النظام...</p>
     <div id="bootProgress"><div id="bootBar"></div></div>
 </div>
 
+<!-- Dashboard Container -->
 <div class="dashboard-container" id="dashboardContainer" style="display:none;">
-    <div id="sidebarOverlay" onclick="window.toggleMobileMenu && toggleMobileMenu()"></div>
+    <div id="sidebarOverlay" onclick="window.toggleMobileMenu && window.toggleMobileMenu()"></div>
 
+    <!-- Sidebar -->
     <nav class="sidebar" id="adminSidebar">
-        <div style="padding:20px;text-align:center;border-bottom:1px solid #222;">
+        <div style="padding:20px;text-align:center;border-bottom:2px solid #222;">
             <h2 style="color:var(--admin-gold);margin:0;">⚡ TECHNO</h2>
-            <span style="font-size:10px;color:#888;">Control Room v13</span>
+            <span style="font-size:10px;color:#888;">Control Room v14</span>
         </div>
 
         <div class="nav-section">
@@ -105,312 +120,473 @@
             <h3>المستخدمين</h3>
             <div class="nav-item" data-section="users"><span>👥</span><span>قاعدة البيانات</span></div>
             <div class="nav-item" data-section="orders"><span>📦</span><span>الطلبات</span></div>
+            <div class="nav-item" data-section="tasks"><span>📋</span><span>المهام</span></div>
             <div class="nav-item" data-section="wallet"><span>💰</span><span>المحفظة</span></div>
             <div class="nav-item" data-section="gifts"><span>🎁</span><span>الإرسال</span></div>
         </div>
 
         <div class="nav-section">
-            <h3>الإعلام</h3>
+            <h3>المحتوى</h3>
+            <div class="nav-item" data-section="design"><span>🎨</span><span>الألوان</span></div>
+            <div class="nav-item" data-section="texts"><span>✏️</span><span>النصوص</span></div>
             <div class="nav-item" data-section="ads"><span>📢</span><span>الإعلانات</span></div>
-            <div class="nav-item" data-section="broadcast"><span>📨</span><span>الإشعارات</span></div>
-            <div class="nav-item" data-section="messages"><span>💬</span><span>الرسائل</span></div>
         </div>
 
         <div class="nav-section">
-            <h3>الإعدادات</h3>
-            <div class="nav-item" data-section="tasks"><span>✅</span><span>المهام</span></div>
-            <div class="nav-item" data-section="design"><span>🎨</span><span>الألوان</span></div>
-            <div class="nav-item" data-section="texts"><span>📝</span><span>النصوص</span></div>
+            <h3>التواصل</h3>
+            <div class="nav-item" data-section="broadcast"><span>📨</span><span>إشعارات عامة</span></div>
+            <div class="nav-item" data-section="messages"><span>💬</span><span>رسائل خاصة</span></div>
         </div>
 
-        <div style="margin-top:20px;padding:20px;">
-            <button class="logout-btn" style="width:100%;padding:10px;background:#c0392b;border:none;color:white;cursor:pointer;border-radius:5px;">🚪 تسجيل الخروج</button>
+        <div class="nav-section" style="padding:20px;">
+            <button class="logout-btn" onclick="window.logout && window.logout()" style="width:100%;padding:12px;background:#E74C3C;color:white;border:none;border-radius:8px;cursor:pointer;font-weight:700;">🚪 تسجيل الخروج</button>
         </div>
     </nav>
 
+    <!-- Main Content -->
     <main class="main-content">
-        <div class="header-bar" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:30px;border-bottom:1px solid #222;padding-bottom:10px;">
+        <!-- Header Bar -->
+        <div class="header-bar" style="display:flex;justify-content:space-between;align-items:center;padding:20px;background:var(--admin-dark);border-radius:15px;margin-bottom:30px;box-shadow:0 4px 20px rgba(0,0,0,0.2);">
             <div style="display:flex;align-items:center;gap:20px;">
-                <button onclick="toggleMobileMenu()" style="display:none;background:none;border:none;color:white;font-size:24px;cursor:pointer;" id="menuBtn">☰</button>
-                <h1 id="sectionTitle" style="margin:0;font-size:24px;">لوحة التحكم</h1>
+                <h1 id="sectionTitle" style="color:var(--admin-gold);margin:0;">لوحة التحكم</h1>
                 <span id="connectionStatus" class="connection-status">🔄 جاري الاتصال...</span>
             </div>
-            <div id="currentTime" style="color:var(--admin-gold);font-weight:bold;"></div>
+            <div style="display:flex;align-items:center;gap:15px;">
+                <span id="currentTime"></span>
+                <span style="color:var(--admin-gold);">👑 مدير النظام</span>
+            </div>
         </div>
 
+        <!-- Dashboard Section -->
         <section id="dashboard" class="section-panel active">
-            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:15px;">
-                <div class="module-card">
-                    <div class="icon">👥</div>
-                    <div class="value" id="totalUsers">0</div>
-                    <div class="label">إجمالي المستخدمين</div>
+            <h2 class="section-title" style="color:var(--admin-gold);font-size:24px;margin-bottom:20px;padding-bottom:15px;border-bottom:2px solid #222;">📊 الإحصائيات العامة</h2>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">👥</div>
+                    <div class="stat-value" id="totalUsers">0</div>
+                    <div class="stat-label">إجمالي المستخدمين</div>
                 </div>
-                <div class="module-card">
-                    <div class="icon">💰</div>
-                    <div class="value" id="totalBalance">0 IQD</div>
-                    <div class="label">إجمالي الأرصدة</div>
+                <div class="stat-card">
+                    <div class="stat-icon">💰</div>
+                    <div class="stat-value" id="totalBalance">0 IQD</div>
+                    <div class="stat-label">إجمالي الأرصدة</div>
                 </div>
-                <div class="module-card">
-                    <div class="icon">📄</div>
-                    <div class="value" id="totalPages">0</div>
-                    <div class="label">إجمالي الصفحات</div>
+                <div class="stat-card">
+                    <div class="stat-icon">📄</div>
+                    <div class="stat-value" id="totalPages">0</div>
+                    <div class="stat-label">إجمالي الصفحات</div>
                 </div>
-                <div class="module-card">
-                    <div class="icon">✅</div>
-                    <div class="value" id="totalActive">0</div>
-                    <div class="label">نشط</div>
+                <div class="stat-card">
+                    <div class="stat-icon">✅</div>
+                    <div class="stat-value" id="totalActive">0</div>
+                    <div class="stat-label">نشط</div>
                 </div>
-                <div class="module-card">
-                    <div class="icon">📦</div>
-                    <div class="value" id="ordersTotal">0</div>
-                    <div class="label">الطلبات</div>
+            </div>
+
+            <h3 style="color:var(--admin-gold);margin:30px 0 20px;">⚡ إجراءات سريعة</h3>
+            <div class="cards-grid">
+                <div class="card" onclick="window.switchSection('users')" style="cursor:pointer;">
+                    <div class="card-icon">👥</div>
+                    <h3>إدارة المستخدمين</h3>
+                    <p>عرض وتعديل بيانات المستخدمين</p>
                 </div>
-                <div class="module-card">
-                    <div class="icon">⏳</div>
-                    <div class="value" id="ordersPending">0</div>
-                    <div class="label">قيد الانتظار</div>
+                <div class="card" onclick="window.switchSection('orders')" style="cursor:pointer;">
+                    <div class="card-icon">📦</div>
+                    <h3>الطلبات</h3>
+                    <p>إدارة طلبات الطباعة</p>
+                </div>
+                <div class="card" onclick="window.switchSection('wallet')" style="cursor:pointer;">
+                    <div class="card-icon">💰</div>
+                    <h3>لوحة المحفظة</h3>
+                    <p>إضافة رصيد ومكافآت</p>
+                </div>
+                <div class="card" onclick="window.switchSection('broadcast')" style="cursor:pointer;">
+                    <div class="card-icon">📨</div>
+                    <h3>إرسال إشعار</h3>
+                    <p>إشعار لجميع المستخدمين</p>
                 </div>
             </div>
         </section>
 
+        <!-- Users Section -->
         <section id="users" class="section-panel">
-            <input type="text" id="userSearch" placeholder="🔍 بحث عن مستخدم..."
-                style="width:100%;padding:12px;background:#111;border:1px solid #333;color:#fff;border-radius:10px;box-sizing:border-box;">
+            <h2 class="section-title">👥 قاعدة بيانات المستخدمين</h2>
+            <input type="text" class="search-box" id="userSearch" placeholder="🔍 بحث بالاسم أو الهاتف أو المحافظة..." style="width:100%;max-width:500px;display:block;padding:12px;border:2px solid var(--admin-gray);border-radius:10px;background:var(--admin-black);color:white;margin-bottom:20px;font-size:16px;">
             <div style="overflow-x:auto;margin-top:20px;">
-                <table style="width:100%;border-collapse:collapse;background:#111;border-radius:10px;overflow:hidden;">
-                    <thead style="background:#222;">
+                <table class="data-table" style="width:100%;border-collapse:collapse;background:var(--admin-dark);border-radius:10px;">
+                    <thead>
                         <tr>
-                            <th style="padding:15px;">#</th>
-                            <th>الاسم</th>
-                            <th>الهاتف</th>
-                            <th>المحافظة</th>
-                            <th>الرصيد</th>
-                            <th>الصفحات</th>
-                            <th>الحالة</th>
-                            <th>إجراءات</th>
+                            <th style="padding:15px;text-align:right;background:var(--admin-black);color:var(--admin-gold);">#</th>
+                            <th style="padding:15px;text-align:right;background:var(--admin-black);color:var(--admin-gold);">الاسم</th>
+                            <th style="padding:15px;text-align:right;background:var(--admin-black);color:var(--admin-gold);">الهاتف</th>
+                            <th style="padding:15px;text-align:right;background:var(--admin-black);color:var(--admin-gold);">المحافظة</th>
+                            <th style="padding:15px;text-align:right;background:var(--admin-black);color:var(--admin-gold);">الأرصدة</th>
+                            <th style="padding:15px;text-align:right;background:var(--admin-black);color:var(--admin-gold);">الصفحات</th>
+                            <th style="padding:15px;text-align:right;background:var(--admin-black);color:var(--admin-gold);">الحالة</th>
+                            <th style="padding:15px;text-align:right;background:var(--admin-black);color:var(--admin-gold);">إجراءات</th>
                         </tr>
                     </thead>
-                    <tbody id="usersTableBody" style="text-align:center;"></tbody>
+                    <tbody id="usersTableBody"></tbody>
                 </table>
             </div>
         </section>
 
-        <section id="services" class="section-panel">
-            <h2>إدارة الخدمات</h2>
-            <div style="background:#111;padding:20px;border-radius:15px;margin-bottom:20px;display:flex;gap:10px;flex-wrap:wrap;">
-                <input id="newServiceName"  placeholder="اسم الخدمة"  style="flex:1;min-width:150px;padding:10px;background:#000;border:1px solid #333;color:#fff;border-radius:8px;">
-                <input id="newServicePrice" placeholder="السعر (IQD)" type="number" style="flex:1;min-width:100px;padding:10px;background:#000;border:1px solid #333;color:#fff;border-radius:8px;">
-                <input id="newServiceIcon"  placeholder="الأيقونة 📄" style="width:80px;padding:10px;background:#000;border:1px solid #333;color:#fff;border-radius:8px;">
-                <button onclick="window.addService()" style="padding:10px 20px;background:var(--admin-gold);border:none;font-weight:bold;border-radius:8px;cursor:pointer;">+ إضافة</button>
-            </div>
-            <div id="servicesGrid" class="module-grid"></div>
-        </section>
-
+        <!-- Orders Section -->
         <section id="orders" class="section-panel">
-            <h2>الطلبات الأخيرة</h2>
-            <div style="background:#111;padding:20px;border-radius:15px;margin-bottom:20px;display:flex;gap:10px;flex-wrap:wrap;">
-                <input id="orderCustomer" placeholder="اسم العميل" style="flex:1;min-width:150px;padding:10px;background:#000;border:1px solid #333;color:#fff;border-radius:8px;">
-                <select id="orderType" style="padding:10px;background:#000;border:1px solid #333;color:#fff;border-radius:8px;">
-                    <option>A4</option><option>A3</option><option>A5</option>
-                </select>
-                <input id="orderPages" type="number" value="1" placeholder="الصفحات" style="width:80px;padding:10px;background:#000;border:1px solid #333;color:#fff;border-radius:8px;">
-                <button onclick="window.addNewOrder()" style="padding:10px 20px;background:var(--admin-gold);border:none;font-weight:bold;border-radius:8px;cursor:pointer;">+ إضافة طلب</button>
+            <h2 class="section-title">📦 إدارة الطلبات</h2>
+            <div class="module-grid">
+                <div class="module-card">
+                    <div class="icon">📋</div>
+                    <div class="value" id="ordersTotal">0</div>
+                    <div class="label">إجمالي الطلبات</div>
+                </div>
+                <div class="module-card">
+                    <div class="icon">⏳</div>
+                    <div class="value" id="ordersPending">0</div>
+                    <div class="label">في الانتظار</div>
+                </div>
+                <div class="module-card">
+                    <div class="icon">✅</div>
+                    <div class="value" id="ordersCompleted">0</div>
+                    <div class="label">مكتمل</div>
+                </div>
+                <div class="module-card">
+                    <div class="icon">💰</div>
+                    <div class="value" id="ordersAmount">0 IQD</div>
+                    <div class="label">إجمالي المبيعات</div>
+                </div>
             </div>
+
+            <div class="card" style="margin-bottom:20px;padding:20px;background:var(--admin-surface);border-radius:15px;border:2px solid var(--admin-gray);">
+                <h3 style="color:var(--admin-gold);">➕ إضافة طلب جديد</h3>
+                <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:15px;margin-top:15px;">
+                    <div class="form-group">
+                        <label style="display:block;margin-bottom:8px;color:var(--admin-gold);font-weight:600;">اسم العميل</label>
+                        <input type="text" id="orderCustomer" placeholder="اسم العميل" style="width:100%;padding:12px;border:2px solid var(--admin-gray);border-radius:10px;background:var(--admin-black);color:white;">
+                    </div>
+                    <div class="form-group">
+                        <label style="display:block;margin-bottom:8px;color:var(--admin-gold);font-weight:600;">نوع الطباعة</label>
+                        <select id="orderType" style="width:100%;padding:12px;border:2px solid var(--admin-gray);border-radius:10px;background:var(--admin-black);color:white;">
+                            <option value="A4">A4 - عادي</option>
+                            <option value="A3">A3 - كبير</option>
+                            <option value="A5">A5 - صغير</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label style="display:block;margin-bottom:8px;color:var(--admin-gold);font-weight:600;">عدد الصفحات</label>
+                        <input type="number" id="orderPages" value="1" style="width:100%;padding:12px;border:2px solid var(--admin-gray);border-radius:10px;background:var(--admin-black);color:white;">
+                    </div>
+                </div>
+                <button onclick="window.addNewOrder && window.addNewOrder()" class="btn btn-gold" style="margin-top:15px;padding:12px 25px;border:none;border-radius:8px;cursor:pointer;font-weight:700;background:var(--admin-gold);color:#000;">➕ إضافة الطلب</button>
+            </div>
+
+            <h3 style="color:var(--admin-gold);margin:30px 0 20px;">📋 قائمة الطلبات</h3>
             <div id="ordersList"></div>
         </section>
 
-        <section id="tasks" class="section-panel">
-            <h2>المهام</h2>
-            <div style="background:#111;padding:20px;border-radius:15px;margin-bottom:20px;display:flex;gap:10px;flex-wrap:wrap;">
-                <input id="newTaskTitle" placeholder="عنوان المهمة" style="flex:1;padding:10px;background:#000;border:1px solid #333;color:#fff;border-radius:8px;">
-                <select id="newTaskPriority" style="padding:10px;background:#000;border:1px solid #333;color:#fff;border-radius:8px;">
-                    <option value="low">منخفض</option>
-                    <option value="medium" selected>متوسط</option>
-                    <option value="high">عالي</option>
-                </select>
-                <button onclick="window.addNewTask()" style="padding:10px 20px;background:var(--admin-gold);border:none;font-weight:bold;border-radius:8px;cursor:pointer;">+ إضافة</button>
-            </div>
-            <div id="tasksList"></div>
-        </section>
-
-        <section id="wallet" class="section-panel">
-            <h2>إدارة المحفظة</h2>
-            <select id="walletUserSelect" style="width:100%;padding:10px;margin-bottom:20px;background:#111;border:1px solid #333;color:#fff;border-radius:8px;"></select>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
-                <div style="background:#111;padding:20px;border-radius:15px;">
-                    <h3>💰 الرصيد</h3>
-                    <div style="display:flex;gap:10px;">
-                        <input type="number" id="balanceAmount" placeholder="المبلغ (IQD)" style="flex:1;padding:10px;background:#000;border:1px solid #333;color:#fff;border-radius:8px;">
+        <!-- Services Section -->
+        <section id="services" class="section-panel">
+            <h2 class="section-title">⚙️ إدارة الخدمات والأسعار</h2>
+            <div class="card" style="margin-bottom:30px;padding:20px;background:var(--admin-surface);border-radius:15px;border:2px solid var(--admin-gray);">
+                <h3 style="color:var(--admin-gold);">➕ إضافة خدمة جديدة</h3>
+                <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:15px;margin-top:15px;">
+                    <div class="form-group">
+                        <label style="display:block;margin-bottom:8px;color:var(--admin-gold);font-weight:600;">اسم الخدمة</label>
+                        <input type="text" id="newServiceName" placeholder="مثال: طباعة A4" style="width:100%;padding:12px;border:2px solid var(--admin-gray);border-radius:10px;background:var(--admin-black);color:white;">
                     </div>
-                    <div style="display:flex;gap:10px;margin-top:10px;">
-                        <button onclick="window.adjustBalance('add')"       style="flex:1;padding:10px;background:#27ae60;border:none;color:white;border-radius:8px;cursor:pointer;">+ إضافة</button>
-                        <button onclick="window.adjustBalance('subtract')" style="flex:1;padding:10px;background:#c0392b;border:none;color:white;border-radius:8px;cursor:pointer;">- خصم</button>
+                    <div class="form-group">
+                        <label style="display:block;margin-bottom:8px;color:var(--admin-gold);font-weight:600;">الأيقونة</label>
+                        <input type="text" id="newServiceIcon" value="📄" style="width:100%;padding:12px;border:2px solid var(--admin-gray);border-radius:10px;background:var(--admin-black);color:white;">
+                    </div>
+                    <div class="form-group">
+                        <label style="display:block;margin-bottom:8px;color:var(--admin-gold);font-weight:600;">السعر (IQD)</label>
+                        <input type="number" id="newServicePrice" placeholder="1000" style="width:100%;padding:12px;border:2px solid var(--admin-gray);border-radius:10px;background:var(--admin-black);color:white;">
                     </div>
                 </div>
-                <div style="background:#111;padding:20px;border-radius:15px;">
-                    <h3>📄 الصفحات</h3>
-                    <div style="display:flex;gap:10px;">
-                        <input type="number" id="pagesAmount" placeholder="عدد الصفحات" style="flex:1;padding:10px;background:#000;border:1px solid #333;color:#fff;border-radius:8px;">
-                    </div>
-                    <div style="display:flex;gap:10px;margin-top:10px;">
-                        <button onclick="window.adjustPages('add')"       style="flex:1;padding:10px;background:#27ae60;border:none;color:white;border-radius:8px;cursor:pointer;">+ إضافة</button>
-                        <button onclick="window.adjustPages('subtract')" style="flex:1;padding:10px;background:#c0392b;border:none;color:white;border-radius:8px;cursor:pointer;">- خصم</button>
-                    </div>
-                </div>
+                <button onclick="window.addService && window.addService()" class="btn btn-gold" style="margin-top:15px;padding:12px 25px;border:none;border-radius:8px;cursor:pointer;font-weight:700;background:var(--admin-gold);color:#000;">➕ إضافة الخدمة</button>
             </div>
+            <h3 style="color:var(--admin-gold);margin:30px 0 20px;">📋 الخدمات الحالية</h3>
+            <div id="servicesGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:20px;"></div>
         </section>
 
-        <section id="gifts" class="section-panel">
-            <h2>إرسال الهدايا والمكافآت</h2>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
-                <div style="background:#111;padding:20px;border-radius:15px;">
-                    <h3>🎁 هدية ترحيبية</h3>
-                    <select id="giftUserSelect" style="width:100%;padding:10px;background:#000;border:1px solid #333;color:#fff;border-radius:8px;margin-bottom:10px;"></select>
-                    <input id="giftBalance" type="number" value="50"  placeholder="رصيد IQD" style="width:100%;padding:10px;background:#000;border:1px solid #333;color:#fff;border-radius:8px;margin-bottom:10px;box-sizing:border-box;">
-                    <input id="giftPages"   type="number" value="100" placeholder="صفحات"    style="width:100%;padding:10px;background:#000;border:1px solid #333;color:#fff;border-radius:8px;margin-bottom:10px;box-sizing:border-box;">
-                    <button onclick="window.sendWelcomeGift()" style="width:100%;padding:10px;background:var(--admin-gold);border:none;font-weight:bold;border-radius:8px;cursor:pointer;">🎁 إرسال الهدية</button>
-                </div>
-                <div style="background:#111;padding:20px;border-radius:15px;">
-                    <h3>⭐ مكافأة</h3>
-                    <select id="rewardUserSelect" style="width:100%;padding:10px;background:#000;border:1px solid #333;color:#fff;border-radius:8px;margin-bottom:10px;"></select>
-                    <input id="rewardBalance" type="number" value="100" placeholder="رصيد IQD" style="width:100%;padding:10px;background:#000;border:1px solid #333;color:#fff;border-radius:8px;margin-bottom:10px;box-sizing:border-box;">
-                    <input id="rewardPages"   type="number" value="200" placeholder="صفحات"    style="width:100%;padding:10px;background:#000;border:1px solid #333;color:#fff;border-radius:8px;margin-bottom:10px;box-sizing:border-box;">
-                    <button onclick="window.sendReward()" style="width:100%;padding:10px;background:#8e44ad;border:none;color:white;font-weight:bold;border-radius:8px;cursor:pointer;">⭐ إرسال المكافأة</button>
-                </div>
-            </div>
-        </section>
-
-        <section id="ads" class="section-panel">
-            <h2>الإعلانات</h2>
-            <div id="adsGrid" class="module-grid"></div>
-        </section>
-
-        <section id="broadcast" class="section-panel">
-            <h2>إرسال إشعار للجميع</h2>
-            <div style="background:#111;padding:20px;border-radius:15px;max-width:600px;">
-                <input id="broadcastTitle" placeholder="عنوان الإشعار" style="width:100%;padding:10px;background:#000;border:1px solid #333;color:#fff;border-radius:8px;margin-bottom:10px;box-sizing:border-box;">
-                <textarea id="broadcastMessage" placeholder="محتوى الإشعار..." rows="4" style="width:100%;padding:10px;background:#000;border:1px solid #333;color:#fff;border-radius:8px;margin-bottom:10px;box-sizing:border-box;resize:vertical;"></textarea>
-                <select id="broadcastType" style="width:100%;padding:10px;background:#000;border:1px solid #333;color:#fff;border-radius:8px;margin-bottom:10px;">
-                    <option value="info">معلومات</option>
-                    <option value="success">نجاح</option>
-                    <option value="warning">تحذير</option>
-                </select>
-                <button onclick="window.sendBroadcast()" style="width:100%;padding:12px;background:var(--admin-gold);border:none;font-weight:bold;border-radius:8px;cursor:pointer;">📨 إرسال للجميع</button>
-            </div>
-        </section>
-
-        <section id="messages" class="section-panel">
-            <h2>رسالة خاصة</h2>
-            <div style="background:#111;padding:20px;border-radius:15px;max-width:600px;">
-                <select id="messageRecipient" style="width:100%;padding:10px;background:#000;border:1px solid #333;color:#fff;border-radius:8px;margin-bottom:10px;"></select>
-                <input id="messageSubject" placeholder="الموضوع" style="width:100%;padding:10px;background:#000;border:1px solid #333;color:#fff;border-radius:8px;margin-bottom:10px;box-sizing:border-box;">
-                <textarea id="messageContent" placeholder="محتوى الرسالة..." rows="4" style="width:100%;padding:10px;background:#000;border:1px solid #333;color:#fff;border-radius:8px;margin-bottom:10px;box-sizing:border-box;resize:vertical;"></textarea>
-                <button onclick="window.sendPrivateMessage()" style="width:100%;padding:12px;background:#2980b9;border:none;color:white;font-weight:bold;border-radius:8px;cursor:pointer;">💬 إرسال الرسالة</button>
-            </div>
-        </section>
-
+        <!-- Radar Section -->
         <section id="radar" class="section-panel">
-            <h2>رادار المستخدمين</h2>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
-                <div class="module-card"><div class="icon">👥</div><div class="value" id="radarTotal">0</div><div class="label">إجمالي المستخدمين</div></div>
-                <div class="module-card"><div class="icon">🟢</div><div class="value" id="radarActive">0</div><div class="label">المستخدمون النشطون</div></div>
+            <h2 class="section-title">📡 رادار المستخدمين</h2>
+            <div class="module-grid">
+                <div class="module-card">
+                    <div class="icon">👥</div>
+                    <div class="value" id="radarTotal">0</div>
+                    <div class="label">إجمالي المستخدمين</div>
+                </div>
+                <div class="module-card">
+                    <div class="icon">🟢</div>
+                    <div class="value" id="radarActive">0</div>
+                    <div class="label">نشطون</div>
+                </div>
+                <div class="module-card">
+                    <div class="icon">🆕</div>
+                    <div class="value" id="radarNewToday">0</div>
+                    <div class="label">مسجلين اليوم</div>
+                </div>
+                <div class="module-card">
+                    <div class="icon">📍</div>
+                    <div class="value" id="radarActiveNow">0</div>
+                    <div class="label">متصلون حالياً</div>
+                </div>
             </div>
         </section>
 
+        <!-- Printing Section -->
         <section id="printing" class="section-panel">
-            <h2>وحدة الطباعة</h2>
-            <p style="color:#888;">قيد التطوير...</p>
+            <h2 class="section-title">🖨️ وحدة الطباعة - A3/A4/A5/A6</h2>
+            <div class="module-grid">
+                <div class="module-card"><div class="icon">📋</div><div class="value" id="printTotal">0</div><div class="label">إجمالي المهام</div></div>
+                <div class="module-card"><div class="icon">⏳</div><div class="value" id="printPending">0</div><div class="label">في الانتظار</div></div>
+                <div class="module-card"><div class="icon">🖨️</div><div class="value" id="printPrinting">0</div><div class="label">جاري الطباعة</div></div>
+                <div class="module-card"><div class="icon">✅</div><div class="value" id="printCompleted">0</div><div class="label">مكتمل</div></div>
+            </div>
+            <h3 style="color:var(--admin-gold);margin:30px 0 20px;">🖨️ قائمة مهام الطباعة</h3>
+            <div id="printingJobsList"></div>
         </section>
 
+        <!-- Wallet Section -->
+        <section id="wallet" class="section-panel">
+            <h2 class="section-title">💰 التحكم بالمحفظة</h2>
+            <div class="form-group">
+                <label style="display:block;margin-bottom:8px;color:var(--admin-gold);font-weight:600;">اختر المستخدم</label>
+                <select id="walletUserSelect" style="width:100%;padding:12px;border:2px solid var(--admin-gray);border-radius:10px;background:var(--admin-black);color:white;">
+                    <option value="">-- اختر مستخدم --</option>
+                </select>
+            </div>
+            <div class="form-group" style="margin-top:20px;">
+                <label style="display:block;margin-bottom:8px;color:var(--admin-gold);font-weight:600;">إضافة/خصم رصيد</label>
+                <div style="display:flex;gap:10px;margin-top:10px;">
+                    <input type="number" id="balanceAmount" placeholder="المبلغ" style="flex:1;padding:12px;border:2px solid var(--admin-gray);border-radius:10px;background:var(--admin-black);color:white;">
+                    <button class="btn btn-green" onclick="window.adjustBalance && window.adjustBalance('add')" style="padding:12px 20px;border:none;border-radius:8px;cursor:pointer;font-weight:700;background:#2ECC71;color:white;">+ إضافة</button>
+                    <button class="btn btn-red" onclick="window.adjustBalance && window.adjustBalance('subtract')" style="padding:12px 20px;border:none;border-radius:8px;cursor:pointer;font-weight:700;background:#c0392b;color:white;">- خصم</button>
+                </div>
+            </div>
+            <div class="form-group" style="margin-top:20px;">
+                <label style="display:block;margin-bottom:8px;color:var(--admin-gold);font-weight:600;">إضافة/خصم صفحات</label>
+                <div style="display:flex;gap:10px;margin-top:10px;">
+                    <input type="number" id="pagesAmount" placeholder="عدد الصفحات" style="flex:1;padding:12px;border:2px solid var(--admin-gray);border-radius:10px;background:var(--admin-black);color:white;">
+                    <button class="btn btn-green" onclick="window.adjustPages && window.adjustPages('add')" style="padding:12px 20px;border:none;border-radius:8px;cursor:pointer;font-weight:700;background:#2ECC71;color:white;">+ إضافة</button>
+                    <button class="btn btn-red" onclick="window.adjustPages && window.adjustPages('subtract')" style="padding:12px 20px;border:none;border-radius:8px;cursor:pointer;font-weight:700;background:#c0392b;color:white;">- خصم</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Gifts Section -->
+        <section id="gifts" class="section-panel">
+            <h2 class="section-title">🎁 إرسال الهدايا والمكافآت</h2>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px;">
+                <div class="card" style="padding:20px;background:var(--admin-surface);border-radius:15px;border:2px solid var(--admin-gray);">
+                    <h3 style="color:var(--admin-gold);">🎁 هدية ترحيبية</h3>
+                    <div class="form-group" style="margin-top:15px;">
+                        <select id="giftUserSelect" style="width:100%;padding:12px;border:2px solid var(--admin-gray);border-radius:10px;background:var(--admin-black);color:white;"><option value="">-- اختر مستخدم --</option></select>
+                    </div>
+                    <div class="form-group">
+                        <input type="number" id="giftBalance" value="50" placeholder="قيمة الرصيد" style="width:100%;padding:12px;border:2px solid var(--admin-gray);border-radius:10px;background:var(--admin-black);color:white;">
+                    </div>
+                    <div class="form-group">
+                        <input type="number" id="giftPages" value="100" placeholder="عدد الصفحات" style="width:100%;padding:12px;border:2px solid var(--admin-gray);border-radius:10px;background:var(--admin-black);color:white;">
+                    </div>
+                    <button onclick="window.sendWelcomeGift && window.sendWelcomeGift()" class="btn btn-gold" style="width:100%;padding:12px;border:none;border-radius:8px;cursor:pointer;font-weight:700;background:var(--admin-gold);color:#000;">🎁 إرسال هدية ترحيبية</button>
+                </div>
+                <div class="card" style="padding:20px;background:var(--admin-surface);border-radius:15px;border:2px solid var(--admin-gray);">
+                    <h3 style="color:var(--admin-gold);">⭐ مكافأة خاصة</h3>
+                    <div class="form-group" style="margin-top:15px;">
+                        <select id="rewardUserSelect" style="width:100%;padding:12px;border:2px solid var(--admin-gray);border-radius:10px;background:var(--admin-black);color:white;"><option value="">-- اختر مستخدم --</option></select>
+                    </div>
+                    <div class="form-group">
+                        <input type="number" id="rewardBalance" value="100" placeholder="قيمة الرصيد" style="width:100%;padding:12px;border:2px solid var(--admin-gray);border-radius:10px;background:var(--admin-black);color:white;">
+                    </div>
+                    <div class="form-group">
+                        <input type="number" id="rewardPages" value="200" placeholder="عدد الصفحات" style="width:100%;padding:12px;border:2px solid var(--admin-gray);border-radius:10px;background:var(--admin-black);color:white;">
+                    </div>
+                    <button onclick="window.sendReward && window.sendReward()" class="btn btn-green" style="width:100%;padding:12px;border:none;border-radius:8px;cursor:pointer;font-weight:700;background:#2ECC71;color:white;">⭐ إرسال مكافأة</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Design Section -->
         <section id="design" class="section-panel">
-            <h2>إعدادات الألوان</h2>
-            <p style="color:#888;">قيد التطوير...</p>
+            <h2 class="section-title">🎨 تصميم التطبيق - الألوان</h2>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px;">
+                <div class="card" style="padding:20px;background:var(--admin-surface);border-radius:15px;border:2px solid var(--admin-gray);">
+                    <h3 style="color:var(--admin-gold);">اللون الذهبي الرئيسي</h3>
+                    <div style="display:flex;align-items:center;gap:15px;margin:15px 0;">
+                        <input type="color" id="mainGoldColor" value="#D4AF37" style="width:60px;height:60px;border:none;cursor:pointer;">
+                        <div><p>القيمة: <span id="mainGoldValue">#D4AF37</span></p><small style="color:#888;">يستخدم في العناوين والأزرار</small></div>
+                    </div>
+                    <button class="btn btn-gold" onclick="window.saveColor && window.saveColor('mainGold')" style="padding:12px 25px;border:none;border-radius:8px;cursor:pointer;font-weight:700;background:var(--admin-gold);color:#000;">💾 حفظ اللون</button>
+                </div>
+            </div>
         </section>
 
-        <section id="texts" class="section-panel">
-            <h2>إدارة النصوص</h2>
-            <p style="color:#888;">قيد التطوير...</p>
+        <!-- Ads Section -->
+        <section id="ads" class="section-panel">
+            <h2 class="section-title">📢 إدارة إعلانات السلايدر</h2>
+            <div class="upload-zone" style="border:3px dashed var(--admin-gray);padding:40px;text-align:center;cursor:pointer;margin-bottom:20px;" onclick="document.getElementById('adUpload').click()">
+                <div style="font-size:60px;">📁</div>
+                <p style="color:#888;margin-top:10px;">انقر أو اسحب صور الإعلانات هنا</p>
+                <small style="color:#666;">PNG, JPG حتى 10MB</small>
+            </div>
+            <input type="file" id="adUpload" accept="image/*" multiple style="display:none;">
+            <div id="adsGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:15px;"></div>
         </section>
 
+        <!-- Broadcast Section -->
+        <section id="broadcast" class="section-panel">
+            <h2 class="section-title">📨 إشعارات عامة</h2>
+            <div class="card" style="padding:20px;background:var(--admin-surface);border-radius:15px;border:2px solid var(--admin-gray);">
+                <div class="form-group">
+                    <label style="display:block;margin-bottom:8px;color:var(--admin-gold);font-weight:600;">عنوان الإشعار</label>
+                    <input type="text" id="broadcastTitle" placeholder="عنوان الإشعار" style="width:100%;padding:12px;border:2px solid var(--admin-gray);border-radius:10px;background:var(--admin-black);color:white;">
+                </div>
+                <div class="form-group">
+                    <label style="display:block;margin-bottom:8px;color:var(--admin-gold);font-weight:600;">محتوى الإشعار</label>
+                    <textarea id="broadcastMessage" placeholder="اكتب محتوى الإشعار هنا..." style="width:100%;padding:12px;border:2px solid var(--admin-gray);border-radius:10px;background:var(--admin-black);color:white;min-height:100px;resize:vertical;"></textarea>
+                </div>
+                <div class="form-group">
+                    <label style="display:block;margin-bottom:8px;color:var(--admin-gold);font-weight:600;">نوع الإشعار</label>
+                    <select id="broadcastType" style="width:100%;padding:12px;border:2px solid var(--admin-gray);border-radius:10px;background:var(--admin-black);color:white;">
+                        <option value="info">ℹ️ معلومات</option>
+                        <option value="success">✅ نجاح</option>
+                        <option value="warning">⚠️ تحذير</option>
+                        <option value="urgent">🚨 عاجل</option>
+                    </select>
+                </div>
+                <button onclick="window.sendBroadcast && window.sendBroadcast()" class="btn btn-gold" style="margin-top:20px;width:100%;padding:12px;border:none;border-radius:8px;cursor:pointer;font-weight:700;background:var(--admin-gold);color:#000;">📨 إرسال للجميع</button>
+            </div>
+        </section>
+
+        <!-- Messages Section -->
+        <section id="messages" class="section-panel">
+            <h2 class="section-title">💬 رسائل خاصة</h2>
+            <div class="card" style="padding:20px;background:var(--admin-surface);border-radius:15px;border:2px solid var(--admin-gray);">
+                <div class="form-group">
+                    <label style="display:block;margin-bottom:8px;color:var(--admin-gold);font-weight:600;">اختر المستلم</label>
+                    <select id="messageRecipient" style="width:100%;padding:12px;border:2px solid var(--admin-gray);border-radius:10px;background:var(--admin-black);color:white;"><option value="">-- اختر مستخدم --</option></select>
+                </div>
+                <div class="form-group">
+                    <label style="display:block;margin-bottom:8px;color:var(--admin-gold);font-weight:600;">الموضوع</label>
+                    <input type="text" id="messageSubject" placeholder="موضوع الرسالة" style="width:100%;padding:12px;border:2px solid var(--admin-gray);border-radius:10px;background:var(--admin-black);color:white;">
+                </div>
+                <div class="form-group">
+                    <label style="display:block;margin-bottom:8px;color:var(--admin-gold);font-weight:600;">المحتوى</label>
+                    <textarea id="messageContent" placeholder="اكتب رسالتك هنا..." style="width:100%;padding:12px;border:2px solid var(--admin-gray);border-radius:10px;background:var(--admin-black);color:white;min-height:100px;resize:vertical;"></textarea>
+                </div>
+                <button onclick="window.sendPrivateMessage && window.sendPrivateMessage()" class="btn btn-blue" style="margin-top:20px;width:100%;padding:12px;border:none;border-radius:8px;cursor:pointer;font-weight:700;background:#3498DB;color:white;">💬 إرسال الرسالة</button>
+            </div>
+        </section>
     </main>
 </div>
 
+<!-- Toast Notification -->
 <div class="toast" id="toast"></div>
 
+<!-- Mobile Menu Button -->
+<button class="mobile-menu-btn" id="mobileMenuBtn" onclick="window.toggleMobileMenu && window.toggleMobileMenu()" style="display:none;position:fixed;top:15px;right:15px;z-index:1002;width:50px;height:50px;background:var(--admin-gold);border:none;border-radius:10px;cursor:pointer;font-size:24px;">☰</button>
+
+<!-- Boot Script -->
 <script>
 (function() {
     'use strict';
 
-    var bootBar    = document.getElementById('bootBar');
-    var bootStatus = document.getElementById('bootStatus');
+    var BOOT_SCRIPTS = [
+        'admin-core.js'
+    ];
 
-    function setProgress(pct, msg) {
-        if (bootBar)    bootBar.style.width = pct + '%';
-        if (bootStatus) bootStatus.textContent = msg;
+    var OPTIONAL_SCRIPTS = [
+        'admin-users.js',
+        'admin-orders.js',
+        'admin-wallet.js',
+        'admin-services.js',
+        'admin-settings.js'
+    ];
+
+    var MAX_WAIT_SUPABASE = 200; // 200 * 50ms = 10 seconds
+    var waitCount = 0;
+
+    function setProgress(percent, text) {
+        try {
+            var bar = document.getElementById('bootBar');
+            var status = document.getElementById('bootStatus');
+            if (bar) bar.style.width = percent + '%';
+            if (status) status.textContent = text;
+        } catch(e) {}
     }
 
     function loadScript(src) {
         return new Promise(function(resolve, reject) {
-            var s = document.createElement('script');
-            // إضافة التوقيت لمنع الكاش لضمان تحميل آخر تعديلاتك الـ 800 سطر
-            s.src = src + '?v=' + Date.now();
-            s.onload  = resolve;
-            s.onerror = function() { reject(new Error('Failed to load: ' + src)); };
-            document.body.appendChild(s);
+            var script = document.createElement('script');
+            script.src = src;
+            script.onload = function() { resolve(src); };
+            script.onerror = function() { reject(new Error('Failed: ' + src)); };
+            document.body.appendChild(script);
         });
     }
 
-    function waitForSupabase(maxWait) {
-        maxWait = maxWait || 10000;
-        var start = Date.now();
-        return new Promise(function(resolve, reject) {
-            (function check() {
-                if (window.supabase && typeof window.supabase.createClient === 'function') {
-                    resolve();
-                } else if (Date.now() - start > maxWait) {
-                    reject(new Error('Supabase timeout'));
-                } else {
-                    setTimeout(check, 50);
-                }
-            })();
-        });
+    function waitForSupabase(callback) {
+        waitCount++;
+        if (window.supabase && typeof window.supabase.createClient === 'function') {
+            console.log('✅ Supabase library ready after ' + waitCount + ' attempts');
+            callback();
+        } else if (waitCount < MAX_WAIT_SUPABASE) {
+            setTimeout(function() { waitForSupabase(callback); }, 50);
+        } else {
+            console.error('❌ Supabase CDN failed to load after max retries');
+            setProgress(100, '❌ فشل في تحميل Supabase');
+            callback(); // Continue anyway
+        }
     }
 
     async function boot() {
         try {
-            setProgress(10, 'انتظار مكتبة Supabase...');
-            await waitForSupabase(8000);
-            setProgress(30, 'Supabase جاهز ✅');
+            setProgress(10, 'جاري تحميل Supabase...');
 
-            setProgress(50, 'تحميل النواة الرئيسية (admin-core.js)...');
-            // تحميل ملفك الـ 800 سطر
-            await loadScript('./admin-core.js');
-            
-            // تحميل باقي الملفات الأصلية بالترتيب الصحيح
-            var optional = [
-                './admin-users.js',
-                './admin-services.js',
-                './admin-orders.js',
-                './admin-wallet.js',
-                './admin-settings.js'
-            ];
+            // Wait for Supabase library
+            await new Promise(function(resolve) {
+                waitForSupabase(resolve);
+            });
 
-            for (var i = 0; i < optional.length; i++) {
+            setProgress(30, 'جاري تحميل النواة...');
+
+            // Load main scripts
+            for (var i = 0; i < BOOT_SCRIPTS.length; i++) {
                 try {
-                    setProgress(70 + Math.round((i / optional.length) * 20), 'تحميل: ' + optional[i]);
-                    await loadScript(optional[i]);
+                    setProgress(30 + Math.round((i / BOOT_SCRIPTS.length) * 40), 'تحميل: ' + BOOT_SCRIPTS[i]);
+                    await loadScript(BOOT_SCRIPTS[i]);
                 } catch(e) {
-                    console.warn('ملف غير موجود أو به خطأ، جاري التخطي:', optional[i]);
+                    console.error('Core script error:', e);
                 }
             }
 
-            setProgress(100, 'النظام جاهز! ✅');
+            setProgress(80, 'جاري تحميل الوحدات الإضافية...');
+
+            // Load optional scripts (skip if not found)
+            for (var j = 0; j < OPTIONAL_SCRIPTS.length; j++) {
+                try {
+                    await loadScript(OPTIONAL_SCRIPTS[j]);
+                } catch(e) {
+                    console.warn('Optional script skipped:', OPTIONAL_SCRIPTS[j]);
+                }
+            }
+
+            setProgress(95, 'النظام جاهز! ✅');
+
+            // Hide boot screen, show dashboard
             setTimeout(function() {
                 var bs = document.getElementById('bootScreen');
-                if (bs) bs.style.display = 'none';
                 var dc = document.getElementById('dashboardContainer');
+                if (bs) bs.style.display = 'none';
                 if (dc) dc.style.display = 'block';
-            }, 800);
+
+                // Show mobile menu button
+                var mbtn = document.getElementById('mobileMenuBtn');
+                if (mbtn) mbtn.style.display = 'flex';
+            }, 500);
 
         } catch (err) {
             console.error('Boot error:', err);
