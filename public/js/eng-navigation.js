@@ -10,6 +10,17 @@ const Nav = {
         var target = document.getElementById(page + 'Section');
         if (target) target.style.display = 'block';
         document.querySelectorAll('.nav-btn').forEach(function(b) { b.classList.remove('active'); });
+        
+        // Student portal live data
+        if (page === 'student') {
+            var user = window.Auth && Auth.isLoggedIn();
+            if (!user) {
+                var modal = document.getElementById('loginModal');
+                if (modal) modal.style.display = 'flex';
+                return;
+            }
+            if (window.StudentPortal) StudentPortal.load();
+        }
     }
 };
 window.Nav = Nav;

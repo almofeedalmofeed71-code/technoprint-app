@@ -1,0 +1,183 @@
+/* TECHOPRINT - Shared Core Base Styles
+ * Arabic Fonts: Amiri for headings, Naskh for body text
+ * CMYK Ready Output Styles
+ * Version: 2.0.0 */
+
+@import url('https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Noto+Naskh+Arabic:wght@400;600;700&display=swap');
+
+:root {
+    /* Arabic Typography */
+    --font-arabic-heading: 'Amiri', serif;
+    --font-arabic-body: 'Noto Naskh Arabic', serif;
+    
+    /* CMYK Color Palette */
+    --cmyk-c: 0%;
+    --cmyk-m: 100%;
+    --cmyk-y: 100%;
+    --cmyk-k: 0%;
+    
+    /* CMYK Hex Fallback */
+    --color-cyan: #00B4D8;
+    --color-magenta: #E10098;
+    --color-yellow: #FFD60A;
+    --color-black: #000000;
+    
+    /* Shared Colors */
+    --primary: #1A1A2E;
+    --secondary: #16213E;
+    --accent: #0F3460;
+    --gold: #D4AF37;
+    --surface: #FFFFFF;
+    --text-primary: #1A1A2E;
+    --text-secondary: #4A4A68;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    direction: rtl;
+    font-family: var(--font-arabic-body);
+}
+
+/* Arabic Typography Classes */
+.arabic-heading {
+    font-family: var(--font-arabic-heading);
+    font-weight: 700;
+    letter-spacing: 0;
+}
+
+.arabic-body {
+    font-family: var(--font-arabic-body);
+    font-weight: 400;
+    line-height: 1.8;
+}
+
+/* CMYK Ready Print Container */
+.print-cmyk {
+    color-profile: CMYK;
+    bleed: 3mm;
+    crop-marks: true;
+}
+
+.print-ready {
+    /* Ensure colors are CMYK safe */
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+}
+
+/* Portal Container */
+.portal-container {
+    min-height: 100vh;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    color: var(--surface);
+}
+
+.portal-container.arabic {
+    font-family: var(--font-arabic-body);
+}
+
+/* Card Component */
+.portal-card {
+    background: var(--surface);
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.portal-card:hover {
+    transform: translateY(-4px);
+}
+
+.portal-card.arabic-heading {
+    font-family: var(--font-arabic-heading);
+}
+
+/* Button Styles */
+.portal-btn {
+    background: linear-gradient(135deg, var(--accent), var(--primary));
+    color: var(--surface);
+    border: none;
+    padding: 12px 32px;
+    border-radius: 8px;
+    font-family: var(--font-arabic-body);
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.portal-btn:hover {
+    background: linear-gradient(135deg, var(--gold), var(--accent));
+    transform: scale(1.02);
+}
+
+/* Form Inputs */
+.portal-input {
+    background: var(--surface);
+    border: 2px solid var(--accent);
+    border-radius: 8px;
+    padding: 12px 16px;
+    font-family: var(--font-arabic-body);
+    font-size: 16px;
+    color: var(--text-primary);
+    width: 100%;
+    transition: border-color 0.3s ease;
+}
+
+.portal-input:focus {
+    outline: none;
+    border-color: var(--gold);
+}
+
+/* Grid Layout */
+.portal-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 24px;
+    padding: 24px;
+}
+
+/* Navigation */
+.portal-nav {
+    background: var(--primary);
+    padding: 16px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.portal-nav-link {
+    color: var(--surface);
+    text-decoration: none;
+    font-family: var(--font-arabic-body);
+    padding: 8px 16px;
+    border-radius: 8px;
+    transition: background 0.3s ease;
+}
+
+.portal-nav-link:hover {
+    background: var(--accent);
+}
+
+/* Print Styles */
+@media print {
+    .no-print {
+        display: none !important;
+    }
+    
+    .print-cmyk {
+        color-profile: CMYK;
+    }
+    
+    .portal-container {
+        background: white;
+        color: black;
+    }
+}

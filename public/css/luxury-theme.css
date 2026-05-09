@@ -1,0 +1,557 @@
+/* ═══════════════════════════════════════
+   TECHNO-PRINT — LUXURY THEME v3
+   ═══════════════════════════════════════ */
+
+/* ── CSS Variables ── */
+:root {
+  --gold:          #D4AF37;
+  --gold-light:    #F0D060;
+  --gold-dark:     #A88B1E;
+  --gold-glow:     rgba(212, 175, 55, 0.25);
+  --black:         #000000;
+  --surface-1:     #0A0A0A;
+  --surface-2:     #111111;
+  --surface-3:     #1A1A1A;
+  --surface-4:     #222222;
+  --border:        rgba(212, 175, 55, 0.15);
+  --border-strong: rgba(212, 175, 55, 0.40);
+  --text-primary:  #F0EDE6;
+  --text-secondary:#A09880;
+  --text-muted:    #5A5040;
+  --success:       #22C55E;
+  --danger:        #EF4444;
+  --warning:       #F59E0B;
+  --info:          #3B82F6;
+  --radius-sm:     8px;
+  --radius-md:     14px;
+  --radius-lg:     20px;
+  --radius-xl:     28px;
+  --blur:          blur(20px);
+  --shadow-gold:   0 8px 32px rgba(212, 175, 55, 0.15);
+  --shadow-deep:   0 20px 60px rgba(0, 0, 0, 0.6);
+  --transition:    all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ── Global Reset ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Readex Pro', 'Tajawal', sans-serif;
+  background: var(--black);
+  color: var(--text-primary);
+  direction: rtl;
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* ── Typography ── */
+h1, h2, h3 { font-family: 'Tajawal', sans-serif; font-weight: 700; letter-spacing: -0.02em; }
+h1 { font-size: clamp(1.6rem, 4vw, 2.4rem); color: var(--gold); }
+h2 { font-size: clamp(1.2rem, 3vw, 1.8rem); color: var(--text-primary); }
+h3 { font-size: clamp(1rem, 2.5vw, 1.3rem); color: var(--gold); }
+p  { font-size: 0.95rem; color: var(--text-secondary); }
+
+/* ── Glassmorphism Card ── */
+.glass-card, .glass-panel {
+  background: linear-gradient(135deg,
+    rgba(255,255,255,0.04) 0%,
+    rgba(255,255,255,0.01) 100%);
+  backdrop-filter: var(--blur);
+  -webkit-backdrop-filter: var(--blur);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  transition: var(--transition);
+  position: relative;
+  overflow: hidden;
+}
+
+.glass-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(212,175,55,0.04) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.glass-card:hover {
+  border-color: var(--border-strong);
+  box-shadow: var(--shadow-gold);
+  transform: translateY(-2px);
+}
+
+/* ── Premium Balance Card ── */
+.balance-card {
+  background: linear-gradient(135deg, #1A1200 0%, #0D0900 100%);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-xl);
+  padding: 28px;
+  position: relative;
+  overflow: hidden;
+}
+
+.balance-card::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -20%;
+  width: 200px;
+  height: 200px;
+  background: radial-gradient(circle, var(--gold-glow) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.balance-amount {
+  font-family: 'Tajawal', sans-serif;
+  font-size: clamp(2rem, 6vw, 3.5rem);
+  font-weight: 700;
+  color: var(--gold);
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+
+.balance-label {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-top: 6px;
+}
+
+/* ── Stat Widget ── */
+.stat-widget {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-top: 3px solid var(--gold);
+  border-radius: var(--radius-md);
+  padding: 20px 16px;
+  text-align: center;
+  transition: var(--transition);
+}
+
+.stat-widget:hover {
+  border-color: var(--border-strong);
+  border-top-color: var(--gold-light);
+  box-shadow: 0 0 24px var(--gold-glow);
+  transform: translateY(-3px);
+}
+
+.stat-widget .stat-value {
+  font-size: clamp(1.4rem, 4vw, 2rem);
+  font-weight: 700;
+  color: var(--gold);
+  font-family: 'Tajawal', sans-serif;
+}
+
+.stat-widget .stat-label {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-top: 4px;
+  letter-spacing: 0.05em;
+}
+
+/* ── Gold Button ── */
+.btn-gold {
+  background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dark) 100%);
+  color: #000;
+  border: none;
+  border-radius: var(--radius-md);
+  padding: 14px 24px;
+  font-family: 'Tajawal', sans-serif;
+  font-weight: 700;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: var(--transition);
+  position: relative;
+  overflow: hidden;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  letter-spacing: 0.02em;
+}
+
+.btn-gold::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, transparent 60%);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.btn-gold:hover { transform: translateY(-2px); box-shadow: 0 8px 24px var(--gold-glow); }
+.btn-gold:hover::before { opacity: 1; }
+.btn-gold:active { transform: translateY(0); }
+.btn-gold:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+/* ── Ghost Button ── */
+.btn-ghost {
+  background: transparent;
+  color: var(--gold);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-md);
+  padding: 12px 20px;
+  font-family: 'Tajawal', sans-serif;
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.btn-ghost:hover {
+  background: var(--gold-glow);
+  border-color: var(--gold);
+}
+
+/* ── Input Fields ── */
+.input-field,
+input[type="text"], input[type="password"],
+input[type="number"], input[type="tel"],
+select, textarea {
+  width: 100%;
+  background: var(--surface-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 14px 16px;
+  color: var(--text-primary);
+  font-family: 'Readex Pro', 'Tajawal', sans-serif;
+  font-size: 0.95rem;
+  transition: var(--transition);
+  outline: none;
+  appearance: none;
+}
+
+.input-field:focus,
+input:focus, select:focus, textarea:focus {
+  border-color: var(--gold);
+  background: var(--surface-4);
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.12);
+}
+
+.input-field::placeholder { color: var(--text-muted); }
+
+/* ── App Header ── */
+.app-header {
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: var(--blur);
+  -webkit-backdrop-filter: var(--blur);
+  border-bottom: 1px solid var(--border);
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.brand-name {
+  font-family: 'Tajawal', sans-serif;
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: var(--gold);
+  letter-spacing: 0.05em;
+}
+
+.brand-logo {
+  width: 36px; height: 36px;
+  background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 900; color: #000; font-size: 1.1rem;
+}
+
+/* ── Portal Cards ── */
+.portal-card {
+  background: linear-gradient(135deg, var(--surface-2), var(--surface-1));
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 24px 16px;
+  text-align: center;
+  cursor: pointer;
+  transition: var(--transition);
+  position: relative;
+  overflow: hidden;
+}
+
+.portal-card::before {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--gold), var(--gold-light));
+  transform: scaleX(0);
+  transition: transform 0.3s ease;
+}
+
+.portal-card:hover {
+  border-color: var(--border-strong);
+  box-shadow: var(--shadow-gold);
+  transform: translateY(-4px);
+}
+
+.portal-card:hover::before { transform: scaleX(1); }
+
+.portal-card .portal-icon {
+  font-size: 2.2rem;
+  margin-bottom: 12px;
+  display: block;
+}
+
+.portal-card h3 {
+  font-size: 0.95rem;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+
+.portal-card p {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+/* ── Bottom Navigation ── */
+.bottom-nav {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  background: rgba(0, 0, 0, 0.92);
+  backdrop-filter: var(--blur);
+  -webkit-backdrop-filter: var(--blur);
+  border-top: 1px solid var(--border);
+  display: flex;
+  padding: 8px 0 calc(8px + env(safe-area-inset-bottom));
+  z-index: 100;
+}
+
+.nav-btn {
+  flex: 1;
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-family: 'Readex Pro', sans-serif;
+  font-size: 0.65rem;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 0;
+  transition: var(--transition);
+}
+
+.nav-btn i { font-size: 1.1rem; }
+.nav-btn.active { color: var(--gold); }
+.nav-btn:hover  { color: var(--gold-light); }
+
+/* ── Modals ── */
+.modal {
+  position: fixed; inset: 0; z-index: 999;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex; align-items: flex-end;
+  animation: fadeIn 0.2s ease;
+}
+
+.modal-box {
+  background: var(--surface-2);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+  padding: 28px 24px 40px;
+  width: 100%;
+  max-width: 520px;
+  margin: 0 auto;
+  animation: slideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+}
+
+.modal-box h2 {
+  font-family: 'Tajawal', sans-serif;
+  color: var(--gold);
+  text-align: center;
+  margin-bottom: 24px;
+  font-size: 1.4rem;
+}
+
+.modal-close {
+  position: absolute;
+  top: 16px; left: 16px;
+  background: var(--surface-3);
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 0.85rem;
+  display: flex; align-items: center; justify-content: center;
+  transition: var(--transition);
+}
+
+.modal-close:hover { background: var(--danger); color: #fff; border-color: var(--danger); }
+
+/* ── Status Badges ── */
+.status-badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+}
+
+.status-badge.active   { background: rgba(34,197,94,0.12);  color: #22C55E; }
+.status-badge.inactive { background: rgba(239,68,68,0.12);  color: #EF4444; }
+.status-badge.pending  { background: rgba(245,158,11,0.12); color: #F59E0B; }
+
+/* ── Section Title ── */
+.section-title {
+  font-family: 'Tajawal', sans-serif;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--gold);
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 20px;
+}
+
+/* ── Toast ── */
+.toast {
+  position: fixed;
+  bottom: 90px; left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+  color: #000;
+  padding: 14px 28px;
+  border-radius: var(--radius-lg);
+  font-family: 'Tajawal', sans-serif;
+  font-weight: 700;
+  font-size: 0.95rem;
+  z-index: 9999;
+  display: none;
+  box-shadow: 0 12px 40px rgba(212,175,55,0.4);
+  white-space: nowrap;
+}
+
+.toast.show {
+  display: block;
+  animation: toastIn 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+/* ── Upload Zone ── */
+.upload-zone {
+  border: 2px dashed var(--border-strong);
+  border-radius: var(--radius-lg);
+  padding: 40px 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: var(--transition);
+  background: rgba(212,175,55,0.02);
+}
+
+.upload-zone:hover {
+  border-color: var(--gold);
+  background: rgba(212,175,55,0.06);
+}
+
+/* ── Slider ── */
+.slider-section { margin-bottom: 8px; }
+.slider-frame {
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+
+.slide img { border-radius: var(--radius-md); }
+
+/* ── Ads Ticker ── */
+.ad-text {
+  background: linear-gradient(90deg, var(--surface-2), var(--surface-3), var(--surface-2));
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  padding: 10px 20px;
+  font-size: 0.8rem;
+  color: var(--gold);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ── Animations ── */
+@keyframes fadeIn    { from { opacity:0; } to { opacity:1; } }
+@keyframes slideUp   { from { transform:translateY(60px); opacity:0; } to { transform:translateY(0); opacity:1; } }
+@keyframes toastIn   { from { transform:translateX(-50%) translateY(20px); opacity:0; } to { transform:translateX(-50%) translateY(0); opacity:1; } }
+@keyframes pulse     { 0%,100% { opacity:1; } 50% { opacity:0.5; } }
+@keyframes shimmer   { 0% { background-position:200% 0; } 100% { background-position:-200% 0; } }
+@keyframes successPop {
+  0%   { transform: scale(0); opacity: 0; }
+  60%  { transform: scale(1.15); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.success-icon { animation: successPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1); }
+
+@media (max-width: 480px) {
+  .modal-box { padding: 24px 16px 36px; }
+  .glass-card { padding: 16px; }
+  .balance-amount { font-size: 2rem; }
+}
+
+/* ── Clear Loaders & Spinners ── */
+.loading-spinner,
+.spinner,
+[data-spinner],
+.loader-overlay {
+  display: none !important;
+}
+
+img.loading,
+img[data-loading="true"] {
+  background: none !important;
+}
+
+img:not([src]),
+img[src=""],
+img[src="null"],
+img[src="undefined"] {
+  display: none !important;
+}
+/* ═══════════════════════════════════════
+   تعديلات حسين النهائية - إزالة الشريط الأصفر والفتال
+   ═══════════════════════════════════════ */
+
+/* 1. إخفاء المستطيل الأصفر (التمويه) نهائياً */
+.slide-placeholder, 
+[id^="placeholder_"], 
+.loading-shimmer {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    background: none !important;
+}
+
+/* 2. إزالة الطبقة المائلة (الشريط الفتال) واللمعان فوق الإعلان */
+.slide-block::after, 
+.slide-block::before, 
+.gold-overlay, 
+.shimmer-effect,
+.glass-card::after {
+    display: none !important;
+    content: none !important;
+    background: none !important;
+    backdrop-filter: none !important;
+}
+
+/* 3. التأكد من أن صورة الإعلان تظهر واضحة وبدون تأثيرات */
+.slide img, 
+.slide-block img {
+    opacity: 1 !important;
+    filter: none !important;
+    z-index: 10 !important;
+    background-color: transparent !important;
+}
+
+/* 4. تنظيف أي فلاتر متبقية قد تعيق الرؤية */
+.slider-frame, .slide {
+    background: transparent !important;
+    border: none !important;
+}

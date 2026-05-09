@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>بوابة الطالب - تكيو برنت</title>
+    <link rel="stylesheet" href="../../shared/core/base.css">
+    <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+    <div class="portal-container arabic student-portal">
+        <!-- Header -->
+        <nav class="portal-nav">
+            <h1 class="arabic-heading">بوابة الطالب</h1>
+            <div class="portal-nav-links">
+                <a href="#" class="portal-nav-link active">الرئيسية</a>
+                <a href="#" class="portal-nav-link">طلباتي</a>
+                <a href="#" class="portal-nav-link">المكتبة</a>
+                <a href="#" class="portal-nav-link" id="logoutBtn">تسجيل الخروج</a>
+            </div>
+        </nav>
+
+        <!-- Student Vault / File Wallet -->
+        <section class="student-vault">
+            <div class="vault-card balance-card">
+                <div class="vault-icon">💰</div>
+                <div class="vault-info">
+                    <span class="vault-label">الرصيد</span>
+                    <span class="vault-value" id="accountBalance">0</span>
+                    <span class="vault-currency">IQD</span>
+                </div>
+            </div>
+            <div class="vault-card pages-card">
+                <div class="vault-icon">📄</div>
+                <div class="vault-info">
+                    <span class="vault-label">صفحات متبقية</span>
+                    <span class="vault-value" id="pageCredit">0</span>
+                    <span class="vault-unit">صفحة</span>
+                </div>
+            </div>
+            <div class="vault-card files-card">
+                <div class="vault-icon">📁</div>
+                <div class="vault-info">
+                    <span class="vault-label">الملفات المرفوعة</span>
+                    <span class="vault-value" id="uploadedFiles">0</span>
+                    <span class="vault-unit">ملف</span>
+                </div>
+            </div>
+        </section>
+
+        <main class="portal-main">
+            <section class="portal-hero">
+                <h2 class="arabic-heading">إنشاء طلب طباعة</h2>
+                <p class="arabic-body">حدد الخيارات المناسبة للحصول على أفضل نتيجة</p>
+                <div class="cmyk-badge">
+                    <span>CMYK</span>
+                    <div class="cmyk-colors">
+                        <span class="cyan"></span>
+                        <span class="magenta"></span>
+                        <span class="yellow"></span>
+                        <span class="black"></span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Print Configuration -->
+            <section class="print-configurator">
+                <form id="printOrderForm">
+                    <!-- Paper Size Selection -->
+                    <div class="config-section">
+                        <h3 class="arabic-heading">حجم الورق</h3>
+                        <div class="config-options">
+                            <label class="config-option">
+                                <input type="radio" name="paperSize" value="A5" data-price="500" checked>
+                                <div class="option-card">
+                                    <span class="option-title">A5</span>
+                                    <span class="option-desc">14.8 × 21 سم</span>
+                                    <span class="option-price">500 IQD/صفحة</span>
+                                </div>
+                            </label>
+                            <label class="config-option">
+                                <input type="radio" name="paperSize" value="A4" data-price="1000">
+                                <div class="option-card">
+                                    <span class="option-title">A4</span>
+                                    <span class="option-desc">21 × 29.7 سم</span>
+                                    <span class="option-price">1000 IQD/صفحة</span>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Print Type -->
+                    <div class="config-section">
+                        <h3 class="arabic-heading">نوع الطباعة</h3>
+                        <div class="config-options">
+                            <label class="config-option">
+                                <input type="radio" name="printType" value="laser_color" data-price="2" checked>
+                                <div class="option-card">
+                                    <span class="option-title">ليزر ألوان</span>
+                                    <span class="option-desc">دقة عالية</span>
+                                    <span class="option-price">×2</span>
+                                </div>
+                            </label>
+                            <label class="config-option">
+                                <input type="radio" name="printType" value="oil_color" data-price="3">
+                                <div class="option-card">
+                                    <span class="option-title">نفط ألوان</span>
+                                    <span class="option-desc">زاهية وحية</span>
+                                    <span class="option-price">×3</span>
+                                </div>
+                            </label>
+                            <label class="config-option">
+                                <input type="radio" name="printType" value="bw" data-price="1">
+                                <div class="option-card">
+                                    <span class="option-title">أسود وأبيض</span>
+                                    <span class="option-desc">توفير</span>
+                                    <span class="option-price">×1</span>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Binding Methods -->
+                    <div class="config-section">
+                        <h3 class="arabic-heading">طريقة التجليد</h3>
+                        <div class="config-options">
+                            <label class="config-option">
+                                <input type="radio" name="binding" value="none" data-price="0">
+                                <div class="option-card">
+                                    <span class="option-title">بدون</span>
+                                    <span class="option-desc">أوراق حرة</span>
+                                    <span class="option-price">مجاني</span>
+                                </div>
+                            </label>
+                            <label class="config-option">
+                                <input type="radio" name="binding" value="spiral" data-price="2000">
+                                <div class="option-card">
+                                    <span class="option-title">حلقات حلزونية</span>
+                                    <span class="option-desc">Wire/Plastic</span>
+                                    <span class="option-price">2000 IQD</span>
+                                </div>
+                            </label>
+                            <label class="config-option">
+                                <input type="radio" name="binding" value="thermal" data-price="5000">
+                                <div class="option-card">
+                                    <span class="option-title">تجليد حراري</span>
+                                    <span class="option-desc">Glue</span>
+                                    <span class="option-price">5000 IQD</span>
+                                </div>
+                            </label>
+                            <label class="config-option">
+                                <input type="radio" name="binding" value="staple" data-price="1000">
+                                <div class="option-card">
+                                    <span class="option-title">تدبيس</span>
+                                    <span class="option-desc">Saddle Stitch</span>
+                                    <span class="option-price">1000 IQD</span>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Duplex Control -->
+                    <div class="config-section">
+                        <h3 class="arabic-heading">الطباعة</h3>
+                        <div class="config-options duplex-options">
+                            <label class="config-option">
+                                <input type="radio" name="duplex" value="single" checked>
+                                <div class="option-card">
+                                    <span class="option-title">وجه واحد</span>
+                                    <span class="option-desc">Single Sided</span>
+                                </div>
+                            </label>
+                            <label class="config-option">
+                                <input type="radio" name="duplex" value="double">
+                                <div class="option-card">
+                                    <span class="option-title">وجهين</span>
+                                    <span class="option-desc">Double Sided</span>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Page Count Input -->
+                    <div class="config-section">
+                        <h3 class="arabic-heading">عدد الصفحات</h3>
+                        <div class="page-input-wrapper">
+                            <button type="button" class="qty-btn minus" onclick="adjustPages(-1)">−</button>
+                            <input type="number" id="pageCount" name="pageCount" value="1" min="1" max="500">
+                            <button type="button" class="qty-btn plus" onclick="adjustPages(1)">+</button>
+                        </div>
+                    </div>
+
+                    <!-- Drag & Drop Upload Zone -->
+                    <div class="config-section">
+                        <h3 class="arabic-heading">رفع الملف</h3>
+                        <div class="drop-zone" id="dropZone">
+                            <div class="drop-zone-content">
+                                <div class="drop-icon">📤</div>
+                                <p class="arabic-body">اسحب الملف هنا أو انقر للاختيار</p>
+                                <p class="drop-hint">PDF, DOC, DOCX (حد أقصى 10MB)</p>
+                            </div>
+                            <input type="file" id="fileInput" accept=".pdf,.doc,.docx" hidden>
+                        </div>
+                        <div class="file-info" id="fileInfo" style="display: none;">
+                            <span class="file-name" id="fileName"></span>
+                            <span class="file-pages" id="filePages"></span>
+                            <button type="button" class="remove-file" onclick="removeFile()">×</button>
+                        </div>
+                    </div>
+
+                    <!-- Real-time Cost Calculator -->
+                    <div class="cost-calculator">
+                        <h3 class="arabic-heading">حساب التكلفة</h3>
+                        <div class="cost-breakdown">
+                            <div class="cost-item">
+                                <span>سعر الورقة الأساسية</span>
+                                <span id="basePrice">1000 IQD</span>
+                            </div>
+                            <div class="cost-item">
+                                <span>معامل الطباعة</span>
+                                <span id="printMultiplier">×1</span>
+                            </div>
+                            <div class="cost-item">
+                                <span>عدد الصفحات</span>
+                                <span id="pagesDisplay">1</span>
+                            </div>
+                            <div class="cost-item">
+                                <span>كلفة التجليد</span>
+                                <span id="bindingCost">0 IQD</span>
+                            </div>
+                            <div class="cost-item">
+                                <span>رسوم التوصيل</span>
+                                <span id="deliveryFee">3000 IQD</span>
+                            </div>
+                            <div class="cost-divider"></div>
+                            <div class="cost-item total">
+                                <span class="arabic-heading">الإجمالي</span>
+                                <span class="total-price" id="totalPrice">4000 IQD</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit" class="portal-btn submit-btn">
+                        <span>تأكيد الطلب</span>
+                        <span class="btn-icon">✓</span>
+                    </button>
+                </form>
+            </section>
+        </main>
+
+        <footer class="portal-footer">
+            <p class="arabic-body">© 2026 تكيو برنت - جميع الحقوق محفوظة</p>
+        </footer>
+    </div>
+
+    <script type="module">
+        import { mofeedAuth, mofeedNotifications, mofeedDB, mofeedRadar } from '../../shared/core/index.js';
+        
+        // Delivery fee constant
+        const DELIVERY_FEE = 3000;
+        
+        // State
+        let uploadedFile = null;
+        let userData = {
+            balance: 50000,
+            pages: 100
+        };
+
+        // Initialize
+        async function init() {
+            await loadUserData();
+            setupEventListeners();
+            updateCostCalculator();
+            reportToRadar();
+        }
+
+        async function loadUserData() {
+            const session = await mofeedAuth.validateSession();
+            if (session.valid) {
+                userData = {
+                    balance: session.user.balance || 50000,
+                    pages: session.user.pages || 100
+                };
+            }
+            document.getElementById('accountBalance').textContent = userData.balance.toLocaleString('ar-IQ');
+            document.getElementById('pageCredit').textContent = userData.pages;
+            document.getElementById('uploadedFiles').textContent = uploadedFile ? '1' : '0';
+        }
+
+        function setupEventListeners() {
+            // Form options
+            document.querySelectorAll('input[name="paperSize"], input[name="printType"], input[name="binding"], input[name="duplex"]').forEach(input => {
+                input.addEventListener('change', updateCostCalculator);
+            });
+
+            // Page count
+            document.getElementById('pageCount').addEventListener('input', updateCostCalculator);
+
+            // Form submission
+            document.getElementById('printOrderForm').addEventListener('submit', handleSubmit);
+
+            // File upload
+            const dropZone = document.getElementById('dropZone');
+            const fileInput = document.getElementById('fileInput');
+
+            dropZone.addEventListener('click', () => fileInput.click());
+            dropZone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                dropZone.classList.add('drag-over');
+            });
+            dropZone.addEventListener('dragleave', () => {
+                dropZone.classList.remove('drag-over');
+            });
+            dropZone.addEventListener('drop', handleFileDrop);
+            fileInput.addEventListener('change', handleFileSelect);
+
+            // Logout
+            document.getElementById('logoutBtn').addEventListener('click', async (e) => {
+                e.preventDefault();
+                await mofeedAuth.logout();
+                window.location.href = '/';
+            });
+        }
+
+        function updateCostCalculator() {
+            const paperSize = document.querySelector('input[name="paperSize"]:checked');
+            const printType = document.querySelector('input[name="printType"]:checked');
+            const binding = document.querySelector('input[name="binding"]:checked');
+            const pageCount = parseInt(document.getElementById('pageCount').value) || 1;
+
+            const basePrice = parseInt(paperSize?.dataset?.price || 1000);
+            const printMultiplier = parseInt(printType?.dataset?.price || 1);
+            const bindingCost = parseInt(binding?.dataset?.price || 0);
+
+            const pageCost = basePrice * printMultiplier * pageCount;
+            const total = pageCost + bindingCost + DELIVERY_FEE;
+
+            document.getElementById('basePrice').textContent = basePrice.toLocaleString('ar-IQ') + ' IQD';
+            document.getElementById('printMultiplier').textContent = '×' + printMultiplier;
+            document.getElementById('pagesDisplay').textContent = pageCount;
+            document.getElementById('bindingCost').textContent = bindingCost.toLocaleString('ar-IQ') + ' IQD';
+            document.getElementById('totalPrice').textContent = total.toLocaleString('ar-IQ') + ' IQD';
+        }
+
+        function adjustPages(delta) {
+            const input = document.getElementById('pageCount');
+            let value = parseInt(input.value) || 1;
+            value = Math.max(1, Math.min(500, value + delta));
+            input.value = value;
+            updateCostCalculator();
+        }
+
+        function handleFileDrop(e) {
+            e.preventDefault();
+            document.getElementById('dropZone').classList.remove('drag-over');
+            const file = e.dataTransfer.files[0];
+            processFile(file);
+        }
+
+        function handleFileSelect(e) {
+            const file = e.target.files[0];
+            processFile(file);
+        }
+
+        async function processFile(file) {
+            if (!file) return;
+
+            if (file.size > 10 * 1024 * 1024) {
+                alert('حجم الملف يتجاوز 10MB');
+                return;
+            }
+
+            const validTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+            if (!validTypes.includes(file.type)) {
+                alert('نوع الملف غير مدعوم');
+                return;
+            }
+
+            uploadedFile = file;
+            document.getElementById('fileName').textContent = file.name;
+            
+            // Simulate page count extraction (in production, use PDF.js)
+            const estimatedPages = Math.floor(Math.random() * 50) + 1;
+            document.getElementById('filePages').textContent = estimatedPages + ' صفحة';
+            document.getElementById('pageCount').value = estimatedPages;
+
+            document.getElementById('dropZone').style.display = 'none';
+            document.getElementById('fileInfo').style.display = 'flex';
+            document.getElementById('uploadedFiles').textContent = '1';
+            
+            updateCostCalculator();
+        }
+
+        function removeFile() {
+            uploadedFile = null;
+            document.getElementById('fileInput').value = '';
+            document.getElementById('dropZone').style.display = 'flex';
+            document.getElementById('fileInfo').style.display = 'none';
+            document.getElementById('uploadedFiles').textContent = '0';
+        }
+
+        async function handleSubmit(e) {
+            e.preventDefault();
+
+            const form = e.target;
+            const paperSize = form.querySelector('input[name="paperSize"]:checked').value;
+            const printType = form.querySelector('input[name="printType"]:checked').value;
+            const binding = form.querySelector('input[name="binding"]:checked').value;
+            const duplex = form.querySelector('input[name="duplex"]:checked').value;
+            const pageCount = parseInt(form.querySelector('#pageCount').value);
+
+            const totalPrice = calculateTotal();
+
+            // Create order via API
+            const orderData = {
+                userId: userData.id || 'guest',
+                paperSize,
+                printType,
+                binding,
+                duplex,
+                pageCount,
+                total: totalPrice,
+                fileName: uploadedFile?.name || null
+            };
+
+            // Report to radar
+            await mofeedAuth.reportToRadar('print_order_created', orderData);
+
+            // Send notification
+            await mofeedNotifications.send({
+                type: 'inApp',
+                recipient: 'library',
+                title: 'طلب طباعة جديد',
+                body: `طلب ${paperSize} - ${printType} - ${pageCount} صفحة`
+            });
+
+            // Insert to database
+            const result = await mofeedDB.insert('print_orders', orderData, 'student');
+
+            alert('تم إنشاء الطلب بنجاح! بانتظار الموافقة.');
+            form.reset();
+            removeFile();
+            updateCostCalculator();
+        }
+
+        function calculateTotal() {
+            const paperSize = document.querySelector('input[name="paperSize"]:checked');
+            const printType = document.querySelector('input[name="printType"]:checked');
+            const binding = document.querySelector('input[name="binding"]:checked');
+            const pageCount = parseInt(document.getElementById('pageCount').value) || 1;
+
+            const basePrice = parseInt(paperSize?.dataset?.price || 1000);
+            const printMultiplier = parseInt(printType?.dataset?.price || 1);
+            const bindingCost = parseInt(binding?.dataset?.price || 0);
+
+            return (basePrice * printMultiplier * pageCount) + bindingCost + DELIVERY_FEE;
+        }
+
+        async function reportToRadar() {
+            await mofeedAuth.reportToRadar('student_portal_access', { 
+                timestamp: Date.now(),
+                features: ['print_configurator', 'cost_calculator', 'file_upload']
+            });
+        }
+
+        // Initialize on load
+        init();
+    </script>
+</body>
+</html>

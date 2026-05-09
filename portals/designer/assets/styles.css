@@ -1,0 +1,202 @@
+/* TECHOPRINT - Designer Portal Styles
+ * Arabic Support: Amiri/Naskh Fonts
+ * Asset Management with Unique IDs
+ * CMYK Ready Output
+ * Version: 2.0.0 */
+
+.designer-portal {
+    background: linear-gradient(180deg, #1A1A2E 0%, #0F3460 100%);
+}
+
+.designer-portal .portal-hero {
+    padding: 48px 24px;
+    text-align: center;
+    background: linear-gradient(135deg, rgba(212, 175, 55, 0.2), transparent);
+}
+
+.designer-portal .portal-card {
+    border-right: 4px solid var(--gold);
+}
+
+.designer-portal .portal-card:nth-child(2) {
+    border-right-color: var(--accent);
+}
+
+.designer-portal .portal-card:nth-child(4) {
+    border-right-color: #E10098;
+}
+
+.designer-portal .portal-btn {
+    background: linear-gradient(135deg, var(--gold), #B8860B);
+}
+
+/* Icon Preview */
+.icon-preview {
+    display: flex;
+    gap: 16px;
+    margin: 16px 0;
+    padding: 16px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+}
+
+.icon-preview img {
+    background: white;
+    border-radius: 8px;
+    padding: 8px;
+}
+
+/* Asset Badges */
+.asset-badges {
+    display: flex;
+    gap: 8px;
+    margin: 12px 0;
+}
+
+/* Asset Gallery */
+.asset-gallery {
+    padding: 32px 24px;
+}
+
+.asset-gallery h3 {
+    margin-bottom: 24px;
+    color: var(--surface);
+}
+
+.gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 16px;
+}
+
+.gallery-item {
+    background: var(--surface);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: transform 0.3s ease;
+}
+
+.gallery-item:hover {
+    transform: scale(1.02);
+}
+
+.gallery-item img {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+}
+
+.gallery-item-info {
+    padding: 12px;
+    background: white;
+}
+
+.gallery-item-info .arabic-body {
+    display: block;
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+.gallery-item-info .asset-id {
+    font-size: 10px;
+    color: var(--text-secondary);
+    font-family: monospace;
+}
+
+.gallery-item .delete-btn {
+    width: 100%;
+    padding: 8px;
+    background: #dc3545;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+/* Icon Manager Modal */
+.icon-manager {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.icon-manager-content {
+    background: var(--surface);
+    padding: 32px;
+    border-radius: 16px;
+    max-width: 600px;
+    width: 90%;
+}
+
+.icon-sizes {
+    display: flex;
+    gap: 24px;
+    margin: 24px 0;
+}
+
+.icon-size-section {
+    flex: 1;
+    padding: 16px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.icon-size-section h4 {
+    font-family: var(--font-arabic-heading);
+    margin-bottom: 12px;
+}
+
+.icon-size-section input {
+    margin: 12px 0;
+}
+
+.icon-size-section .icon-preview {
+    justify-content: center;
+    background: transparent;
+    margin: 12px 0;
+}
+
+/* Asset ID Display */
+[data-asset-id]::before {
+    content: attr(data-asset-id);
+    font-family: monospace;
+    font-size: 10px;
+    color: var(--text-secondary);
+}
+
+/* CMYK Export Styles */
+.cmyk-export {
+    border: 2px dashed var(--gold);
+    padding: 24px;
+    border-radius: 8px;
+    margin-top: 24px;
+}
+
+.cmyk-export h4 {
+    font-family: var(--font-arabic-heading);
+    margin-bottom: 12px;
+}
+
+/* Print Styles */
+@media print {
+    .designer-portal {
+        background: white;
+    }
+    
+    .portal-nav, .portal-btn {
+        display: none;
+    }
+    
+    .print-cmyk {
+        color-profile: CMYK;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+}

@@ -1,8 +1,6 @@
-/* TECHOPRINT 2026 - ADS SLIDER (COMPRESSED 5%) */
-/* 25vh Height for Mobile - Single Large Ad Per Slide */
+/* TECHOPRINT 2026 - ADS SLIDER */
 .slider-section { padding: 5px; }
 .slider-frame { position: relative; background: #000000; border: 2px solid #D4AF37; border-radius: 10px; overflow: hidden; height: 25vh; }
-.slider-frame::before { content: ''; position: absolute; inset: -2px; border-radius: 10px; background: linear-gradient(45deg, #D4AF37, #F4E4BA, #D4AF37, #F4E4BA); animation: spin 4s linear infinite; z-index: 1; pointer-events: none; }
 .slider-container { width: 100%; height: 100%; background: #000000; overflow: hidden; }
 .slide { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; background: #000000; height: 100%; }
 .slide-block { background: #000000; overflow: hidden; height: 100%; }
@@ -11,3 +9,36 @@
 .slide-nav { display: flex; justify-content: center; gap: 8px; margin-top: 5px; }
 .slider-dot { width: 10px; height: 10px; border-radius: 50%; background: rgba(212, 175, 55, 0.3); border: 2px solid #D4AF37; cursor: pointer; }
 .slider-dot.active { background: #D4AF37; }
+
+/* Smooth fade-in for ads */
+.slide img {
+  opacity: 0;
+  transition: opacity 0.6s ease-in-out;
+  background: #1a1400;
+  min-height: 200px;
+  width: 100%;
+  object-fit: cover;
+}
+
+.slide img.loaded {
+  opacity: 1;
+}
+
+.slide img.error {
+  opacity: 0.3;
+  background: #111;
+}
+
+/* Placeholder shimmer while loading */
+.slide-placeholder {
+  background: linear-gradient(90deg, #111 25%, #1a1400 50%, #111 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  min-height: 200px;
+  width: 100%;
+}
+
+@keyframes shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}

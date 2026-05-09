@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>بوابة المكتبة - تكيو برنت</title>
+    <link rel="stylesheet" href="../../shared/core/base.css">
+    <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+    <div class="portal-container arabic library-portal">
+        <nav class="portal-nav">
+            <h1 class="arabic-heading">بوابة المكتبة</h1>
+            <div class="portal-nav-links">
+                <a href="#" class="portal-nav-link">المخزون</a>
+                <a href="#" class="portal-nav-link">الطباعة</a>
+                <a href="#" class="portal-nav-link">الطلبات</a>
+                <a href="#" class="portal-nav-link" id="logoutBtn">تسجيل الخروج</a>
+            </div>
+        </nav>
+
+        <main class="portal-main">
+            <section class="portal-hero">
+                <h2 class="arabic-heading">مرحباً بك في بوابة المكتبة</h2>
+                <p class="arabic-body">إدارة المخزون وطلبات الطباعة</p>
+                <div class="cmyk-badge">
+                    <span>CMYK</span>
+                    <div class="cmyk-colors">
+                        <span class="cyan"></span>
+                        <span class="magenta"></span>
+                        <span class="yellow"></span>
+                        <span class="black"></span>
+                    </div>
+                </div>
+            </section>
+
+            <section class="portal-grid">
+                <div class="portal-card">
+                    <h3 class="arabic-heading">المخزون</h3>
+                    <p class="arabic-body">إدارة مخزون الورق والمستلزمات</p>
+                    <div class="inventory-status">
+                        <span class="status-label">الحالة:</span>
+                        <span class="status-value good">متوفر</span>
+                    </div>
+                    <button class="portal-btn" onclick="manageInventory()">إدارة المخزون</button>
+                </div>
+
+                <div class="portal-card">
+                    <h3 class="arabic-heading">آلات الطباعة</h3>
+                    <p class="arabic-body">مراقبة حالة الآلات وتخطيط الصيانة</p>
+                    <div class="machine-status">
+                        <div class="machine">
+                            <span>آلة 1</span>
+                            <span class="status active">نشطة</span>
+                        </div>
+                        <div class="machine">
+                            <span>آلة 2</span>
+                            <span class="status maintenance">صيانة</span>
+                        </div>
+                    </div>
+                    <button class="portal-btn" onclick="manageMachines()">إدارة الآلات</button>
+                </div>
+
+                <div class="portal-card">
+                    <h3 class="arabic-heading">طلبات الطباعة</h3>
+                    <p class="arabic-body">قائمة الطلبات الجديدة والمكتملة</p>
+                    <div class="order-count">
+                        <span class="count">12</span>
+                        <span class="label">طلب جديد</span>
+                    </div>
+                    <button class="portal-btn" onclick="viewOrders()">عرض الطلبات</button>
+                </div>
+
+                <div class="portal-card">
+                    <h3 class="arabic-heading">التقارير</h3>
+                    <p class="arabic-body">تقارير أسبوعية وشهرية للإنتاج</p>
+                    <button class="portal-btn" onclick="viewReports()">عرض التقارير</button>
+                </div>
+            </section>
+
+            <section class="inventory-table">
+                <h3 class="arabic-heading">حالة المخزون الحالية</h3>
+                <table id="inventoryTable">
+                    <thead>
+                        <tr>
+                            <th>المادة</th>
+                            <th>الكمية</th>
+                            <th>الحالة</th>
+                            <th>آخر تحديث</th>
+                        </tr>
+                    </thead>
+                    <tbody id="inventoryBody">
+                        <!-- Dynamic content -->
+                    </tbody>
+                </table>
+            </section>
+        </main>
+
+        <footer class="portal-footer">
+            <p class="arabic-body">© 2026 تكيو برنت - جميع الحقوق محفوظة</p>
+        </footer>
+    </div>
+
+    <script type="module">
+        import { mofeedAuth, mofeedNotifications, mofeedDB, mofeedRadar } from '../../shared/core/index.js';
+        
+        document.getElementById('logoutBtn').addEventListener('click', async (e) => {
+            e.preventDefault();
+            await mofeedAuth.logout();
+            window.location.href = '/';
+        });
+
+        // Report to radar on load
+        mofeedAuth.reportToRadar('library_portal_access', { timestamp: Date.now() });
+
+        // Load inventory data
+        async function loadInventory() {
+            const inventory = await mofeedDB.query('inventory', {}, 'library');
+            const tbody = document.getElementById('inventoryBody');
+            if (tbody) {
+                tbody.innerHTML = inventory.map(item => `
+                    <tr>
+                        <td>${item.name}</td>
+                        <td>${item.quantity}</td>
+                        <td><span class="status-value ${item.status}">${item.status}</span></td>
+                        <td>${new Date(item.updated).toLocaleDateString('ar-IQ')}</td>
+                    </tr>
+                `).join('');
+            }
+        }
+
+        window.manageInventory = () => {
+            const modal = document.createElement('div');
+            modal.className = 'modal inventory-modal';
+            modal.innerHTML = `
+                <div class="inventory-modal-content">
+                    <h3 class="arabic-heading">إدارة المخزون</h3>
+                    <form id="inventoryForm">
+                        <input type="text" class="portal-input" placeholder="اسم المادة" required>
+                        <input type="number" class="portal-input" placeholder="الكمية" required>
+                        <select class="portal-input">
+                            <option value="good">متوفر</option>
+                            <option value="low">منخفض</option>
+                            <option value="out">نفذ</option>
+                        </select>
+                        <button type="submit" class="portal-btn">حفظ</button>
+                    </form>
+                </div>
+            `;
+            document.body.appendChild(modal);
+        };
+
+        window.manageMachines = async () => {
+            const machines = await mofeedDB.query('machines', {}, 'library');
+            console.log('Machines:', machines);
+        };
+
+        window.viewOrders = async () => {
+            const orders = await mofeedDB.query('print_orders', {}, 'library');
+            console.log('Print orders:', orders);
+        };
+
+        window.viewReports = async () => {
+            const reports = await mofeedRadar.generateWeeklyReport();
+            console.log('Weekly report:', reports);
+        };
+
+        // Initialize
+        loadInventory();
+    </script>
+</body>
+</html>

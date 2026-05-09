@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>بوابة المعلم - تكيو برنت</title>
+    <link rel="stylesheet" href="../../shared/core/base.css">
+    <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+    <div class="portal-container arabic teacher-portal">
+        <nav class="portal-nav">
+            <h1 class="arabic-heading">بوابة المعلم</h1>
+            <div class="portal-nav-links">
+                <a href="#" class="portal-nav-link">الرئيسية</a>
+                <a href="#" class="portal-nav-link">الامتحانات</a>
+                <a href="#" class="portal-nav-link">إدارة الطلاب</a>
+                <a href="#" class="portal-nav-link" id="logoutBtn">تسجيل الخروج</a>
+            </div>
+        </nav>
+
+        <main class="portal-main">
+            <section class="portal-hero">
+                <h2 class="arabic-heading">مرحباً بك في بوابة المعلم</h2>
+                <p class="arabic-body">إدارة الامتحانات وتتبع أداء الطلاب</p>
+            </section>
+
+            <section class="portal-grid">
+                <div class="portal-card">
+                    <h3 class="arabic-heading">إنشاء امتحان</h3>
+                    <p class="arabic-body">تصميم وإدارة الامتحانات بدقة</p>
+                    <button class="portal-btn" onclick="createExam()">إنشاء امتحان</button>
+                </div>
+
+                <div class="portal-card">
+                    <h3 class="arabic-heading">الامتحانات السابقة</h3>
+                    <p class="arabic-body">مراجعة وإدارة الامتحانات</p>
+                    <button class="portal-btn" onclick="viewExams()">عرض الامتحانات</button>
+                </div>
+
+                <div class="portal-card">
+                    <h3 class="arabic-heading">تقارير الطلاب</h3>
+                    <p class="arabic-body">تتبع أداء الطلاب وتحليل النتائج</p>
+                    <button class="portal-btn" onclick="viewReports()">عرض التقارير</button>
+                </div>
+
+                <div class="portal-card">
+                    <h3 class="arabic-heading">طباعة الامتحانات</h3>
+                    <p class="arabic-body">طباعة امتحانات جاهزة للطلاب</p>
+                    <div class="cmyk-badge">
+                        <span>CMYK</span>
+                        <div class="cmyk-colors">
+                            <span class="cyan"></span>
+                            <span class="magenta"></span>
+                            <span class="yellow"></span>
+                            <span class="black"></span>
+                        </div>
+                    </div>
+                    <button class="portal-btn" onclick="printExam()">طباعة</button>
+                </div>
+            </section>
+        </main>
+
+        <footer class="portal-footer">
+            <p class="arabic-body">© 2026 تكيو برنت - جميع الحقوق محفوظة</p>
+        </footer>
+    </div>
+
+    <script type="module">
+        import { mofeedAuth, mofeedNotifications, mofeedDB, mofeedRadar } from '../../shared/core/index.js';
+        
+        document.getElementById('logoutBtn').addEventListener('click', async (e) => {
+            e.preventDefault();
+            await mofeedAuth.logout();
+            window.location.href = '/';
+        });
+
+        // Report to radar on load
+        mofeedAuth.reportToRadar('teacher_portal_access', { timestamp: Date.now() });
+
+        window.createExam = () => {
+            const modal = document.createElement('div');
+            modal.className = 'modal exam-modal';
+            modal.innerHTML = `
+                <h3 class="arabic-heading">إنشاء امتحان جديد</h3>
+                <form id="examForm">
+                    <input type="text" class="portal-input" placeholder="عنوان الامتحان" required>
+                    <textarea class="portal-input" placeholder="وصف الامتحان" rows="4"></textarea>
+                    <select class="portal-input">
+                        <option value="">المادة</option>
+                        <option value="math">الرياضيات</option>
+                        <option value="science">العلوم</option>
+                        <option value="arabic">اللغة العربية</option>
+                    </select>
+                    <button type="submit" class="portal-btn">حفظ</button>
+                </form>
+            `;
+            document.body.appendChild(modal);
+        };
+
+        window.viewExams = async () => {
+            const exams = await mofeedDB.query('exams', {}, 'teacher');
+            console.log('Teacher exams:', exams);
+        };
+
+        window.viewReports = async () => {
+            const reports = await mofeedDB.query('student_reports', {}, 'teacher');
+            console.log('Student reports:', reports);
+        };
+
+        window.printExam = () => {
+            window.print();
+        };
+    </script>
+</body>
+</html>

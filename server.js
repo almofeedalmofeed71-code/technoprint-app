@@ -14,6 +14,16 @@ const fs = require('fs');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Import Mofeed Radar API routes
+const radarRouter = require('./api/radar');
+const financeRouter = require('./api/finance');
+
+// Mount Radar routes under /api/radar
+app.use('/api/radar', radarRouter);
+
+// Mount Finance routes (payments, schools, material analysis)
+app.use('/api', financeRouter);
+
 // Supabase Config - EXACT VALUES FROM USER (ANON KEY ONLY)
 const SUPABASE_URL = 'https://avabozirwdefwtabywqo.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF2YWJvemlyd2RlZnd0YWJ5d3FvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY4NjM1NDQsImV4cCI6MjA5MjQzOTU0NH0.boDU0pXR1MGYiJXF1Jos-w0uehKCCZHsKgxHP7nbQVY';

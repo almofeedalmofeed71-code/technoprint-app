@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head><title>Icon Generator — TECHNOPRINT</title></head>
+<body style="background:#111;color:#D4AF37;font-family:sans-serif;padding:20px;">
+<h2>TECHNOPRINT Icon Generator</h2>
+<p style="color:#888;">Click each link to download icons, then upload to /public/images/</p>
+<div id="links"></div>
+<script>
+const sizes = [72, 96, 128, 144, 152, 192, 384, 512];
+const links = document.getElementById('links');
+
+sizes.forEach(size => {
+  const canvas = document.createElement('canvas');
+  canvas.width = canvas.height = size;
+  const ctx = canvas.getContext('2d');
+
+  // Background
+  ctx.fillStyle = '#000000';
+  ctx.fillRect(0, 0, size, size);
+
+  // Gold circle
+  ctx.fillStyle = '#D4AF37';
+  ctx.beginPath();
+  ctx.arc(size/2, size/2, size*0.42, 0, Math.PI*2);
+  ctx.fill();
+
+  // Letter T
+  ctx.fillStyle = '#000000';
+  ctx.font = `bold ${size * 0.5}px Georgia, serif`;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText('T', size/2, size/2 + size*0.03);
+
+  const a = document.createElement('a');
+  a.href = canvas.toDataURL('image/png');
+  a.download = `icon-${size}.png`;
+  a.style.cssText = 'display:block;margin:8px 0;color:#D4AF37;font-size:14px;';
+  a.textContent = `⬇️ Download icon-${size}.png`;
+  links.appendChild(a);
+});
+
+// Screenshot placeholder
+const sc = document.createElement('canvas');
+sc.width = 390; sc.height = 844;
+const ctx2 = sc.getContext('2d');
+ctx2.fillStyle = '#000'; ctx2.fillRect(0,0,390,844);
+ctx2.fillStyle = '#D4AF37';
+ctx2.font = 'bold 48px Georgia';
+ctx2.textAlign = 'center';
+ctx2.fillText('TECHNOPRINT', 195, 422);
+const a2 = document.createElement('a');
+a2.href = sc.toDataURL('image/png');
+a2.download = 'screenshot-mobile.png';
+a2.style.cssText = 'display:block;margin:8px 0;color:#2ecc71;font-size:14px;';
+a2.textContent = '⬇️ Download screenshot-mobile.png';
+links.appendChild(a2);
+</script>
+</body>
+</html>

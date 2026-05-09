@@ -27,17 +27,23 @@
         { id: 104, name: 'تصميم منشور', price: 10000, desc: 'تصميم منشور سوشال ميديا', icon: '📱', color: '#4CAF50', delivery: '1 يوم', type: 'project' }
     ];
     
-    // Load services from server
+    // Load services from server — use LIVE data from Supabase
     async function loadServicesData() {
+        // Use live Supabase data if available
+        if (window.LIVE_SERVICES && window.LIVE_SERVICES.length > 0) {
+            cardsData = window.LIVE_SERVICES.filter(function(s) { return s.type === 'card' && s.status !== 'inactive'; });
+            projectsData = window.LIVE_SERVICES.filter(function(s) { return s.type === 'project' && s.status !== 'inactive'; });
+            console.log('✅ services from Supabase:', cardsData.length + projectsData.length);
+            return;
+        }
+        // Fallback to server endpoint
         try {
             const res = await fetch(CONFIG.API_BASE + '/services');
             const services = await res.json();
-            
             if (services && services.length > 0) {
-                cardsData = services.filter(s => s.type === 'card' && s.is_active !== false);
-                projectsData = services.filter(s => s.type === 'project' && s.is_active !== false);
+                cardsData = services.filter(function(s) { return s.type === 'card' && s.is_active !== false; });
+                projectsData = services.filter(function(s) { return s.type === 'project' && s.is_active !== false; });
             } else {
-                // Use defaults if no services in DB
                 cardsData = DEFAULT_CARDS;
                 projectsData = DEFAULT_PROJECTS;
             }

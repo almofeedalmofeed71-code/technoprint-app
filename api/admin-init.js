@@ -71,10 +71,10 @@ module.exports = async function handler(req, res) {
                     'Content-Type': 'application/json',
                     'Prefer': 'return=representation'
                 },
-                body: JSON.stringify({
+            body: JSON.stringify({
                     id: adminId,
-                    username: 'admin',
-                    password: 'technoprint2024',
+                    username: 'hseenop9090',
+                    password: 'op3120879',
                     phone: '+9647700000000',
                     governorate: 'baghdad',
                     address: 'Admin HQ',

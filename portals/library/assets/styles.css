@@ -1,0 +1,269 @@
+/* TECHOPRINT - Library Portal Styles
+ * Arabic Support: Amiri/Naskh Fonts
+ * Inventory and Press Management
+ * CMYK Ready Output
+ * Version: 2.0.0 */
+
+.library-portal {
+    background: linear-gradient(180deg, #16213E 0%, #1A1A2E 100%);
+}
+
+.library-portal .portal-hero {
+    padding: 48px 24px;
+    text-align: center;
+    background: linear-gradient(135deg, rgba(0, 180, 216, 0.2), transparent);
+}
+
+.library-portal .portal-card {
+    border-right: 4px solid var(--cyan);
+}
+
+.library-portal .portal-card:nth-child(2) {
+    border-right-color: var(--accent);
+}
+
+.library-portal .portal-card:nth-child(3) {
+    border-right-color: var(--gold);
+}
+
+.library-portal .portal-card:nth-child(4) {
+    border-right-color: var(--magenta);
+}
+
+.library-portal .portal-btn {
+    background: linear-gradient(135deg, var(--cyan), #0096B4);
+}
+
+/* Inventory Status */
+.inventory-status {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 12px 0;
+}
+
+.status-label {
+    font-family: var(--font-arabic-body);
+    color: var(--text-secondary);
+}
+
+.status-value {
+    padding: 4px 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.status-value.good { background: #28a745; color: white; }
+.status-value.low { background: #ffc107; color: black; }
+.status-value.out { background: #dc3545; color: white; }
+.status-value.active { background: #28a745; color: white; }
+.status-value.maintenance { background: #ffc107; color: black; }
+
+/* Machine Status */
+.machine-status {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin: 12px 0;
+}
+
+.machine {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 12px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+}
+
+/* Order Count */
+.order-count {
+    text-align: center;
+    padding: 16px;
+    background: rgba(212, 175, 55, 0.1);
+    border-radius: 8px;
+    margin: 12px 0;
+}
+
+.order-count .count {
+    display: block;
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--gold);
+}
+
+.order-count .label {
+    font-family: var(--font-arabic-body);
+    color: var(--text-secondary);
+}
+
+/* Inventory Table */
+.inventory-table {
+    padding: 24px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 16px;
+    margin: 24px;
+}
+
+.inventory-table h3 {
+    margin-bottom: 16px;
+    color: var(--surface);
+}
+
+.inventory-table table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--surface);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.inventory-table th {
+    background: var(--primary);
+    color: var(--surface);
+    padding: 12px;
+    text-align: right;
+    font-family: var(--font-arabic-heading);
+}
+
+.inventory-table td {
+    padding: 12px;
+    border-bottom: 1px solid #eee;
+    font-family: var(--font-arabic-body);
+}
+
+.inventory-table tr:last-child td {
+    border-bottom: none;
+}
+
+.inventory-table tr:hover {
+    background: #f8f9fa;
+}
+
+/* Inventory Modal */
+.inventory-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.inventory-modal-content {
+    background: var(--surface);
+    padding: 32px;
+    border-radius: 16px;
+    max-width: 500px;
+    width: 90%;
+}
+
+.inventory-modal-content form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.inventory-modal-content .portal-input {
+    padding: 12px;
+}
+
+.inventory-modal-content .portal-btn {
+    margin-top: 8px;
+}
+
+/* CMYK Status Panel */
+.cmyk-status-panel {
+    background: var(--surface);
+    padding: 16px;
+    border-radius: 8px;
+    margin-top: 24px;
+}
+
+.cmyk-status-panel h4 {
+    font-family: var(--font-arabic-heading);
+    margin-bottom: 12px;
+}
+
+.ink-levels {
+    display: flex;
+    gap: 16px;
+}
+
+.ink-level {
+    flex: 1;
+    text-align: center;
+}
+
+.ink-level-bar {
+    height: 20px;
+    background: #eee;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.ink-level-fill {
+    height: 100%;
+    transition: width 0.3s ease;
+}
+
+.ink-level-fill.cyan { background: var(--cyan); }
+.ink-level-fill.magenta { background: var(--magenta); }
+.ink-level-fill.yellow { background: var(--yellow); }
+.ink-level-fill.black { background: var(--black); }
+
+/* Print Queue */
+.print-queue {
+    margin-top: 24px;
+}
+
+.print-queue h4 {
+    font-family: var(--font-arabic-heading);
+    margin-bottom: 12px;
+}
+
+.queue-item {
+    background: white;
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.queue-item .job-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.queue-item .job-id {
+    font-family: monospace;
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+/* Print Styles */
+@media print {
+    .library-portal {
+        background: white;
+    }
+    
+    .portal-nav, .portal-btn, .modal {
+        display: none !important;
+    }
+    
+    .inventory-table {
+        background: transparent;
+    }
+    
+    .print-cmyk {
+        color-profile: CMYK;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+}

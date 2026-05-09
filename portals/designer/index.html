@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>بوابة المصمم - تكيو برنت</title>
+    <link rel="stylesheet" href="../../shared/core/base.css">
+    <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+    <div class="portal-container arabic designer-portal">
+        <nav class="portal-nav">
+            <h1 class="arabic-heading">بوابة المصمم</h1>
+            <div class="portal-nav-links">
+                <a href="#" class="portal-nav-link">الأصول</a>
+                <a href="#" class="portal-nav-link">الأيقونات</a>
+                <a href="#" class="portal-nav-link">العلامات التجارية</a>
+                <a href="#" class="portal-nav-link" id="logoutBtn">تسجيل الخروج</a>
+            </div>
+        </nav>
+
+        <main class="portal-main">
+            <section class="portal-hero">
+                <h2 class="arabic-heading">مرحباً بك في بوابة المصمم</h2>
+                <p class="arabic-body">إدارة الأصول والتصاميم والعلامات التجارية</p>
+            </section>
+
+            <section class="portal-grid">
+                <div class="portal-card">
+                    <h3 class="arabic-heading">أيقونات التطبيق</h3>
+                    <p class="arabic-body">إدارة أيقونات 192px و 512px للتطبيقات</p>
+                    <div class="icon-preview">
+                        <img src="assets/icons/icon-192.png" alt="192px Icon" width="48" height="48">
+                        <img src="assets/icons/icon-512.png" alt="512px Icon" width="96" height="96">
+                    </div>
+                    <button class="portal-btn" onclick="manageIcons()">إدارة الأيقونات</button>
+                </div>
+
+                <div class="portal-card">
+                    <h3 class="arabic-heading">أصول التصميم</h3>
+                    <p class="arabic-body">تخزين وإدارة ملفات التصميم</p>
+                    <div class="asset-badges">
+                        <span class="cmyk-badge">
+                            <span>CMYK</span>
+                            <div class="cmyk-colors">
+                                <span class="cyan"></span>
+                                <span class="magenta"></span>
+                                <span class="yellow"></span>
+                                <span class="black"></span>
+                            </div>
+                        </span>
+                    </div>
+                    <button class="portal-btn" onclick="manageAssets()">إدارة الأصول</button>
+                </div>
+
+                <div class="portal-card">
+                    <h3 class="arabic-heading">العلامات التجارية</h3>
+                    <p class="arabic-body">إدارة شعارات العملاء وهوية العلامة</p>
+                    <button class="portal-btn" onclick="manageBranding()">إدارة العلامات</button>
+                </div>
+
+                <div class="portal-card">
+                    <h3 class="arabic-heading">تصدير للطباعة</h3>
+                    <p class="arabic-body">تصدير تصاميم جاهزة للطباعة CMYK</p>
+                    <button class="portal-btn" onclick="exportToPrint()">تصدير</button>
+                </div>
+            </section>
+
+            <section class="asset-gallery">
+                <h3 class="arabic-heading">المعرض</h3>
+                <div class="gallery-grid" id="assetGallery">
+                    <!-- Dynamic assets will be loaded here -->
+                </div>
+            </section>
+        </main>
+
+        <footer class="portal-footer">
+            <p class="arabic-body">© 2026 تكيو برنت - جميع الحقوق محفوظة</p>
+        </footer>
+    </div>
+
+    <script type="module">
+        import { mofeedAuth, mofeedNotifications, mofeedDB, mofeedRadar } from '../../shared/core/index.js';
+        
+        document.getElementById('logoutBtn').addEventListener('click', async (e) => {
+            e.preventDefault();
+            await mofeedAuth.logout();
+            window.location.href = '/';
+        });
+
+        // Report to radar on load
+        mofeedAuth.reportToRadar('designer_portal_access', { timestamp: Date.now() });
+
+        // Asset manager instance
+        import { assetManager } from './asset-manager.js';
+
+        window.manageIcons = () => {
+            assetManager.loadIconManager();
+        };
+
+        window.manageAssets = async () => {
+            const assets = await mofeedDB.query('assets', {}, 'designer');
+            console.log('Designer assets:', assets);
+        };
+
+        window.manageBranding = async () => {
+            const brands = await mofeedDB.query('branding', {}, 'designer');
+            console.log('Branding data:', brands);
+        };
+
+        window.exportToPrint = () => {
+            assetManager.exportForPrint();
+        };
+
+        // Load initial assets
+        assetManager.loadGallery();
+    </script>
+</body>
+</html>
